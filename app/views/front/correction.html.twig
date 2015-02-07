@@ -1,0 +1,146 @@
+{% extends 'front/layout.html.twig' %}
+
+	{% block css %}
+		{{ parent() }}
+		{% if print_questionnaire != false %}
+		<style>
+		@media print{
+			body {
+				font-size: 0.7em;
+				padding: 45px;
+			}
+
+			hr {
+				margin: 0;
+				margin: 5px 0;
+			}
+			#footer {
+				display: none;
+			}
+			#print {
+				display: none;
+			}
+		}
+		</style>
+		{% endif %}
+	{% endblock %}
+
+{% block js %}
+
+	{{ parent() }}
+	{% if print_questionnaire != false %}
+	<script>window.print();</script>
+    {% endif %}
+{% endblock %}
+
+{% block nav_right %}
+	{{ parent() }}
+	<li><a href="">{{ evaluator.name }}</a></li>
+	<li><a href="">{{ evaluator.email }}</a></li>
+{% endblock %}
+
+{% block nav_left %}
+	{{ parent() }}
+	<li><a href="">{{ evaluation.subject|default(evaluation.name) }}</a></li>
+	<li><a href="{{ base ~ 'correct/' ~ token }}">Exibir Lista</a></li>
+{% endblock %}
+
+{% block content %}
+	
+	{% if response %}
+		{{ blocks.alert(response.text, response.class) }}
+	{% endif %}
+
+	<div class="row">
+		<div class="large-12">
+			&nbsp;
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="large-12 columns">
+			<ul>
+			<li>Avaliado: <b>{{ valued.name }}</b></li>
+			<li>Respondido em <b>{{ sending.answered_at|date('d/m/y à\\s H:i') }}</b></li>
+			<li>Corrigido em <b>{{ sending.corrected_at|date('d/m/y à\\s H:i') }}</b></li>
+			</ul>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="large-8 columns">
+			<h4>Respostas</h4>
+		</div>
+		<div id="print" class="large-4 text-right columns">
+
+			{% set self = base ~ 'correct/' ~ token ~ '/valued/' ~ valued.id ~ '/sending/' ~ sending.id %}
+
+			<a class=" button small glyphicon glyphicon-print alert" href="{% if print_questionnaire == 'corrected' %}javascript:window.print();{% else %}{{ self }}?print=corrected{% endif %}"> Avaliação</a>
+			
+			<a class=" button small glyphicon glyphicon-print alert" href="{% if print_questionnaire == 'answered' %}javascript:window.print();{% else %}{{ self }}?print=answered{% endif %}"> Autoavaliação</a>
+			
+		</div>
+	</div>
+
+	<hr />
+
+	<div class="row">
+		<div class="large-12 columns">
+			<ul>
+				{% set q = 1 %}
+				{% for answer in data.answers %}
+
+					<li>
+						<h5>Q{{ q }} - <b>{{ answer.issue.enunciation }}</b></h5><br />
+						<div class="row">
+							<div class="large-12">
+								<div style="margin-left:29px">
+									<b style="font-size:0.8em">Autoavaliação</b>
+									<ul>
+										<li>
+											{% if answer.issue.type == 'scale' %}-{% endif %}
+											{% if answer.issue.type == '0-10' %}
+												<b>Nota:</b> {{ answer.answer.getAnswer|replace('.',',') }}
+											{% else %}
+											    {{ answer.answer.getAnswer|raw }}
+											{% endif %} 
+											
+										</li>
+
+										{% if answer.answer.justification %}
+										<li style="margin-top:10px"><p><b>Justificativa:</b> {{ answer.answer.justification }}</p></li>
+										{% endif %}
+									</ul>
+								</div>
+							</div>
+						</div>
+
+						{% if print_questionnaire == 'corrected' or print_questionnaire == false %}
+						<div class="row">
+							{% for answer_evaluator_id, evaluator in answer.evaluators %}
+								{% if answer_evaluator_id == evaluator_id %}
+							    <div style="margin-left:29px">
+							    	<hr />
+							    	<b style="font-size:0.8em">Avaliação</b>
+									<ul>
+										<li><b>Nota:</b> {{ evaluator.correction.note }}</li>
+										{% if evaluator.correction.justification %}
+											<li style="margin-top:10px"><b>Justificativa:</b> {{ evaluator.correction.justification }}</li>
+										{% endif %}
+									</ul>
+							    {% endif %}
+							{% endfor %}
+						</div>
+						{% endif %}
+					</li>
+
+					<hr />
+				
+				</tr>
+				{% set q = q + 1 %}
+				{% endfor %}
+			</ul>
+		</div>
+	</div>
+
+{% endblock %}

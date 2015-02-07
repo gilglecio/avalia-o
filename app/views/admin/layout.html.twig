@@ -1,0 +1,133 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Administração - {{ parent() }} {% endblock %}
+
+{% import 'admin/blocks.html.twig' as blocks %}
+
+{% block css %}
+	{{ parent() }}
+	<link rel="stylesheet" href="{{ base }}static/css/select2.css">
+	<link rel="stylesheet" href="{{ base }}static/css/select2-bootstrap.css">
+	
+{% endblock %}
+
+{% block js %}
+	{{ parent() }}
+	<script>
+		{% set divider = '", "' %}
+		var evaluation_tags = ["{{ evaluation_tags|join(divider)|raw }}"];
+	</script>
+{% endblock %}
+
+{% block nav_left %}
+<li class="divider"></li>
+
+<li class="has-dropdown"><a href="{{ urladm ~ '/user' }}">Cadastros</a>
+	<ul class="dropdown">
+		<li><a href="{{ urladm ~ '/user/new/valued' }}">Cadastrar Usuário</a></li>
+		<li class="divider"></li>
+		<li><a href="{{ urladm ~ '/user/valued/charge' }}">Gerenciar Cargos</a></li>
+		<li><a href="{{ urladm ~ '/user/valued/rating' }}">Gerenciar Classificações</a></li>
+	</ul>
+</li>
+<li class="divider"></li>
+<li><a href="{{ urladm ~ '/group' }}">Grupos</a></li>
+<li class="divider"></li>
+<li class="has-dropdown"><a href="{{ urladm ~ '/questionnaire' }}">Questionários</a>
+	<ul class="dropdown">
+		<li><a href="{{ urladm ~ '/questionnaire/new' }}">Criar Questionário</a></li>
+		{# <li class="divider"></li>
+		<li><a href="{{ urladm ~ '/issue' }}">Banco de Perguntas</a></li> #}
+	</ul>
+</li>
+
+<li class="divider"></li>
+<li class="has-dropdown"><a href="{{ urladm ~ '/evaluation' }}">Avaliações</a>
+	<ul class="dropdown">
+		<li><a href="{{ urladm ~ '/evaluation/new' }}">Criar Avaliação</a></li>
+		{# <li class="divider"></li>
+		<li><a href="{{ urladm ~ '/answer' }}">Coletar Respostas</a></li> #}
+		{# <li><a href="{{ urladm ~ '/evaluation/result' }}">Analisar Resultados</a></li> #}
+		{% if env == 'dev' %}
+		<li class="divider"></li>
+		<li><a href="{{ urladm ~ '/dev/sending' }}">Testar Envio</a></li>
+		{% endif %}
+	</ul>
+</li>
+
+<li class="divider"></li>
+<li class="has-dropdown"><a href="{{ urladm ~ '/settings' }}">Configurações</a>
+	<ul class="dropdown">
+		<li><a href="{{ urladm ~ '/settings/change_password' }}">Alterar Senha</a></li>
+	</ul>
+</li>
+<li class="divider"></li>
+{% endblock %}
+
+{% block nav_right %}
+{# <li><a class="button success primary round" href="{{ urladm ~ '/questionnaire/new' }}">Criar Questionário</a></li> #}
+<li>
+	<form action="{{ urladm ~ '/search' }}">
+		<input type="text" style="background:#333; border:none;" name="term" placeholder="Pesquisa...">
+	</form>
+</li>
+<li><a href="{{ urladm ~ '/user/' ~ app_user.id }}">{{ app_user.username }}</a></li>
+<li><a style="color:#900" href="{{ base }}logout">Sair</a></li>
+{% endblock %}
+
+{% block body %}
+<div class="row">
+	<div class="large-12">
+		<div class="row-fluid">
+			<div class="large-12 columns">
+
+				<nav style="margin-top:20px" class="breadcrumbs">
+					<a href="{{ urladm }}">Início</a>
+			  		{% block breadcrumbs %}{% endblock %}
+					{# <a href="{{ referer }}">Voltar</a> #}
+				</nav>
+				<div id="content">
+					{% block content %}{% endblock %}
+				</div>
+			</div>
+		</div>
+
+	</div>
+</div>	
+{% endblock %}
+
+{% block js_bottom %}
+ 	{{ parent() }}
+ 	<script src="{{ base }}static/js/jquery.mask.min.js"></script>
+ 	<script src="{{ base }}static/js/select2.min.js"></script>
+ 	<script src="{{ base }}static/js/jquery.textcomplete.min.js"></script>
+ 	<script src="{{ base }}static/js/jquery.overlay.min.js"></script>
+ 	<script>
+ 	$('#message_email').textcomplete([
+	    { // html
+	        match: /\B#(\w*)$/,
+	        search: function (term, callback) {
+	            callback($.map(evaluation_tags, function (mention) {
+	                return mention.indexOf(term) === 0 ? mention : null;
+	            }));
+	        },
+	        index: 1,
+	        replace: function (mention) {
+	            return '#' + mention + ' ';
+	        }
+	    }
+	]).overlay([
+	    {
+	        match: /\B@\w+/g,
+	        css: {
+	            'background-color': '#d8dfea'
+	        }
+	    }
+	]);
+	</script>
+	<script>
+	$('.money').mask("#.###.##0,00", {reverse: true, maxlength: 15});
+    $('.date').mask("00/00/0000");
+    $('.time').mask("00:00");
+	</script>
+{% endblock %}

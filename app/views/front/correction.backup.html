@@ -1,0 +1,51 @@
+{% extends 'front/layout.html.twig' %}
+
+{% block nav_right %}
+	{{ parent() }}
+	<li><a href="">{{ valued.name }}</a></li>
+	<li><a href="">{{ valued.email }}</a></li>
+{% endblock %}
+
+{% block nav_left %}
+	{{ parent() }}
+	<li><a href="">{{ evaluation.name }}</a></li>
+{% endblock %}
+
+{% block content %}
+	
+	{% if response %}
+		{{ blocks.alert(response.text, response.class) }}
+	{% endif %}
+
+	<div class="row">
+		<div class="large-12">
+			<h1>{{ title }}</h1>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="large-12">
+			<table class="large-12">
+				<thead>
+					<tr>
+						<td><small>PERGUNTA</small></td>
+						<td><small>NOTA</small></td>
+						<td><small>JUSTIFICATIVA</small></td>
+						<td><small>CORRIGIDO EM</small></td>
+					</tr>
+				</thead>
+				<tbody>
+					{% for correction in corrections %}
+					<tr>
+						<td>{{ correction.answer.id }}</td>
+						<td>{{ correction.note }}</td>
+						<td>{% if correction.justification %}{{ correction.justification }}{% else %}-{% endif %} </td>
+						<td>{{ correction.created_at|date('d M y H:i') }}</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+{% endblock %}

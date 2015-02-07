@@ -1,0 +1,256 @@
+{% extends 'print.html.twig' %}
+
+{% block css %}
+	{{ parent() }}
+	<style>
+	@media print{
+		body {
+			font-size: 0.7em;
+			padding: 45px;
+		}
+
+		hr {
+			margin: 0;
+			margin: 5px 0;
+		}
+	}
+	tr {
+		background: white;
+	}
+	</style>
+{% endblock %}
+
+{% block body %}
+	<div class="row">
+		{% set evaluation = sending.evaluation_sending.evaluation %}
+		<table style="border:none" width="100%">
+			<tr>
+				<td width="30%">
+					<img id="logo" width="200" src="{{ site_src_logo }}" alt="">
+				</td>
+				<td>
+					<span>Avaliação</span>
+					<h2>{{ evaluation.subject|default(evaluation.name) }}</h2>
+					<span>De {{ evaluation.start_at|date('d/m/y') ~ ' a ' ~ evaluation.end_at|date('d/m/y') }}</span>
+				</td>
+			</tr>
+		</table>
+	</div>
+
+	<hr />
+
+	<div class="row">
+		<div class="large">
+			<table class="large-12" style="border:none">
+				<tr >
+					<td style="vertical-align:top">
+						<ul>
+							<li>Nome: <b>{{ sending.valued.name }}</b></li>
+							<li>Avaliador: <b>{{ evaluator.name }}</b></li>
+							<li>Data Nascimento: <b>{{ sending.valued.birth|date('d/m/Y') }}</b></li>
+							<li>Data de entrada: <b>{{ sending.valued.entry_at|date('d/m/Y') }}</b></li>
+							<li>Ano Graduação: <b>{{ sending.valued.graduated_at }}</b></li>
+							<li>Autoavaliação: <b>{{ sum_issue_0_10 }}</b></li>
+							<li>Avaliação: <b>{{ sum }}</b></li>
+
+							{# {% if sending.valued.groups|length > 0 %}
+							<li>Grupo{% if sending.valued.groups|length > 1 %}s{% endif %}: <b>{{ sending.valued.getNameGroups|join(', ') }}.</b></li>
+							{% endif %}
+
+							{% if sending.valued.charges|length > 0 %}
+							<li>Cargo{% if sending.valued.charges|length > 1 %}s{% endif %}: <b>{{ sending.valued.getNameCharges|join(', ') }}.</b></li>
+							{% endif %}
+
+							{% if sending.valued.ratings|length > 0 %}
+							<li>Classificaç{% if sending.valued.ratings|length > 1 %}ões{% else %}ão{% endif %}: <b>{{ sending.valued.getNameRatings|join(', ') }}.</b></li>
+							{% endif %} #}
+
+							{# <li>Na Empresa Desde: <b>-</b></li> #}
+
+						</ul>
+					</td>
+					<td valign="top" width="75%" >
+						<form action="" method="post">
+
+							<input type="hidden" name="{{ csrf_key }}" value="{{ csrf_token }}">
+							<input type="hidden" name="sending_id" value="{{ sending.id }}">
+							<input type="hidden" name="evaluator_id" value="{{ evaluator_id }}">
+							
+							{% set print = layout == 'print' ? true : false %}
+
+							<table class="large-12" style="border:none; font-size:1.3em">
+							<tr>
+								<td>
+									<label for="salary">Salário Atual</label>
+									{% if print %} <b>R$ {{ pdf.getSalary }}</b> {% else %}									    
+									<input class="money" type="text" name="salary" value="{{ pdf.getSalary }}" >
+									{% endif %}
+								</td>
+
+								<td>
+									<label for="salary">Perf. (%)</label>
+									{% if print %} <b>{{ pdf.getPerf }}%</b> {% else %}
+									<input class="money" type="text" name="perf" value="{{ pdf.perf ? pdf.getPerf : '' }}" >
+									{% endif %}
+								</td>
+
+								<td>
+									<label for="evaluator_note">Nt. Avaliador (Compet.)</label>
+									{% if print %} <b>{{ pdf.getEvaluatorNote }}</b>{% else %}
+									<input class="money" type="text" name="evaluator_note" value="{{ pdf.evaluator_note ? pdf.getEvaluatorNote : '' }}" >
+									{% endif %}
+								</td>
+
+								<td>
+									<label for="evaluator_note">Nota Final</label>
+									{% if print %} <b>{{ pdf.getFinalNote }}</b>{% else %}
+									<input class="money" type="text" name="final_note" value="{{ pdf.getFinalNote }}" >
+									{% endif %}
+								</td>
+								
+							</tr>
+
+							<tr>
+								<td>
+									<label for="salary">Bônus</label>
+									{% if print %} <b>R$ {{ pdf.getBonus }}</b>{% else %}
+									<input class="money" type="text" name="bonus" value="{{ pdf.getBonus }}" >
+									{% endif %}
+								</td>
+								
+								<td>
+									<label for="nr_salary">Nr. Salário.</label>
+									{% if print %} <b>{{ pdf.getNrSalary }}</b>{% else %}
+									<input class="money" type="text" name="nr_salary" value="{{ pdf.nr_salary ? pdf.getNrSalary : '' }}" >
+									{% endif %}
+								</td>
+
+								<td>
+									<label for="nr_salary_prop">Nr. Salário Prop.</label>
+									{% if print %} <b>{{ pdf.getNrSalaryProp }}</b>{% else %}
+									<input class="money" type="text" name="nr_salary_prop" value="{{ pdf.nr_salary_prop ? pdf.getNrSalaryProp : '' }}" >
+									{% endif %}
+								</td>
+
+								{# <td>
+									<label for="perf_prop">Perf. Prop. (%)</label>
+									{% if print %} <b>{{ pdf.perf_prop }}%</b>{% else %}
+									<input type="text" name="perf_prop" value="{{ pdf.perf_prop }}" >
+									{% endif %}
+								</td> #}
+
+								<td>
+									<label for="salary">Novo Salário</label>
+									{% if print %} <b>R$ {{ pdf.getNewSalary }}</b> {% else %}									    
+									<input class="money" type="text" name="new_salary" value="{{ pdf.getNewSalary }}" >
+									{% endif %}
+								</td>
+							</tr>
+
+							<tr>
+								
+								<td colspan="4">
+									{% if print %}
+									<p>{{ pdf.comment }}</p>
+									{% else %}
+									<textarea name="comment" placeholder="Deixar Comentário">{{ pdf.comment }}</textarea>
+									{% endif %}
+								</td>
+								
+							</tr>
+
+							</table>
+
+							{% if not print %}
+							<div class="row">
+								<div class="large-12 text-center columns">
+									<input class="button alert small" type="submit" value="Finalizar">
+									<a target="_blank" class="button small secondary" href="{{ urladm ~ '/sending/sending/' ~ sending.id ~ '/pdf/evaluator/' ~ evaluator_id ~ '/layout/print' }}">Visualizar e Imprimir</a>
+								</div>
+							</div>
+							{% endif %}
+						</form>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+	
+	<hr />
+
+	<div class="row">
+		<div class="large-12 columns">
+			<h4>Respostas</h4>
+		</div>
+	</div>
+
+	<hr />
+
+	<div class="row">
+		<div class="large-12 columns">
+			<ul>
+				{% set q = 1 %}
+				{% for answer in data.answers %}
+
+					<li>
+						<h5>Q{{ q }} - <b>{{ answer.issue.enunciation }}</b></h5><br />
+						<div class="row">
+							<div class="large-12">
+								<div style="margin-left:29px">
+									<b style="font-size:0.8em">Autoavaliação</b>
+									<ul>
+										<li>
+											{% if answer.issue.type == '0-10' %}<b>Nota:</b>{% endif %} 
+											{% if answer.issue.type == 'scale' %}-{% endif %}
+											{{ answer.answer.getAnswer|raw }}
+										</li>
+
+										{% if answer.answer.justification %}
+										<li style="margin-top:10px"><p><b>Justificativa:</b> {{ answer.answer.justification }}</p></li>
+										{% endif %}
+									</ul>
+								</div>
+							</div>
+						</div>
+
+						<div class="row">
+							{% for answer_evaluator_id, evaluator in answer.evaluators %}
+								{% if answer_evaluator_id == evaluator_id %}
+							    <div style="margin-left:29px">
+							    	<hr />
+							    	<b style="font-size:0.8em">Avaliação</b>
+									<ul>
+										<li><b>Nota:</b> {{ evaluator.correction.note }}</li>
+										{% if evaluator.correction.justification %}
+											<li style="margin-top:10px"><b>Justificativa:</b> {{ evaluator.correction.justification }}</li>
+										{% endif %}
+									</ul>
+							    {% endif %}
+							{% endfor %}
+						</div>
+					</li>
+
+					<hr />
+				
+				</tr>
+				{% set q = q + 1 %}
+				{% endfor %}
+			</ul>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="large-12 text-center">
+			<p style="font-size:0.8em">&copy; Copyright 2014 <img src="{{ site_src_logo }}" width="120" alt=""> <b>AVALIAÇÃO</b> - Todos os Direitos Reservados.</p>
+		</div>
+	</div>
+{% endblock %}
+
+	{% block js_bottom %}
+		{{ parent() }}
+		<script type="text/javascript">
+		{% if layout == 'print' %}
+		window.print();
+		{% endif %}
+		</script>    
+	{% endblock %}

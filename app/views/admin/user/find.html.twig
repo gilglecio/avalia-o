@@ -1,0 +1,118 @@
+{% extends 'admin/user/layout.html.twig' %}
+
+{% block breadcrumbs %}
+	{{ parent() }}
+	<a class="current" href="#">{{ title }}</a>
+	<a href="{{ urladm ~ '/user/' ~ user.id ~ '/edit' }}">Editar</a>
+	<a href="javascript:history.back();">voltar</a>
+{% endblock %}
+
+{% block group %}
+
+	{% if response %}
+		{{ blocks.alert(response.text, response.class) }}
+	{% endif %}
+
+	<div class="row">
+		<div class="large-4 columns">
+			<table class="large-12">
+				<thead>
+					<tr>
+						<td><b>Cargos</b></td>
+					</tr>
+				</thead>
+				<tbody>
+					{% for charge in user.charges %}				
+					<tr>
+						<td>{{ charge.name }}</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+		<div class="large-4 columns">
+			<table class="large-12">
+				<thead>
+					<tr>
+						<td><b>Classificações</b></td>
+					</tr>
+				</thead>
+				<tbody>
+					{% for rating in user.ratings %}				
+					<tr>
+						<td>{{ rating.name }}</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+		<div class="large-4 columns">
+			<table class="large-12">
+				<thead>
+					<tr>
+						<td><b>Grupos</b></td>
+					</tr>
+				</thead>
+				<tbody>
+					{% for group in user.groups %}				
+					<tr>
+						<td>{{ group.name }}</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="large-4 columns">
+			<table class="large-12">
+				<thead>
+					<tr>
+						<td><b>Avaliações</b></td>
+					</tr>
+				</thead>
+				<tbody>
+					{% for evaluation in user.evaluations %}				
+					<tr>
+						<td>{{ evaluation.name }}</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+		{# <div class="large-4 columns">
+			<table class="large-12">
+				<thead>
+					<tr>
+						<td><b>Classificações</b></td>
+					</tr>
+				</thead>
+				<tbody>
+					{% for rating in user.ratings %}				
+					<tr>
+						<td>{{ rating.name }}</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+		<div class="large-4 columns">
+			<table class="large-12">
+				<thead>
+					<tr>
+						<td><b>Grupos</b></td>
+					</tr>
+				</thead>
+				<tbody>
+					{% for group in user.groups %}				
+					<tr>
+						<td>{{ group.name }}</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div> #}
+	</div>
+	
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends 'admin/issue/layout.html.twig' %}
+
+{% block breadcrumbs %}
+	{{ parent() }}
+	<a class="current" href="#">{{ title }}</a>
+	<a href="javascript:history.back();">voltar</a>
+{% endblock %}
+
+{% block change_issue %}
+<div class="row">
+	<div class="large-12 columns">
+		<form action="" class="custom">
+			<select id="change_type">
+				{% set type_current = type %}
+			<option value="">-- Alterar tipo de questão --</option>
+			{% for type, label in types %}
+			    <option {% if type_current == type %}selected{% endif %} value="{{ type }}">{{ label }}</option>
+			{% endfor %}
+		</select>
+		</form>
+	</div>
+</div>
+{% endblock %}
+
+{% block group %}
+	
+	<div class=" text-center">
+		<ul class="button-group">
+			{% for type, label in types %}
+		    <li><a href="{{ urladm ~ '/issue/new/' ~ type }}" class="button small">{{ label }}</a></li>
+		{% endfor %}
+		</ul>
+	</div>
+
+{% endblock %}
+
+
+

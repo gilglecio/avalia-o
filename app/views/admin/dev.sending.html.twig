@@ -1,0 +1,77 @@
+{% extends 'admin/evaluation/layout.html.twig' %}
+
+{% block content %}
+
+	<div class="row">
+		<div class="large-12 columns">
+
+		{% if sendings %}
+		<h4>Avaliados</h4>
+
+		<table class="large-12 columns">
+			<thead>
+				<tr>
+					<td width="100"><small><b>ENVIO</b></small></td>
+					<td width="280"><small><b>AVALIACAO</b></small></td>
+					<td><small><b>NOME</b></small></td>
+				</tr>
+			</thead>
+			<tbody>
+				{% for sending in sendings %}
+
+				<tr id="sending-{{ sending.valued.id }}">
+					<td>{{ sending.evaluation_sending_id }}</td>
+					<td>{{ sending.evaluation_sending.evaluation.name }}</td>
+					<td><a href="{{ base }}reply/{{ sending.getEncodeToken }}">{{ sending.valued.name }}</a></td>
+				</tr>
+
+				{% endfor %}
+			</tbody>
+		</table>
+		{% endif %}
+
+		{% if sending_evaluators %}
+		<h4>Avaliadores</h4>
+
+		<table class="large-12 columns">
+			<thead>
+				<tr>
+					<td><small><b>NOME</b></small></td>
+				</tr>
+			</thead>
+			<tbody>
+				{% for sending_evaluator in sending_evaluators %}
+
+				<tr id="evaluator-{{ sending_evaluator.evaluator.id }}">
+					<td><a href="{{ base }}correct/{{ sending_evaluator.getEncodeToken }}">{{ sending_evaluator.evaluator.name }}</a></td>
+				</tr>
+
+				{% endfor %}
+			</tbody>
+		</table>
+		{% endif %}
+
+		{% if sending_bcc %}
+
+		<h4>Cadastrados em Cópia Oculta</h4>
+		<table class="large-12 columns">
+			<thead>
+				<tr>
+					<td><small><b>NOME</b></small></td>
+				</tr>
+			</thead>
+			<tbody>
+				{% for bcc in sending_bcc %}
+
+				<tr id="evaluator-{{ bcc.id }}">
+					<td><a href="{{ base }}not_evaluate/{{ bcc.getEncodeToken }}">{{ bcc.name }}</a></td>
+				</tr>
+
+				{% endfor %}
+			</tbody>
+		</table>
+		{% endif %}
+		</div>
+	</div>
+
+{% endblock %}

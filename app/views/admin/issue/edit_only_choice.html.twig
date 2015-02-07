@@ -1,0 +1,8 @@
+{% extends 'admin/issue/edit.html.twig' %}
+
+{% block issue %}
+	<h4>Opções de resposta</h4>
+
+	<label><b>Opções de resposta:</b> Insira cada opção em uma linha separada.</label>
+	<textarea style="height:120px;" name="alternatives">{{ issue.alternatives_for_textarea }}</textarea>
+{% endblock %}

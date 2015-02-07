@@ -1,0 +1,49 @@
+{% extends 'admin/questionnaire/layout.html.twig' %}
+
+{% block breadcrumbs %}
+	{{ parent() }}
+	<a class="current" href="#">Visualizar</a>
+	<a class="current" href="#">{{ questionnaire.name }}</a>
+	<a href="javascript:history.back();">voltar</a>
+{% endblock %}
+
+{% block css %}
+	{{ parent() }}
+	<link rel="stylesheet" media="print" href="{{ base }}static/css/print-questionnaire.css">
+{% endblock %}
+
+{% block content %}
+
+	<div class="large-12">
+		
+		<div class="row">
+			<div class="large-12 columns">
+				<h3>{{ questionnaire.name }}</h3>
+				
+			</div>
+		</div>
+
+		<hr />
+
+		<h5>Página 1 <a class="right glyphicon glyphicon-print success button small button-print" href="javascript:print();"> Imprimir</a> </h5>
+
+		<div class="row">
+			<div class="large-12 columns">
+			{% if questionnaire.issues %}
+
+				{% set number = 1 %}
+				{% for issue in questionnaire.issues %}
+					{% if issue.type == 'open' %} {{ blocks.issue_open(number, issue, urladm) }} {% endif %}
+					{% if issue.type == 'boolean' %} {{ blocks.issue_boolean(number, issue, urladm) }} {% endif %}
+					{% if issue.type == 'only_choice' %} {{ blocks.issue_only_choice(number, issue, urladm) }} {% endif %}
+					{% if issue.type == 'multiple_choice' %} {{ blocks.issue_multiple_choice(number, issue, urladm) }} {% endif %}
+					{% if issue.type == '0-10' %} {{ blocks.issue_0_10(number, issue, urladm) }} {% endif %}
+					{% if issue.type == 'scale' %} {{ blocks.issue_scale(number, issue, urladm) }} {% endif %}
+					{% set number = number + 1 %}
+				{% endfor %}
+			{% endif %}
+			</div>
+		</div>
+	</div>
+
+{% endblock %}

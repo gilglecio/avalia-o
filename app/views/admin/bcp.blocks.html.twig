@@ -1,0 +1,376 @@
+{% macro tags() %}
+<label>
+	<ul>
+		<li><b>TAGS:</b></li>
+		<li><b>#nome</b> <i>NOME do avaliado</i></li>
+		<li><b>#avaliacao</b> <i>NOME da avaliação</i></li>
+		<li><b>#questionario</b> <i>URL do questionario</i></li>
+		<li><b>#inicio</b> <i>DATA inicial da avaliação</i></li>
+		<li><b>#termino</b> <i>DATA final da avaliação</i></li>
+	</ul>
+</label>
+{% endmacro %}
+
+{% macro alert(content, class) %}
+    <div data-alert class="alert-box {{ class|default('alert') }}">
+	  	{% if content is iterable %}
+		    {% for line in content %}
+		        {{ line|raw }}
+		    {% endfor %}
+		{% else %}
+		    {{ content|raw }}
+		{% endif %}
+	  	
+	  	<a href="#" class="close">&times;</a>
+	</div>
+{% endmacro %}
+
+{% macro issue_options(issue, type) %}
+<label>
+	<input id="required" type="checkbox" {% if issue.required %}checked{% endif %} name="required"> 
+	<b>Campo Obrigatório.</b> <small>(Opcional)</small>
+</label>
+
+{% if type != 'open' %}
+<div id="justify">
+	<label>
+		<input type="checkbox" {% if issue.accepted_justification %}checked{% endif %} id="accepted_justification" name="accepted_justification"> 
+		<b>Comentário.</b>
+		Permita que os avaliados adicionem um comentário para esclarecer a resposta. <small>(Opcional)</small>
+	</label>
+	<label>
+		<input type="checkbox" {% if issue.justification_required %}checked{% endif %} id="justification_required" name="justification_required"> 
+		<b>Comentário Obrigatório.</b>
+		Obrigar avaliado a deixar uma justificativa. <small>(Opcional)</small>
+	</label>
+</div>
+{% endif %}
+
+{% if type in ['0-10', '0_10'] %}
+<hr />
+<div class="large-4">
+	<div class="large-6 small-6">
+		<label for="min_note">
+			Nota Mínima
+			<input type="number" value="{{ issue.min_note|default(0) }}" name="min_note">
+		</label>
+	</div>
+	<div class="large-6 small-6">
+		<label for="min_note">
+			Nota Máxima
+			<input type="number" value="{{ issue.max_note|default(10) }}" name="max_note">
+		</label>
+	</div>
+</div>
+{% endif %}
+{% endmacro %}
+
+{% macro select_issue_types(types) %}
+<label>
+	Tipo de Pergunta
+	<select required="1" id="issue_type" name="type">
+		<option value="" selected>-- Selecione o tipo de Pergunta --</option>
+		{% for type, label in types %}
+		    <option value="{{ type }}">{{ label }}</option>
+		{% endfor %}
+	</select>
+</label>
+{% endmacro %}
+
+{% macro heading(entity, page) %}
+    <h2>{{ entity }} <small>{{ page }}</small></h2>
+{% endmacro %}
+
+{% macro issue_header(issue, number, urladm, edit, questionnaire) %}
+<a name="issue_id_{{ issue.id }}"></a>
+	<div class="row">
+		<div class="{% if edit %}large-7{% else %} large-12 {% endif %} columns">
+			<p><strong>Q{{ number }} -</strong> {{ issue.enunciation }}  {% if issue.required %}<span title="Obrigatória" style="color:red"><b>*</b></span>{% endif %}</p>
+		</div>
+		{% if edit %}
+		<div class="{% if edit %}large-5{% endif %} columns">
+			<ul class="button-group ">
+				<a data-confirm="1" data-id="{{ issue.id }}" class="issue_delete right button secondary tiny" href="{{ urladm ~ '/questionnaire/' ~ questionnaire.id ~ '/edit/issue/' ~ issue.id ~ '/delete' }}">X</a>
+				<a data-id="{{ issue.id }}" class="right issue_edit button secondary tiny" href="{{ urladm ~ '/issue/' ~ issue.id ~ '/copy/questionnaire/' ~ questionnaire.id }}">Duplicar</a>
+				<a data-id="{{ issue.id }}" class="right issue_edit button secondary tiny" href="{{ urladm ~ '/issue/' ~ issue.id ~ '/edit/questionnaire/' ~ questionnaire.id }}">Editar</a>
+				{# <a title="Descer" class="right button secondary tiny"href="{{ urladm ~ '/questionnaire/' ~ questionnaire.id ~ '/edit/issue/' ~ issue.id ~  '/order/down' }}">\/</a>
+				<a class="button disabled right tiny secondary" href="">{{ issue.order }}</a>
+				<a title="Subir" class="right button secondary tiny"href="{{ urladm ~ '/questionnaire/' ~ questionnaire.id ~ '/edit/issue/' ~ issue.id ~ '/order/up' }}">/\</a> #}
+			</ul>
+		</div>
+		{% endif %}
+	</div>
+	<hr style="margin-top:0" />
+{% endmacro %}
+
+{% macro issue_justification(issue, answer) %}
+	{% if issue.accepted_justification %}
+	<div>
+		<label> Justificar {% if issue.justification_required == 0 %}(Opcional){% else %}<span title="Obrigatória" style="color:red"><b>*</b></span>{% endif %}</label>
+			<textarea {% if answer %}disabled{% endif %} placeholder="Justificar" name="{{ issue.type }}-{{ issue.id }}-justification" {% if issue.justification_required %}required="1"{% endif %}>{{ answer.justification }}</textarea>
+	</div>
+	{% endif %}
+{% endmacro %}
+
+{% macro answer_correct(answer) %}
+	{% if answer %}
+	<hr />
+	<div class="row">
+		<div class="large-5 columns">
+			
+			{# Nota de {{ answer.issue.min_note }} a {{ answer.issue.max_note }} <span class="label display_note success radius">{{ answer.issue.min_note }}</span> #}
+			{# <input step="0.25" class="large-12 range_note" value="{{ answer.issue.min_note }}" name="correct-{{ answer.id }}-note" type="range" max="{{ answer.issue.max_note }}"  min="{{ answer.issue.min_note }}"> #}
+			Nota:<br />
+			{% for i in 1..10 %}
+			    <label class="label radius" style="padding-top:7px; padding:6px 2px; background:#e1e1e1; color:#000">
+			    	
+			    	<input style="margin:0"
+			    		value="{{ i }}" 
+			    		{% if i == 0 %}checked{% endif %}
+			    		type="radio" 
+						class="range_note" 
+			    		name="correct-{{ answer.id }}-note"> 
+			    		<strong>{{ i }}</strong>
+			    </label>
+			    {% if i == 5 %}{% endif %}
+			{% endfor %}
+
+		</div>
+		<div class="large-7 columns">
+			<textarea name="correct-{{ answer.id }}-justification" cols="30" rows="10" placeholder="Comentar nota (Opcional)"></textarea>
+		</div>
+	</div>
+	{% endif %}
+{% endmacro %}
+
+{% macro issue_open(number, issue, urladm, edit, questionnaire, answer, evaluate = true) %}
+
+	{% from _self import issue_header, answer_correct %}
+
+	<div id="issue-{{ issue.id }}" class="panel small">
+
+		{{ issue_header(issue, number, urladm, edit, questionnaire) }}
+
+		<div><textarea 
+			{% if issue.required %}required="1"{% endif %} 
+			{% if answer %}disabled{% endif %} 
+			placeholder="Resposta" 
+			name="open-{{ issue.id }}-answer">{% if answer %}{{ answer.answer }}{% endif %}</textarea></div>
+		{% if evaluate %}
+		{{ answer_correct(answer) }}
+		{% endif %}
+	</div>
+{% endmacro %}
+
+{% macro issue_boolean(number, issue, urladm, edit, questionnaire, answer, evaluate = true) %}
+
+	{% from _self import issue_header, issue_justification, answer_correct %}
+
+	<div id="issue-{{ issue.id }}" class="panel small">
+
+		{{ issue_header(issue, number, urladm, edit, questionnaire) }}
+
+		<div>
+			<label>
+				<input type="radio"
+				{% if issue.required %}required="1"{% endif %} 
+				{% if answer %}disabled{% endif %} 
+				{% if answer.answer %}checked{% endif %} 
+				name="{{ issue.type }}-{{ issue.id }}-answer" 
+				value="1"> 
+				<span style="color:green">Verdadeiro</span>
+			</label>
+			
+			<label>
+			<input type="radio" 
+				{% if issue.required %}required="1"{% endif %} 
+				{% if answer %}disabled{% endif %} 
+				{% if answer and not answer.answer %}checked{% endif %} 
+				name="{{ issue.type }}-{{ issue.id }}-answer" 
+				value="0"> 
+				<span style="color:red">Falso</span>
+			</label>
+		</div>
+		{{ issue_justification(issue, answer) }} 
+		{% if evaluate %}
+		{{ answer_correct(answer) }}
+		{% endif %}
+	</div>
+
+{% endmacro %}
+
+{% macro issue_only_choice(number, issue, urladm, edit, questionnaire, answer, evaluate = true) %}
+
+	{% from _self import issue_header, issue_justification, answer_correct %}
+
+	<div id="issue-{{ issue.id }}" class="panel small">
+
+		{{ issue_header(issue, number, urladm, edit, questionnaire) }}
+
+		{% if issue.alternatives is defined %}
+		<div>
+			{% for alternative in issue.alternatives %}
+			<label>
+				<input 
+					{% if issue.required %}required="1"{% endif %} 
+					{% if answer %}disabled{% endif %} 
+					type="radio" 
+					name="{{ issue.type }}-{{ issue.id }}-answer" 
+					{% if alternative.id == answer.answer %}checked{% endif %} 
+					value="{{ alternative.id }}"> 
+
+					{{ alternative.name }}
+			</label>	
+			{% endfor %}
+		</div>
+		{% endif %}
+		{{ issue_justification(issue, answer) }} 
+		{% if evaluate %}
+		{{ answer_correct(answer) }}
+		{% endif %}
+	</div>
+{% endmacro %}
+
+{% macro issue_multiple_choice(number, issue, urladm, edit, questionnaire, answer, evaluate = true) %}
+
+	{% from _self import issue_header, issue_justification, answer_correct %}
+
+	<div id="issue-{{ issue.id }}" class="panel small">
+
+		{{ issue_header(issue, number, urladm, edit, questionnaire) }}
+
+		{% if issue.alternatives is defined %}
+		<div>
+			
+			{% if issue.min_choice %}
+			<p><b>Nota¹:</b> Mínima Requerida {{ issue.min_choice }}</p>
+			{% endif %}
+
+			{% if issue.max_choice %}
+			<p><b>Nota²:</b> Máxima Permitida {{ issue.max_choice }}</p>
+			{% endif %}
+			
+				{% for alternative in issue.alternatives %}
+				<label>
+					<input 
+						{% if issue.required %}required="1"{% endif %} 
+						class="multiple_choice_{{ issue.id }}" 
+						{% if answer %}disabled{% endif %} 
+						type="checkbox" 
+						name="{{ issue.type }}-{{ issue.id }}-answer[]" 
+						{% if alternative.id in answer.answer %}checked{% endif %} 
+						value="{{ alternative.id }}"> 
+
+						{{ alternative.name }}
+				</label>
+				{% endfor %}
+
+			<script>
+			
+			$('.multiple_choice_{{ issue.id }}').on('click', function() {
+				var choices_check = $('input[name="{{ issue.type }}-{{ issue.id }}-answer[]"]:checked');
+				var choices = $('input[name="{{ issue.type }}-{{ issue.id }}-answer[]"]');
+
+				{% if issue.min_choice %}
+					if(choices_check.length >= {{ issue.min_choice }}) {
+				        choices.removeAttr('required');
+				    } else {
+				        choices.attr('required', 'required');
+				    }
+				{% endif %}
+
+				{% if issue.max_choice %}
+				    if(choices_check.length > {{ issue.max_choice }}) {
+				     	 $(this).attr('checked', false);
+				    }
+			    {% endif %}
+			});
+			</script>
+		</div>
+		{% endif %}
+		{{ issue_justification(issue, answer) }}
+		{% if evaluate %}
+		{{ answer_correct(answer) }}
+		{% endif %}
+	</div>
+{% endmacro %}
+
+{% macro issue_0_10(number, issue, urladm, edit, questionnaire, answer, evaluate = true) %}
+
+	{% from _self import issue_header, issue_justification, answer_correct %}
+
+	<div id="issue-{{ issue.id }}" class="panel small">
+
+		{{ issue_header(issue, number, urladm, edit, questionnaire) }}
+		<div class="row" style="margin-bottom:20px;">
+			<div class="large-12 columns">
+				{# <div style="padding:4px 0" class="label success radius large-1 columns display-{{ issue.id }}">{{ answer.answer|default(issue.min_note) }}</div> #}
+				<div class="large-11 columns">
+
+					{# <input 
+						{% if issue.required %}required="1"{% endif %}
+						type="range" 
+						{# step="0.25"
+						{% if answer %}disabled{% endif %} 
+						min="{{ issue.min_note }}" 
+						data-issue="{{ issue.id }}"
+						max="{{ issue.max_note }}"
+						value="{{ answer.answer|default(issue.min_note) }}" 
+						class="issue_0_10_radio large-12 range_010" 
+						name="{{ issue.type }}-{{ issue.id }}-answer"> #}
+
+					{% for i in issue.min_note..issue.max_note %}
+					    <label class="label radius" style="padding-top:7px; background:#e1e1e1; color:#000">
+					    	
+					    	<input 
+					    		{% if issue.required %}required="1"{% endif %} 
+					    		{% if answer.answer == i %}checked{% endif %} 
+					    		value="{{ i }}" 
+					    		{% if answer %}disabled{% endif %} 
+					    		type="radio" 
+								class="issue_0_10_radio" 
+					    		name="{{ issue.type }}-{{ issue.id }}-answer"> 
+					    		<strong>{{ i }}</strong>
+					    </label>
+					{% endfor %}
+				</div>
+			</div>
+		</div>
+
+		{{ issue_justification(issue, answer) }}
+		{% if evaluate %}
+		{{ answer_correct(answer) }}
+		{% endif %}
+	</div>
+{% endmacro %}
+
+{% macro issue_scale(number, issue, urladm, edit, questionnaire, answer, evaluate = true) %}
+
+	{% from _self import issue_header, issue_justification, answer_correct %}
+
+	<div id="issue-{{ issue.id }}" class="panel small">
+
+		{{ issue_header(issue, number, urladm, edit, questionnaire) }}
+
+		<div class="row">
+			<div class="large-12 columns">
+			{% for option in issue.scale.options %}
+				<label><input 
+						{% if issue.required %}required="1"{% endif %} 
+						{% if answer %}disabled{% endif %} 
+						type="radio" 
+						{% if issue.required %}required="1"{% endif %} 
+						{% if answer.answer == option.row.id %}checked{% endif %} 
+						value="{{ option.row.id }}" 
+						name="{{ issue.type }}-{{ issue.id }}-answer" > 
+
+						{{ option.row.name }}</label>
+			{% endfor %}
+			</div>
+		</div>
+		{{ issue_justification(issue, answer) }}
+		{% if evaluate %}
+		{{ answer_correct(answer) }}
+		{% endif %}
+	</div>
+{% endmacro %}

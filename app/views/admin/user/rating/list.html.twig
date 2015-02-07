@@ -1,0 +1,103 @@
+{% extends 'admin/user/rating/layout.html.twig' %}
+
+{% block breadcrumbs %}
+	{{ parent() }}
+	<a class="current" href="#">{{ title }}</a>
+	<a href="{{ urladm ~ '/user/valued/charge' }}">Cargos</a>
+	<a href="javascript:history.back();">voltar</a>
+{% endblock %}
+
+{% block content_rating %}
+	
+	{% if response %}
+		{{ blocks.alert(response.text, response.class) }}
+	{% endif %}
+
+	{# <div class="row">
+		<form action="{{ urladm ~ '/user/valued/rating/new' }}" class="custom" method="post">
+			<input type="hidden" name="{{ csrf_key }}" value="{{ csrf_token }}">
+			<div class="large-6 columns">
+				<div class="row collapse">
+					<small><b>(MULTIPLO)</b> SEPARE CADA CLASSIFICAÇÃO POR VÍRGULA</small>
+          			<div class="large-10 columns">
+	            		<input type="text" name="name">
+	          		</div>
+	          		<div class="large-2 columns">
+	            		<span class="postfix">
+	            			<input type="submit" class="button alert prefix" value="Salvar">
+	            		</span>
+	          		</div>
+          		</div>
+        	</div>
+		</form>
+	</div>
+
+	<div class="row">
+		<div class="large-12 columns">
+		<table class="large-12 columns">
+			<tbody>
+				{% for rating in ratings %}
+				<tr id="rating-{{ rating.id }}">
+					<td width="20">{{ rating.id }}</td>
+					<td><strong>{{ rating.name }}</strong></td>
+					<td width="60"><a data-confirm="1" class="rating_delete" href="{{ urladm ~ '/user/valued/rating/' ~ rating.id ~ '/delete' }}">Apagar</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+		</div>
+	</div> #}
+
+	<div class="row">
+		<form action="{{ urladm ~ '/user/valued/rating/new' }}" class="custom" method="post">
+			<input type="hidden" name="{{ csrf_key }}" value="{{ csrf_token }}">
+			<div class="large-6 columns">
+				<div class="row collapse">
+					
+          			<label for="name">Separe cada classificação por "," Virgula</label>
+          			<div class="large-10 columns">
+	            		<input type="text" name="name">
+	          		</div>
+	          		<div class="large-2 columns">
+	            		<span class="postfix">
+	            			<input type="submit" class="button alert prefix" value="Finalizar">
+	            		</span>
+	          		</div>
+          		</div>
+        	</div>
+		</form>
+	</div>
+
+	<div class="row">
+		<div class="large-12 columns">
+		<table class="large-12 columns">
+			<thead>
+				<tr>
+					<td><small><b>NOME</b></small></td>
+					<td><small><b>USUÁRIOS</b></small></td>
+					<td><small><b>AÇÕES</b></small></td>
+				</tr>
+			</thead>
+			<tbody>
+				{% for rating in ratings %}
+				<tr id="rating-{{ rating.id }}">
+					<td width="200" class="name"><strong>{{ rating.name }}</strong></td>
+					<td>
+						<span style="float:left; margin-top:-1px" class="label success radius">{{ rating.user_ratings|length }}</span>&nbsp;
+						{% for user_rating in rating.user_ratings %}
+						    <a class="glyphicon glyphicon-user" title="{{ user_rating.user.name }}" href="{{ urladm ~ '/user/' ~ user_rating.user_id }}"></a>
+						{% endfor %}
+					</td>
+
+					<td width="30">
+						<a title="Editar" class="glyphicon glyphicon-edit" href="{{ urladm ~ '/user/valued/rating/' ~ rating.id ~ '/edit' }}"></a>
+						<a title="Apagar" data-confirm="1" class="glyphicon glyphicon-remove rating_delete" href="{{ urladm ~ '/user/valued/rating/' ~ rating.id ~ '/delete' }}">
+					</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+		</div>
+	</div> 
+
+{% endblock %}

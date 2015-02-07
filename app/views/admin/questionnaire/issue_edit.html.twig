@@ -1,0 +1,194 @@
+{% extends 'admin/questionnaire/layout.html.twig' %}
+
+{% block breadcrumbs %}
+	{{ parent() }}
+	<a class="current" href="#">{{ questionnaire.name }}</a>
+	<a class="current" href="#">Perguntas</a>
+	<a href="{{ urladm ~ '/questionnaire/' ~ questionnaire.id }}">Lista</a>
+	<a href="javascript:history.back();">voltar</a>
+{% endblock %}
+
+{% block group %}
+
+<div class="row">
+	<div class="large-3 columns">
+		<ul class="text-right">
+			<li><a class="button alert small" target="_blank" href="{{ urladm ~ '/questionnaire/' ~ questionnaire.id ~ '/show' }}">Visualizar Questionário</a></li>
+			<li><hr /></li>
+			<li>
+				<form method="post" action="{{ urladm ~ '/questionnaire/' ~ questionnaire.id ~ '/edit/name' }}">
+					<input type="hidden" name="{{ csrf_key }}" value="{{ csrf_token }}">
+					<label for="name_private">Título (Administração)</label>
+					<input type="text" name="name_private" value="{{ questionnaire.name_private }}">
+					<label for="name">Título (E-Mail)</label>
+					<input type="text" name="name" value="{{ questionnaire.name }}">
+					<input type="submit" value="Finalizar" class="button alert small">
+				</form>
+			</li>
+		</ul>
+	</div>
+	
+	<div class="large-9 columns">
+
+		<h5>Página 1</h5>
+
+		{% if response  %}
+			{{ blocks.alert(response.text, response.class) }}
+		{% endif %}
+
+		<div class="row">
+			<div class="large-12 columns text-center">
+				<a class="button small secondary" data-order="prepend" class="add_issue" data-reveal-id="add_issue" href="{{ urladm ~ '/issue/new' }}">Adicionar Perguntas</a>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="large-12 columns">
+			{% if questionnaire_issues %}
+				{% set number = 1 %}
+				{% for issue in questionnaire_issues %}
+					{% if issue.type == 'open' %} {{ blocks.issue_open(number, issue, urladm, true, questionnaire) }} {% endif %}
+					{% if issue.type == 'boolean' %} {{ blocks.issue_boolean(number, issue, urladm, true, questionnaire) }} {% endif %}
+					{% if issue.type == 'only_choice' %} {{ blocks.issue_only_choice(number, issue, urladm, true, questionnaire) }} {% endif %}
+					{% if issue.type == 'multiple_choice' %} {{ blocks.issue_multiple_choice(number, issue, urladm, true, questionnaire) }} {% endif %}
+					{% if issue.type in ['0_10', '0-10'] %} {{ blocks.issue_0_10(number, issue, urladm, true, questionnaire) }} {% endif %}
+					{% if issue.type == 'scale' %} {{ blocks.issue_scale(number, issue, urladm, true, questionnaire) }} {% endif %}
+					{% set number = number + 1 %}
+				{% endfor %}
+
+			{% else %}
+			<span class="alert-box">Questionário Vazio</span>
+			{% endif %}
+			</div>
+		</div>
+		<div class="reveal-modal-bg" style="display: none"></div>
+
+		<div class="row">
+			<div class="large-12 columns text-center">
+				<a class="button small secondary" data-order="append" class="add_issue" data-reveal-id="add_issue" href="{{ urladm ~ '/issue/new' }}">Adicionar Perguntas</a>
+			</div>
+		</div>
+
+		<div id="add_issue" class="medium reveal-modal">
+	  		<h4>Adicionar Perguntas</h4>
+			<form method="post" action="{{ urladm ~ '/questionnaire/' ~ questionnaire.id ~ '/edit/issue' }}">
+				<input type="hidden" name="{{ csrf_key }}" value="{{ csrf_token }}">
+				
+				<div class="">
+					<div>
+						<label>
+							<input {% if issues %}checked{% else %}disabled{% endif %} type="radio" name="action" id="issue_select" value="select"> Selecionar Pergunta
+						</label>
+						<div id="select_issues" class="{% if not issues %}hide{% endif %}">
+							<select name="issue_id">
+								<option value="">-- Selecione uma Pergunta --</option>
+								{% for issue in issues %}
+								    <option value="{{ issue.id }}">{{ issue.enunciation }}</option>
+								{% endfor %}
+							</select>
+						</div>
+					</div>
+
+					<div>
+						<label>
+							<input {% if not issues %}checked{% endif %} type="radio" name="action" id="issue_new" value="new"> Criar Pergunta
+						</label>
+						<div id="issue_types" class="{% if issues %}hide{% endif %}">
+							<ul>
+								{% for type, label in types %}
+								    <li><a href="{{ urladm ~ '/issue/new/' ~ type ~ '/questionnaire/' ~ questionnaire.id }}">{{ label }}</a></li>
+								{% endfor %}
+							</ul>
+						</div>
+					</div>
+
+				</div>
+
+				<hr />
+
+				<input class="button alert small" style="margin:0" type="submit" value="save" name="Finalizar">
+
+			</form>
+
+	  		{# <h5>Perguntas</h5>
+	  		
+			<form class="custom" method="post" id="form">
+
+				<input type="hidden" name="{{ csrf_key }}" value="{{ csrf_token }}">
+				<input type="hidden" name="questionnaire_id" value="{{ questionnaire.id }}">
+				<textarea name="enunciation" id="enunciation" required="1" placeholder="Pergunta"></textarea>
+
+				{{ blocks.select_issue_types(issue_types) }}
+
+				<div class="content"></div>
+
+				<hr />
+
+				{{ blocks.issue_options(issue) }}
+
+				<input type="hidden" name="order" id="order">
+
+				<hr />
+				<input type="submit" class="button success tiny" value="Salvar">
+			</form> #}
+
+	  		<a class="close-reveal-modal">&#215;</a>
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block js_bottom %}
+	{{ parent() }}
+	<script>
+
+	$(function () {
+		
+		
+		// $('.issue_delete').on('click', function (e) {
+		// 	e.preventDefault();
+		// 	var that = $(this)
+		// 		issue_id = that.attr('data-id');
+		// 	$.get("{{ urladm ~ '/issue/' }}" + issue_id + '/delete', function (response) {
+		// 		if (response) {
+		// 			$('#issue-' + issue_id).remove();
+		// 		};
+		// 	});
+		// });
+		$('#justification_required').on('change', function () {
+			var that = $(this);
+			if (that.is(':checked')) {
+				$('#accepted_justification').attr('checked', true);
+			};
+		});
+		$('.add_issue').on('click', function () {
+			var that = $(this);
+			$('#order').val(that.attr('data-order'));
+		});
+		$('#issue_type').on('change', function () {
+
+			var that = $(this),
+				val = that.val();
+			
+			if (val == 'open') {
+				$('#justify').hide();
+			} else {
+				$('#justify').show();
+			};
+
+			// $('#form').attr('action', "{{ urladm ~ '/issue/new/' }}" + val);
+			//$('#content_issue').load("{{ urladm ~ '/issue/new/' }}" + val);
+		});
+
+		$('#issue_new').on('change', function () {			
+			$('#issue_types').show();
+			$('#select_issues').hide();
+		});
+
+		$('#issue_select').on('change', function () {			
+			$('#issue_types').hide();
+			$('#select_issues').show();
+		});
+	});
+	</script>
+{% endblock %}

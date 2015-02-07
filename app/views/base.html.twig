@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        {% block metas %}
+            <meta charset="utf-8">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+            <meta name="viewport" content="width=device-width">
+        {% endblock %}
+
+        <title>{% block title %}Avaliação{% endblock %}</title>
+
+        {% block css %}
+            <link href="{{ base }}static/css/screen.css" rel="stylesheet">
+            <link href="{{ base }}static/css/foundation.min.css" rel="stylesheet">
+            <link rel="stylesheet" href="{{ base }}static/css/print.css" media="print">
+            <style>
+            .button.alert {
+                background-color: #c60f13;
+                border-color: #c60f13;
+            }
+            button.alert:hover, button.alert:focus, .button.alert:hover, .button.alert:focus {
+                background-color: #f00; 
+            }
+            .glyphicon-remove{
+                color: #900;
+            }
+            .glyphicon-edit {
+                color: #667;
+            }
+            .glyphicon-new-window {
+                color: #000;
+            }
+            .button.secondary{
+                background: #ccc;
+                border-color: #999; 
+            }
+            table td{
+                border-left: 1px solid #e0e0e0;
+            }
+            tbody tr{
+                border: 1px solid transparent;
+            }
+            tbody tr:nth-child(2n+1) {
+                background: #e0e0e0;
+            }
+            tbody tr:hover{
+                border-color: #ccc;
+            }
+            td small {
+                font-size: 10px;
+            }
+            #content{
+                padding-bottom: 40px;
+            }
+            #footer {
+                position: fixed;
+                bottom: 0;
+                width: 100%;
+                border-top: 1px solid #999;
+                margin-bottom: -9px;
+                padding-top: 4px;
+                background: #e2e2e2;
+                z-index: 99;
+            }
+
+            .alert-box p{
+                margin: 0;
+                font-weight: bold;
+            }
+
+            </style>
+            <style>
+            @font-face {
+                font-family: 'Glyphicons Halflings';
+                src: url('{{ base }}static/fonts/glyphicons-halflings-regular.eot');
+
+                src: url('{{ base }}static/fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), 
+                     url('{{ base }}static/fonts/glyphicons-halflings-regular.woff') format('woff'), 
+                     url('{{ base }}static/fonts/glyphicons-halflings-regular.ttf') format('truetype'), 
+                     url('{{ base }}static/fonts/glyphicons-halflings-regular.svg#glyphicons-halflingsregular') format('svg');
+            }
+            </style>
+            <link href="{{ base }}static/css/glyphicon.css" rel="stylesheet">
+        {% endblock %}
+
+        <!--[if IE]>
+        <link href="{{ base }}static/css/ie.css" media="screen, projection" rel="stylesheet" type="text/css" />
+        <![endif]-->
+
+        <!--[if lt IE 9]>
+          <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.6.2/html5shiv.js"></script>
+          <script src="//s3.amazonaws.com/nwapi/nwmatcher/nwmatcher-1.2.5-min.js"></script>
+          <script src="//html5base.googlecode.com/svn-history/r38/trunk/js/selectivizr-1.0.3b.js"></script>
+          <script src="//cdnjs.cloudflare.com/ajax/libs/respond.js/1.1.0/respond.min.js"></script>
+        <![endif]-->
+
+        {% block js %}
+            <script src="{{ base }}static/js/jquery.min.js"></script>
+            {# <script data-main="{{ base }}static/js/main" src="{{ base }}static/js/require.js"></script> #}
+            <script src="{{ base }}static/js/foundation.min.js"></script>
+        {% endblock %}
+    </head>
+
+    <body>
+        <!--[if lt IE 7]>
+            <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+        <![endif]-->
+        
+        <nav class="top-bar">
+            <ul class="title-area">
+                <li class="name">
+                    <h1><a title="{{ site_name }}" href="{{ urladm }}"><img src="{{ site_src_logo }}" width="160" alt=""></a></h1>
+                </li>
+            </ul>
+            <li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
+
+            <section class="top-bar-section">
+            <!-- Left Nav Section -->
+            <ul class="left">
+                {% block nav_left %}{% endblock %}
+            </ul>
+
+            <ul class="right">
+                {% block nav_right %}{% endblock %}
+            </ul>
+        </nav>
+
+        {% block body %}
+            <p>Hello world! This is HTML5 Boilerplate.</p>
+        {% endblock %}
+
+        <div id="footer">
+            <div class="text-center">
+                <p style="font-size:11px">&copy; Copyright 2014 <img src="{{ site_src_logo }}" width="120" alt=""> <b>AVALIAÇÃO</b> - Todos os Direitos Reservados.</p>
+            </div>
+        </div>
+
+        {% block js_bottom %}
+
+        <script src="{{ base }}static/js/webforms2-p.js"></script>
+
+        <script>
+        var initSlider = function() {             
+            $('input[type=range]').each(function() {  
+                var $input = $(this);  
+                var $slider = $('<div id="' + $input.attr('id') + '" class="' + $input.attr('class') + '"></div>');  
+                var step = $input.attr('step');  
+                  
+                $input.after($slider).hide();  
+                                  
+                $slider.slider({  
+                    min: $input.attr('min'),  
+                    max: $input.attr('max'),  
+                    step: $input.attr('step'),  
+                    change: function(e, ui) {  
+                        $(this).val(ui.value);  
+                    }  
+                });  
+            });  
+        };
+
+        if( !Modernizr.inputtypes.range ){  
+            $(document).ready( initSlider );  
+        }; 
+
+        </script>
+
+        <script>
+            document.write('<script src=' + ('__proto__' in {} ? '{{ base }}static/js/zepto' : '{{ base }}static/js/jquery') + '.js><\/script>');
+            $(document).foundation();
+
+            $(function () {
+                $('#range').on('change', function () {
+                    $('#value_range').val($(this).val().replace('.', ','));
+                });
+            });
+
+            setTimeout(function() {
+                $('.alert-box').fadeOut();
+            }, 7000);
+
+            $(function () {
+
+                $('#required').on('change', function () {
+
+                });
+
+                $('#accepted_justification').on('change', function () {
+                    
+                });
+
+                $('#justification_required').on('change', function () {
+                    
+                    var check = $(this).attr('checked');
+
+                    $('#accepted_justification').attr('checked', check);
+                    $('#required').attr('checked', check);
+
+                });
+            });
+        </script>
+        
+        <script src="{{ base }}static/js/confirm.js"></script>
+        <script>
+        function focusCampo(id){
+            var inputField = document.getElementById(id);
+            if (inputField != null && inputField.value.length != 0){
+                if (inputField.createTextRange){
+                    var FieldRange = inputField.createTextRange();
+                    FieldRange.moveStart('character',inputField.value.length);
+                    FieldRange.collapse();
+                    FieldRange.select();
+                }else if (inputField.selectionStart || inputField.selectionStart == '0') {
+                    var elemLen = inputField.value.length;
+                    inputField.selectionStart = elemLen;
+                    inputField.selectionEnd = elemLen;
+                    inputField.focus();
+                }
+            }else{
+                inputField.focus();
+            }
+        }
+        </script>
+
+        <script>
+        $('.range_010').on('change', function () {
+            $('.display-' + $(this).attr('data-issue')).html($(this).val().replace('.', ','));
+        });
+        </script>
+
+        <script type="text/javascript"> 
+        var $buoop = { 
+        };
+        $buoop.ol = window.onload; 
+        window.onload=function(){ 
+         try {if ($buoop.ol) $buoop.ol();}catch (e) {} 
+         var e = document.createElement("script"); 
+         e.setAttribute("type", "text/javascript"); 
+         e.setAttribute("src", "http://browser-update.org/update.js"); 
+         document.body.appendChild(e); 
+        }
+        </script>
+        
+        
+        {% endblock %}
+    </body>
+</html>

@@ -1,0 +1,75 @@
+{% extends 'admin/evaluation/layout.html.twig' %}
+
+{% block breadcrumbs %}
+	{{ parent() }}
+	<a class="current" href="#">{{ evaluation.name }}</a>
+	<a class="current" href="#">{{ title }}</a>
+	<a href="{{ urladm ~ '/evaluation/' ~ evaluation.id ~ '/send' }}">Enviar</a>
+	<a href="javascript:history.back();">voltar</a>
+{% endblock %}
+
+{% block group %}
+	
+	{% if response %}
+		{{ blocks.alert(response.text, response.class) }}
+	{% endif %}
+
+	<div class="row">
+		<div class="large-12 columns">
+	{% if evaluation_sendings %}
+		<table class="large-12 columns">
+			<thead>
+				<tr>
+					<td><small><b>NOME</b></small></td>
+					<td><small><b>ENVIADA EM</b></small></td>
+					<td><small><b>PARA</b></small></td>
+					<td width="130"><small><b>VISTO POR</b></small></td>
+					<td width="130"><small><b>RESPONDIDO POR</b></small></td>
+					<td width="130"><small><b>CORREÇÃO</b></small></td>
+					<td width="20"><small><b>AÇÕES</b></small></td>
+				</tr>
+			</thead>
+			<tbody>
+				{% set i = 1 %}
+				{% for evaluation_sending in evaluation_sendings %}
+					{% set all = evaluation_sending.sendings|length %}
+
+					<tr id="evaluation_sending-{{ evaluation_sending.id }}">
+						<td><strong><a href="{{ urladm ~ '/sending/' ~ evaluation_sending.id }}">{{ 'Envio ' ~ i }}</a></strong></td>
+						<td>{{ evaluation_sending.created_at|date('d M Y') }}</td>
+						<td class="text-center">{{ evaluation_sending.sendings|length }}</td>
+						
+						{% for status, count in evaluation_sending.countStatus %}
+						{% set percent = all > 0 ? (count / all) * 100 : 0 %}
+						<td>
+							<div title="{{ count ~ ' de ' ~ all }}" style="margin:0;" class="progress 
+								{% if percent == 100 %}success{% endif %} 
+								{% if percent < 25 %}alert{% endif %} 
+								{% if percent < 50 %}alert{% endif %}">
+								<span class="meter" style="width: {{ percent }}%">{{ percent|slice(0, 5) }}%</span>
+							</div>
+						</td>
+						{% endfor %}
+						<td>
+							<a title="Respostas" class="glyphicon glyphicon-align-justify" href="{{ urladm ~ '/answer/evaluation/' ~ evaluation.id ~ '/sending/' ~ evaluation_sending.id }}"></a>
+							<a title="Apagar" data-confirm="1" class="glyphicon glyphicon-remove evaluation_sending_delete " href="{{ urladm ~ '/evaluation/sending/' ~ evaluation_sending.id ~ '/delete' }}"></a>
+						</td>
+					</tr>
+					{% set i = i + 1 %}
+				{% endfor %}
+			</tbody>
+		</table>
+	{% else %}
+		<div class="panel text-center">
+			{% if evaluation.getStatus in ['Aberta'] %}
+			<strong>ESTA AVALIAÇÃO AINDA NÃO FOI ENVIADA!</strong>
+			<a href="{{ urladm ~ '/evaluation/' ~ evaluation.id ~ '/send' }}" class="button alert small">Finalizar</a>
+			{% else %}
+			<strong>AVALIAÇÃO {{ evaluation.getStatus|upper }}</strong>
+			{% endif %}
+		</div>
+	{% endif %}
+		</div>
+	</div>
+
+{% endblock %}

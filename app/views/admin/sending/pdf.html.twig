@@ -1,0 +1,62 @@
+{% extends 'admin/sending/layout.html.twig' %}
+
+{% block breadcrumbs %}
+	{{ parent() }}
+	<a class="current" href="#">{{ title }}</a>
+	<a href="javascript:history.back();">voltar</a>
+{% endblock %}
+
+{% block group %}
+	
+	{% if response %}
+		{{ blocks.alert(response.text, response.class) }}
+	{% endif %}
+
+	<div class="row">
+		<div class="large-6 columns">
+			<label>Alterar Avaliador</label>
+			<select id="pdf_chenge_evaluator" name="evaluator_id" >
+				{% for evaluator in data.evaluators %}
+				    <option {% if evaluator_id == evaluator.id %}selected{% endif %} value="{{ evaluator.id }}">{{ evaluator.name }}</option>
+				{% endfor %}
+			</select>
+		</div>
+		{% if pdf %}
+		<div class="large-6 columns">
+			<label for="is_available">Disponibilizar para Download</label>
+
+			<select id="is_available" id="is_available">
+				<option {% if pdf.is_available == 0 %}selected{% endif %} value="0">Oculto</option>
+				<option {% if pdf.is_available == 1 %}selected{% endif %} value="1">Disponível</option>
+			</select>
+		</div>
+		{% endif %}
+	</div>
+
+	<div class="row">
+		<div class="large-12 columns">
+			<div class="panel">
+				{% include 'admin/sending/pdf_print.html.twig' %}
+			</div>
+		</div>
+	</div>
+
+{% endblock %}
+
+{% block js_bottom %}
+	{{ parent() }}
+	<script>
+		$('#pdf_chenge_evaluator').on('change', function () {
+			window.location.href = "{{ urladm ~ '/sending/sending/' ~ sending.id ~ '/pdf/evaluator/' }}" + $(this).val();
+		});
+		$('#is_available').on('change', function () {
+			$.post("{{ urladm ~ '/sending/sending/' ~ sending.id ~ '/pdf/available' }}", { 
+				available: $(this).val(),
+				evaluator_id: "{{ evaluator_id }}",
+				"{{ csrf_key }}": "{{ csrf_token }}"
+			}, function () {
+				window.location.reload();
+			});			
+		});
+	</script>
+{% endblock %}

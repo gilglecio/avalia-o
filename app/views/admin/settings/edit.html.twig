@@ -1,0 +1,66 @@
+{% extends 'admin/settings/layout.html.twig' %}
+
+{% block breadcrumbs %}
+	{{ parent() }}
+	<a class="current" href="#">{{ title }}</a>
+	<a href="javascript:history.back();">voltar</a>
+{% endblock %}
+
+{% block group %}
+
+	{% if response %}
+		{{ blocks.alert(response.text, response.class) }}
+	{% endif %}
+
+	<form class="" action="{{ urladm ~ '/settings' }}" method="post">
+
+		<input type="hidden" name="{{ csrf_key }}" value="{{ csrf_token }}">
+
+		<div class="row">
+			<div class="large-6 columns">
+				<label for="src_logo">
+					Nome do Sistema
+					<input type="text" name="site_name" value="{{ site_name }}">
+				</label>
+
+				<label for="src_logo">
+					E-Mail padrão
+					<input type="text" name="site_email" value="{{ site_email }}">
+				</label>
+
+				<label for="src_logo">
+					Url completa da Logomarca
+					<input type="text" name="src_logo" value="{{ site_src_logo }}">
+				</label>
+
+				<label for="src_logo">
+					Sobre o Sistema
+					<textarea name="site_description">{{ site_description }}</textarea>
+				</label>
+			</div>
+		</div>
+
+		<div class="row">
+  			<div class="large-10 columns">
+    			<input class="small button alert" type="submit" value="Finalizar">
+    			<a class="button small secondary" href="javascript:history.back();">Cancelar</a>
+    			<a class="button small secondary" href="{{ urladm ~ '/settings/change_password' }}">Alterar Minha Senha de Acesso</a>
+			</div>
+		</div>
+	</form>
+{% endblock %}
+
+{% block js_bottom %}
+	{{ parent() }}
+
+	<script>
+	$(function () {
+
+		$('input[name="action"]').on('change', function () {
+			var that = $(this);
+			$('.content').hide();
+			that.parent('label').parent('div').children('.content').show();
+		});
+	});
+	</script>
+{% endblock %}

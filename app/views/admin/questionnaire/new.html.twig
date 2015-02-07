@@ -1,0 +1,80 @@
+{% extends 'admin/questionnaire/layout.html.twig' %}
+
+{% block breadcrumbs %}
+	{{ parent() }}
+	<a class="current" href="#">{{ title }}</a>
+	<a href="javascript:history.back();">voltar</a>
+{% endblock %}
+
+{% block group %}
+
+	{% if response %}
+		{{ blocks.alert(response.text, response.class) }}
+	{% endif %}
+
+	<form class="" action="{{ urladm ~ '/questionnaire/new' }}" method="post">
+
+		<input type="hidden" name="{{ csrf_key }}" value="{{ csrf_token }}">
+			
+			<div class="content_new panel">
+				<label><input type="radio" name="action" value="new" {% if copy == false %}checked{% endif %} > Criar um novo questionário</label>
+				<div class="row content {% if copy %}hide{% endif %}">
+					<div class="large-6 columns">
+						<input type="text" value="{{ value.name_new }}" name="name_new" placeholder="Título (E-Mail)">
+					</div> 
+					<div class="large-6 columns">
+						<input type="text" value="{{ value.name_new_private }}" name="name_new_private" placeholder="Título (Administração)">
+					</div>
+				</div>
+			</div>
+
+			<div class="content_copy panel">
+				<label><input type="radio" {% if questionnaires == {} %}disabled{% endif %} {% if copy %}checked{% endif %} name="action" value="copy"> Copiar um questionário existente</label>
+				<div class="content {% if copy == false %}hide{% endif %}">
+					<label>Copiar:</label>
+					<select name="questionnaire_id">
+						<option value="">- Selecione um questionário existente -</option>
+						{% for questionnaire in questionnaires %}
+						    <option {% if copy == questionnaire.id %}selected{% endif %} value="{{ questionnaire.id }}">{{ questionnaire.name }}</option>
+						{% endfor %}
+					</select>
+					<label>
+						Para:
+						<div class="row">
+							<div class="large-6 columns">
+								<input type="text" value="{{ value.name_copy }}" name="name_copy" placeholder="Título (E-Mail)">
+							</div>
+							<div class="large-6 columns">
+								<input type="text" value="{{ value.name_copy_private }}" name="name_copy_private" placeholder="Título (Administração)">
+							</div>
+						</div>
+					</label>
+				</div>
+			</div>
+			
+			{# <div class="content_model panel">
+				<label><input disabled type="radio" name="action" value="model"> Utilize um modelo de questionário de um especialista</label>
+			</div> #}
+
+		<div class="row">
+  			<div class="large-10 columns">
+    			<input class="small button alert" type="submit" value="Finalizar" name="Salvar">
+    			<a class="button small secondary" href="javascript:history.back();">Cancelar</a>
+			</div>
+		</div>
+	</form>
+{% endblock %}
+
+{% block js_bottom %}
+	{{ parent() }}
+
+	<script>
+	$(function () {
+		$('input[name="action"]').on('change', function () {
+			var that = $(this);
+			$('.content').hide();
+			that.parent('label').parent('div').children('.content').show();
+		});
+	});
+	</script>
+{% endblock %}

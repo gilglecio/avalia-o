@@ -1,0 +1,259 @@
+{% extends 'admin/evaluation/layout.html.twig' %}
+
+{% block breadcrumbs %}
+	{{ parent() }}
+	<a class="current" href="#">{{ title }}</a>
+	<a href="{{ urladm ~ '/evaluation/new/copy/' ~ evaluation.id }}">Duplicar</a>
+	<a href="javascript:history.back();">voltar</a>
+{% endblock %}
+
+{% block group %}
+
+	{% if response %}
+		{{ blocks.alert(response.text, response.class) }}
+	{% endif %}
+
+	<form class="" action="{{ urladm ~ '/evaluation/' ~ evaluation.id ~ '/edit' }}" method="post">
+
+		<input type="hidden" name="{{ csrf_key }}" value="{{ csrf_token }}">
+
+			<div class="row">
+				<div class="large-8 columns">
+					<label for="name">
+						<label for="name">Nome:</label>
+						<input required="1" type="text" name="name" value="{{ evaluation.name }}" placeholder="Nome da Avaliação">
+					</label>
+
+					<fieldset>
+						<legend>E-Mail</legend>
+						
+						<label for="subject">
+							<label for="mail_bcc">Bcc: <i>(Ex: joao@hotmail.com : João Paulo, maria@gmail.com : Maria Silva)</i></label>
+							<input id="Bcc" type="text" value="{{ evaluation.getMailBcc }}" name="mail_bcc" placeholder="Copia Oculta para">
+						</label>
+
+						<label for="subject">
+							<label for="subject">Assunto:</label>
+							<input type="text" name="subject" value="{{ evaluation.subject }}" placeholder="Assunto">
+						</label>
+
+						<label>
+							<label for="message_email">Mensagem</label>
+							<textarea style="min-height:200px" id="message_email" name="message_email" placeholder="Mensagem que irá no E-mail">{{ evaluation.message_email }}</textarea>
+							{{ blocks.tags }}
+						</label>
+					</fieldset>
+				</div>
+
+				<div class="large-4 columns">
+					<h4>Início</h4>
+					<div class="row">
+						<div class="large-8 columns">
+							<label for="name">
+								<label for="start_at_date">Data (DD/MM/YYYY)</label>
+								<input class="date" maxlength="10" type="text" value="{{ evaluation.start_at|date('dmY') }}" name="start_at_date">
+							</label>
+						</div>
+						<div class="large-4 hide columns">
+							<label for="name">
+								<label for="start_at_time">Horário</label>
+								<input class="time" maxlength="5" type="text" value="{{ evaluation.start_at|date('H:i') }}" name="start_at_time">
+							</label>
+						</div>
+					</div>
+
+					<h4>Término</h4>
+					<div class="row">
+						<div class="large-8 columns">
+							<label for="name">
+								<label for="end_at_date">Data (DD/MM/YYYY)</label>
+								<input type="text" maxlength="10" class="date" value="{{ evaluation.end_at|date('dmY') }}" name="end_at_date">
+							</label>
+						</div>
+						<div class="large-4 hide columns">
+							<label for="name">
+								<label for="end_at_time">Horário</label>
+								<input type="text" maxlength="5" class="time" value="{{ evaluation.end_at|date('H:i') }}" name="end_at_time">
+							</label>
+						</div>
+					</div>					
+				</div>
+			</div>
+
+		<div class="row">
+  			<div class="large-10 columns">
+    			<input class="small button alert" type="submit" name="finalize" value="Finalizar">
+    			<input class="small button alert" type="submit" name="save" value="Salvar">
+    			<a class="button small secondary" href="{{ urladm ~ '/evaluation' }}">Cancelar</a>
+			</div>
+		</div>
+	</form>
+
+	<fieldset>
+		<a name="bottom"></a>
+		<legend>Edição Assícrona</legend>
+		<div class="row">
+			
+			<div class="large-4 columns">
+				<p><strong>Questionários</strong></p>
+			{% if questionnaires %}
+			{% for questionnaire_id, questionnaire in questionnaires %}
+			    
+				<div class="switch small round" style="margin-bottom:5px">
+					<input id="{{ 'm' ~ questionnaire_id }}" title="{{ questionnaire.name_private ~ ' | ' ~ questionnaire.issues|length ~ ' Questão (es)' }}" class="check_questionnaire" type="radio" data-questionnaire="{{ questionnaire_id }}" data-action="rm" name="questionnaire_id-{{ questionnaire_id }}" checked value="{{ questionnaire_id }}">
+				  	<label for="{{ 'm' ~ questionnaire_id }}" onclick="">{{ questionnaire.name_private }}</label>
+					
+					<input id="{{ 'm' ~ questionnaire_id }}1" title="{{ questionnaire.name_private ~ ' | ' ~ questionnaire.issues|length ~ ' Questão (es)' }}" class="check_questionnaire" type="radio" data-questionnaire="{{ questionnaire_id }}" data-action="add" name="questionnaire_id-{{ questionnaire_id }}" {% if questionnaire.checked %}checked{% endif %} value="{{ questionnaire_id }}">
+				  	<label for="{{ 'm' ~ questionnaire_id }}1" onclick="">{{ questionnaire.name_private }}</label>
+
+				  	<span></span>
+				</div>
+			{% endfor %}
+			{% else %}
+			<a href="{{ urladm ~ '/questionnaire/new' }}" target="_blank" class="button tiny">Criar Questionário</a>
+			{% endif %}
+			</div>
+
+			<div class="large-4 columns">
+				<h6><a href="{{ urladm ~ '/group' }}">Grupos</a></h6>
+				<div class="">
+					<p><small>SEPARE POR VIRGULA</small>
+					<input type="text" name="new_group" class="new_group" placeholder="Adicionar Novos"></p>
+					<div class="group_list">
+					{% if groups %}
+						{% for group_id, group in groups %}
+	      				<div class="switch small round" style="margin-bottom:5px">
+							<input id="{{ 'm' ~ group_id }}" title="{{ group.name }}" class="check_group" type="radio" data-group="{{ group_id }}" data-action="rm" name="group_id-{{ group_id }}" checked value="{{ group_id }}">
+						  	<label for="{{ 'm' ~ group_id }}" onclick="">{{ group.name }}</label>
+							
+							<input id="{{ 'm' ~ group_id }}1" title="{{ group.name }}" class="check_group" type="radio" data-group="{{ group_id }}" data-action="add" name="group_id-{{ group_id }}" {% if group.checked %}checked{% endif %} value="{{ group_id }}">
+						  	<label for="{{ 'm' ~ group_id }}1" onclick="">{{ group.name }}</label>
+
+						  	<span></span>
+						</div>
+	      				{% endfor %}
+					{% endif %}
+					</div>
+				</div>
+			</div>
+
+			<div class="large-4 columns">
+				<p><strong>Avaliadores</strong></p>
+			{% if evaluators %}
+			{% for evaluator_id, evaluator in evaluators %}
+			    
+				<div class="switch small round" style="margin-bottom:5px">
+					<input id="{{ 'm' ~ evaluator_id }}" title="{{ evaluator.name }}" class="check_evaluator" type="radio" data-evaluator="{{ evaluator_id }}" data-action="rm" name="evaluator_id-{{ evaluator_id }}" checked value="{{ evaluator_id }}">
+				  	<label for="{{ 'm' ~ evaluator_id }}" onclick="">{{ evaluator.name }}</label>
+					
+					<input id="{{ 'm' ~ evaluator_id }}1" title="{{ evaluator.name }}" class="check_evaluator" type="radio" data-evaluator="{{ evaluator_id }}" data-action="add" name="evaluator_id-{{ evaluator_id }}" {% if evaluator.checked %}checked{% endif %} value="{{ evaluator_id }}">
+				  	<label for="{{ 'm' ~ evaluator_id }}1" onclick="">{{ evaluator.name }}</label>
+
+				  	<span></span>
+				</div>
+			{% endfor %}
+			{% else %}
+			<a href="{{ urladm ~ '/user/new/appraiser' }}" target="_blank" class="button tiny">Criar Avaliador</a>
+			{% endif %}
+			</div>
+		</div>
+	</fieldset>
+
+{% endblock %}
+
+{% block js_bottom %}
+	{{ parent() }}
+	
+	<script>
+	$(function () {
+		$('.new_group').on('keypress', function (tecla) {
+			if (tecla.keyCode == 13) {
+				var that = $(this)
+					val = $.trim(that.val())
+
+					data = {
+						name: val,
+						{{ csrf_key }}: '{{ csrf_token }}'
+					};
+
+				if (val != '' && val.length > 3) {
+					beforeSend: that.val('Salvando...').attr('disabled', true);
+					$.post("{{ urladm ~ '/group/new' }}", data, function(data, textStatus, xhr) {
+						
+						window.location = "{{ urladm ~ '/evaluation/' ~ evaluation.id ~ '/edit'}}#bottom";
+
+						var html = '';
+
+						if ( data.errors ) {
+							that.val(data.errors[0]).attr('disabled', false).focus();
+							return false;
+						};
+
+						$.each(data.groups, function (i, group) {
+							
+							html += '<div class="switch small round" style="margin-bottom:5px">';
+							html += '<input id="m'+group.id+'" class="check_group" type="radio" data-rating="'+group.id+'" data-action="rm" name="rating_id-'+group.id+'" checked value="'+group.id+'">';
+						  	html += '<label for="m'+group.id+'" onclick="">'+group.name+'</label>';
+							html += '<input id="m'+group.id+'1" class="check_group" type="radio" data-rating="'+group.id+'" data-action="add" name="rating_id-'+group.id+'" value="'+group.id+'">';
+						  	html += '<label for="m'+group.id+'1" onclick="">'+group.name+'</label>';
+						  	html += '<span></span>';
+							html += '</div>';
+						});
+						location.reload();
+						//$('.group_list').prepend(html);
+
+						//that.val('').attr('disabled', false).focus();
+
+					}, 'json');
+				} else {
+					that.val('Nome Curto Demais!');
+				};
+
+			};
+
+		});
+		$('.check_group').on('change', function () {
+			var that = $(this),
+				data = {
+					action: that.attr('data-action'),
+					group_id: that.attr('data-group'),
+					evaluation_id: {{ evaluation.id }},
+					{{ csrf_key }}: '{{ csrf_token }}'
+				};
+			$.post("{{ urladm ~ '/group/' }}"+data.group_id+'/edit/evaluations', data, function(data, textStatus, xhr) {
+				console.log(data);
+			}, 'json');
+		});
+		$('.check_questionnaire').on('change', function () {
+			var that = $(this),
+				data = {
+					action: that.attr('data-action'),
+					questionnaire_id: that.attr('data-questionnaire'),
+					evaluation_id: {{ evaluation.id }},
+					{{ csrf_key }}: '{{ csrf_token }}'
+				};
+			$.post("{{ urladm ~ '/questionnaire/' }}"+data.questionnaire_id+'/edit/evaluations', data, function(data, textStatus, xhr) {
+				console.log(data);
+			}, 'json');
+		});
+		$('.check_evaluator').on('change', function () {
+			var that = $(this),
+				data = {
+					action: that.attr('data-action'),
+					evaluator_id: that.attr('data-evaluator'),
+					evaluation_id: {{ evaluation.id }},
+					{{ csrf_key }}: '{{ csrf_token }}'
+				};
+			$.post("{{ urladm ~ '/user/' }}"+data.evaluator_id+'/edit/evaluations', data, function(data, textStatus, xhr) {
+				console.log(data);
+			}, 'json');
+		});
+		$('input[name="action"]').on('change', function () {
+			var that = $(this);
+			$('.content').hide();
+			that.parent('label').parent('div').children('.content').show();
+		});
+	});
+	</script>
+
+{% endblock %}

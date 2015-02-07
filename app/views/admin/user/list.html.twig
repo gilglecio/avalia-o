@@ -1,0 +1,114 @@
+{% extends 'admin/user/layout.html.twig' %}
+
+{% block title title %}
+
+{% block breadcrumbs %}
+	{{ parent() }}
+	<a class="current" href="#">{{ title }}</a>
+	<a href="{{ urladm ~ '/user/new' }}{% if profile_current %}{{ '/' ~ profile_current }}{% endif %} ">criar</a>
+	<a href="javascript:history.back();">voltar</a>
+{% endblock %}
+
+{% block page title %}
+
+{% block group %}
+
+	{% if response %}
+		{{ blocks.alert(response.text, response.class) }}
+	{% endif %}
+
+	<div class="row">
+		<div class="large-12 columns">
+			<form class="custom">
+				<label for="">
+					<small><b>PERFIL</b></small>
+				<select class="small" name="profile_type" id="profile_type">
+					<option value="">Ambos</option>
+					{% for profile_type_value, profile_type_label in profile_types %}
+						<option {% if profile_type_value == profile_current %} selected="selected" {% endif %} value="/{{ profile_type_value }}">{{ profile_type_label }}</option>
+					{% endfor %}
+				</select>
+				</label>
+			</form>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="large-12 columns">
+		{% if users %}
+		<table class="large-12 columns">
+			<thead>
+				<tr>
+					<td width="50"><small><b>PERFIL</b></small></td>
+					<td width=""><small><b>NOME</b></small></td>
+					<td width=""><small><b>E-MAIL</b></small></td>
+					<td><small><b>GRUPO</b></small></td>
+					<td width="10"><small><b>CADASTRO</b></small></td>
+					<td width="50"><small><b>ACTIONS</b></small></td>
+				</tr>
+			</thead>
+			<tbody>
+				{% for user in users %}
+				<tr id="user-{{ user.id }}">
+					<td>{{ user.profile }}</td>
+					<td>
+						<strong><a href="{{ urladm ~ '/user/' ~ user.id }}">{{ user.name }}</a></strong>
+						{% if app_user.id == user.id %}
+							<a href="/logout" class="label alert round" style="float:right;"	>Sair</a>
+						{% endif %}
+					</td>
+
+					<td>{{ user.email }}</td>
+
+					<td>{% if user.groups %} 
+						{% for key, group in user.groups %}
+						    {% if key == 0 %}
+						    	<a href="{{ urladm ~ '/group/' ~ group.id }}">{{ group.name }}</a>
+						    {% else %}
+						        <a href="{{ urladm ~ '/group/' ~ group.id }}" title="{{ group.name }}"><strong>+</strong></a>
+						    {% endif %}
+						{% endfor %}
+					{% else %}-{% endif %}</td>
+					
+					<td title="Às {{ user.created_at|date('H:i') }}">{{ user.created_at|date('d/m/Y') }}</td>
+					<td>
+						<a title="Editar" class="glyphicon glyphicon-edit user_edit disabled" href="{{ urladm ~ '/user/' ~ user.id ~ '/edit' }}"></a>
+
+						{% if user.can_delete == 1 %}
+						<a title="Apagar" data-confirm="1"  class="glyphicon glyphicon-remove user_delete" href="{{ urladm ~ '/user/' ~ user.id ~ '/delete' }}"></a>
+						{% else %}
+						<span title="{{ user.can_delete }}" class="glyphicon glyphicon-remove" style="color:#999"></span>
+						{% endif %}
+					</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+		
+		<div style="font-size:0.8em">
+			<p><b>Legendas</b></p>
+			<span class="glyphicon glyphicon-edit" style="color:#666"></span> Editar Usuário<br />
+			<span class="glyphicon glyphicon-remove" style="color:#666"></span> O usuário esta participando de alguma avaliação. Por segurança este só poderá ser removido. Até que o mesmo seja desvinculado.
+		</div>
+
+		{% else %}
+			<div class="panel text-center">
+				<strong>Sem Registro. CADASTRE...</strong>
+				<a href="{{ urladm ~ '/user/new/appraiser' }}" class="button alert small">Avaliadores</a>
+				<a href="{{ urladm ~ '/user/new/valued' }}" class="button alert small">Avaliados</a>
+				<a href="{{ urladm ~ '/user/new/admin' }}" class="button alert small">Administradores</a>
+			</div>
+		{% endif %}
+		</div>
+	</div>
+
+{% endblock %}
+
+{% block js_bottom %}
+	{{ parent() }}
+	<script>
+		$('#profile_type').change(function () {
+			location.href = "{{ urladm ~ '/user' }}" + $(this).val() + '';
+		});
+	</script>
+{% endblock %}

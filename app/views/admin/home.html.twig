@@ -1,0 +1,14 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block content %}
+	
+	<div id="avaliacoes"><h5>Carregando Avaliações...</h5></div>
+
+{% endblock %}
+
+{% block js_bottom %}
+	{{ parent() }}
+	<script>
+	$('#avaliacoes').load("{{ urladm ~ '/evaluation' }} #content");
+	</script>
+{% endblock %}

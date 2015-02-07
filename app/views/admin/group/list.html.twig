@@ -1,0 +1,81 @@
+{% extends 'admin/group/layout.html.twig' %}
+
+{% block breadcrumbs %}
+	{{ parent() }}
+	<a class="current" href="#">{{ title }}</a>
+	<a href="javascript:history.back();">voltar</a>
+{% endblock %}
+
+{% block group %}
+	
+	{% if response %}
+		{{ blocks.alert(response.text, response.class) }}
+	{% endif %}
+
+	<div class="row">
+		<div class="large-12 columns">
+			<form action="{{ urladm ~ '/group/new' }}" method="post">
+				<input type="hidden" name="{{ csrf_key }}" value="{{ csrf_token }}">
+				<div class="large-6">
+					<div class="row collapse">
+		      			<div class="large-6 columns ">
+		        			<input type="text" name="name" placeholder="Nome do Grupo" value="{{ value.name }}">
+						</div>
+						<div class="large-6 columns">
+							<div class="large-7 columns">
+								<span class="postfix">
+									<label for=""><input type="checkbox" name="add_member" checked="checked"> Add Membros</label>
+								</span>
+							</div>
+							<div class="large-5 columns">
+								<span class="">
+								<input class="prefix alert button" type="submit" value="Finalizar">
+							</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="large-12 columns">
+		{% if groups %}
+		<table class="large-12 columns">
+			<thead>
+				<tr>
+					<td><small><b>GRUPO</b></small></td>
+					<td><small><b>MEMBROS</b></small></td>
+					<td width="100"><small><b>CRIADO EM</b></small></td>
+					<td width="20"><small><b>AÇÕES</b></small></td>
+				</tr>
+			</thead>
+			<tbody>
+				{% for group in groups %}
+
+				<tr id="group-{{ group.id }}">
+					<td><strong><a href="{{ urladm ~ '/group/' ~ group.id ~ '/edit/members' }}">{{ group.name }}</a></strong></td>
+					<td><span class="glyphicon glyphicon-user label radius success"> {{ group.members|length }}</span>
+						{% if group.members %}
+							{% for i, member in group.members %}
+								<a class="glyphicon glyphicon-user" target="_blank" href="{{ urladm ~ '/user/' ~ member.id }}" title="{{ member.name ~ ' <' ~ member.email ~ '>' }}"></a>
+							{% endfor %}
+						{% endif %}
+					</td>
+					<td title="Às {{ group.created_at|date('H:i') }}">{{ group.created_at|date('d M Y') }}</td>
+					<td>
+						{# <a class="group_add_members" href="{{ urladm ~ '/group/' ~ group.id ~ '/edit/members' }}">Membros</a> #}
+						<a class="group_edit glyphicon glyphicon-edit" href="{{ urladm ~ '/group/' ~ group.id ~ '/edit' }}"></a>
+						<a class="group_delete glyphicon glyphicon-remove" data-confirm="1" href="{{ urladm ~ '/group/' ~ group.id ~ '/delete' }}"></a>
+					</td>
+				</tr>
+
+				{% endfor %}
+			</tbody>
+		</table>
+		{% endif %}
+		</div>
+	</div>
+
+{% endblock %}

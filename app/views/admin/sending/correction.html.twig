@@ -1,0 +1,149 @@
+{% extends 'admin/sending/layout.html.twig' %}
+
+{% block breadcrumbs %}
+	{{ parent() }}
+	<a class="current" href="#">{{ sending.evaluation_sending.evaluation.name }}</a>
+	<a href="{{ urladm ~ '/evaluation/' ~ sending.evaluation_sending.evaluation.id ~ '/sending' }}">envios</a>
+	<a class="current" href="#">{{ title }}</a>
+	<a href="javascript:history.back();">voltar</a>
+{% endblock %}
+
+{% block css %}
+	{{ parent() }}
+
+	<style>
+	@media print{
+		body {
+			font-size: 0.7em;
+			padding: 45px;
+		}
+
+		hr {
+			margin: 0;
+			margin: 5px 0;
+		}
+		#footer {
+			display: none;
+		}
+		#print,
+		#change_evaluator,
+		#content h2 {
+			display: none;
+		}
+
+	}
+	</style>
+    
+{% endblock %}
+
+{% block group %}
+	
+	{% if response %}
+		{{ blocks.alert(response.text, response.class) }}
+	{% endif %}
+
+	<div class="row">
+		<table style="width:100%; border:none">
+			<tr>
+				<td width="35%">
+					<img width="200" src="{{ site_src_logo }}">
+				</td>
+				<td>
+					<ul>
+						<li><h3>{{ evaluation.subject }}</h3> </li>
+						<li>Avaliado <b>{{ valued.name }}</b></li>
+						<li>Avaliador <b>{{ evaluator.name }}</b></li>
+					</ul>
+				</td>
+			</tr>
+		</table>
+	</div>
+
+	<div class="row">
+		<div class="large-6 columns">
+
+			<div id="change_evaluator">
+				<label>Alterar Avaliador</label>
+				<select id="pdf_chenge_evaluator" name="evaluator_id" >
+					{% for evaluator in data.evaluators %}
+					    <option {% if evaluator_id == evaluator.id %}selected{% endif %} value="{{ evaluator.id }}">{{ evaluator.name }}</option>
+					{% endfor %}
+				</select>
+			</div>
+		</div>
+		
+		<div id="print" class="large-6 columns text-right">
+			<a class="button  small alert" href="javascript:window.print();"><span class="glyphicon glyphicon-print"></span> Avaliação</a>
+			<a class="button  small secondary" href="{{ urladm ~ '/sending/sending/' ~ sending_id ~ '/print' }}"><span class="glyphicon glyphicon-print"></span> Autoavaliação</a>
+			<a class="button small secondary" href="{{ urladm ~ '/sending/sending/' ~ sending_id ~ '/pdf' }}"><span class="glyphicon glyphicon-print"></span> PDF</a>
+		</div>
+	</div>
+
+
+
+	<div class="row">
+		<div class="large-12 columns">
+			<h4>Respostas</h4>
+		</div>
+	</div>
+
+	<hr />
+
+	<div class="row">
+		<div class="large-12 columns">
+			<ul>
+				{% set q = 1 %}
+				{% for answer in data.answers %}
+
+					<li>
+						<h5>Q{{ q }} - <b>{{ answer.issue.enunciation }}</b></h5><br />
+						<div class="row">
+							<div class="large-12">
+								<div style="margin-left:29px">
+									<b style="font-size:0.8em">Autoavaliação</b>
+									<ul>
+										<li>
+											{% if answer.issue.type == 'scale' %}-{% endif %}
+											{% if answer.issue.type == '0-10' %}
+												<b>Nota:</b> {{ answer.answer.getAnswer|replace('.',',') }}
+											{% else %}
+											    {{ answer.answer.getAnswer|raw }}
+											{% endif %} 
+											
+										</li>
+
+										{% if answer.answer.justification %}
+										<li style="margin-top:10px"><p><b>Justificativa:</b> {{ answer.answer.justification }}</p></li>
+										{% endif %}
+									</ul>
+								</div>
+							</div>
+						</div>
+
+						<div class="row">
+							{% for answer_evaluator_id, evaluator in answer.evaluators %}
+								{% if answer_evaluator_id == evaluator_id %}
+							    <div style="margin-left:29px">
+							    	<hr />
+							    	<b style="font-size:0.8em">Avaliação</b>
+									<ul>
+										<li><b>Nota:</b> {{ evaluator.correction.note }}</li>
+										{% if evaluator.correction.justification %}
+											<li style="margin-top:10px"><b>Justificativa:</b> {{ evaluator.correction.justification }}</li>
+										{% endif %}
+									</ul>
+							    {% endif %}
+							{% endfor %}
+						</div>
+					</li>
+
+					<hr />
+				
+				</tr>
+				{% set q = q + 1 %}
+				{% endfor %}
+			</ul>
+		</div>
+	</div>
+
+{% endblock %}

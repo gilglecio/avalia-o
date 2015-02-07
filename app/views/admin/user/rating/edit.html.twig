@@ -1,0 +1,34 @@
+
+{% extends 'admin/user/rating/layout.html.twig' %}
+
+{% block breadcrumbs %}
+	{{ parent() }}
+	<a class="current" href="#">{{ title }}</a>
+	<a href="javascript:history.back();">voltar</a>
+{% endblock %}
+
+{% block content %}
+
+	{% if response %}
+		{{ blocks.alert(response.text, response.class) }}
+	{% endif %}
+
+	<form action="{{ urladm ~ '/user/valued/rating/' ~ rating.id ~ '/edit' }}" method="post">
+		<input type="hidden" name="{{ csrf_key }}" value="{{ csrf_token }}">
+		<fieldset>
+			<div class="row">
+      			<div class="large-12 columns">
+        			<label>Nome</label>
+					<input class="large-10 columns" type="text" name="name" value="{{ rating.name }}">
+				</div>
+			</div>
+
+			<div class="row">
+      			<div class="large-12 columns">
+        			<input class="small alert button" type="submit" value="Finalizar">
+				</div>
+			</div>
+			
+		</fieldset>
+	</form>
+{% endblock %}

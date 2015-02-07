@@ -1,0 +1,66 @@
+{% extends 'admin/user/layout.html.twig' %}
+
+{% block breadcrumbs %}
+	{{ parent() }}
+	<a class="current" href="#">{{ title }}</a>
+	<a href="javascript:history.back();">voltar</a>
+{% endblock %}
+
+{% block group %}
+
+	{% if response %}
+		{{ blocks.alert(response.text, response.class) }}
+	{% endif %}
+
+	<form class="custom" action="{{ urladm ~ '/user/new' }}" method="post">
+
+		<input type="hidden" name="{{ csrf_key }}" value="{{ csrf_token }}">
+
+		<fieldset>
+			<div class="row">
+				<div class="large-3 columns">
+        			<label>Perfil</label>
+					<select name="profile_type" id="profile_type">
+					{% for profile_type_value, profile_type_label in profile_types %}
+						<option {% if profile_type_value == profile_current %} selected="selected" {% endif %} value="{{ profile_type_value }}">{{ profile_type_label }}</option>
+					{% endfor %}
+					</select>
+				</div>
+				<div class="large-3 columns">
+        			<label>Nascimento</label>
+					<input required="1" data-mask="00/00/0000" class="large-10 columns" type="text" name="birth" placeholder="DD/MM/YYYY" value="{{ value.birth }}">
+				</div>
+				<div class="large-3  columns">
+        			<label>Ano Graduação</label>
+					<input data-mask="0000" type="text" name="graduated_at" value="{{ value.graduated_at }}">
+				</div>
+
+				<div class="large-3 columns">
+        			<label>Salário</label>
+					<input class="money" type="text" name="salary" value="{{ value.salary }}">
+				</div>
+			</div>
+			<div class="row">
+      			<div class="large-4 columns">
+        			<label>Nome</label>
+					<input required="1" class="large-10 columns" type="text" name="name" placeholder="Nome" value="{{ value.name }}">
+				</div>
+				<div class="large-5 columns">
+        			<label>E-Mail</label>
+					<input required="1" class="large-10 columns" type="email" name="email" placeholder="E-Mail" value="{{ value.email }}">
+				</div>
+				<div class="large-3  columns">
+        			<label>Data de entrada</label>
+					<input data-mask="00/00/0000" type="text" name="entry_at" value="{{ value.entry_at }}">
+				</div>
+			</div>
+		</fieldset>
+
+		<div class="row">
+  			<div class="large-10 columns">
+    			<input class="small button alert" type="submit" value="Finalizar e Editar" name="save_edit">
+    			<input class="small secondary button" type="submit" value="Salvar" name="save">
+			</div>
+		</div>
+	</form>
+{% endblock %}

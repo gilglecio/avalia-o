@@ -1,0 +1,86 @@
+{% extends 'admin/questionnaire/layout.html.twig' %}
+
+{% block breadcrumbs %}
+	{{ parent() }}
+	<a class="current" href="#">{{ title }}</a>
+	<a href="{{ urladm ~ '/questionnaire/new' }}">CRIAR</a>
+	<a href="javascript:history.back();">voltar</a>
+{% endblock %}
+
+{% block group %}
+	
+	{% if response %}
+		{{ blocks.alert(response.text, response.class) }}
+	{% endif %}
+
+	<div class="row">
+		<div class="large-12 columns">
+		{% if questionnaires %}
+		<table class="large-12 columns">
+			<thead>
+				<tr>
+					<td><small><b>QUESTÕES</b></small></td>
+					<td><small><b>QUESTIONÁRIO</b></small></td>
+					<td><small><b>CRIADO EM</b></small></td>
+					<td><small><b>MODIFICADO</b></small></td>
+					<td><small><b>AÇÕES</b></small></td>
+				</tr>
+			</thead>
+			<tbody>
+				{% set year = 0 %}
+				{% for questionnaire in questionnaires %}
+				
+					{% set questionnaire_year = questionnaire.created_at|date('Y') %}
+
+					{% if questionnaire_year != year %}
+						{% set year = questionnaire_year %}
+
+						<tr>
+							<td style="background:#ccc" colspan="7"><b>{{ questionnaire_year }}</b></td>
+						</tr>
+
+					{% endif %}
+
+				<tr id="questionnaire-{{ questionnaire.id }}">
+					<td width="5">{{ questionnaire.issues|length }}</td>
+					<td><strong><a title="{{ questionnaire.name }}" href="{{ urladm ~ '/questionnaire/' ~ questionnaire.id }}">{{ questionnaire.name_private }}</a></strong></td>
+
+					<td width="120" title="{{ questionnaire.created_at|date('l, d M Y à\\s H:i') }}">{{ questionnaire.created_at|date('d M, H:i') }}</td>
+					<td width="120" title="{{ questionnaire.created_at|date('l, d M Y à\\s H:i') }}">{{ questionnaire.created_at|date('d M, H:i') }}</td>
+
+					<td width="90">
+						<a title="Visualizar" class="glyphicon glyphicon-expand questionnaire_view" href="{{ urladm ~ '/questionnaire/' ~ questionnaire.id ~ '/show' }}"></a>
+						<a title="Duplicar" class="glyphicon glyphicon-new-window questionnaire_transfer" href="{{ urladm ~ '/questionnaire/new/copy/' ~ questionnaire.id }}"></a>
+						{% if questionnaire.can_edit %}
+						<a title="Editar" class="glyphicon glyphicon-edit questionnaire_transfer" href="{{ urladm ~ '/questionnaire/' ~ questionnaire.id ~ '/edit' }}"></a>
+						<a title="Apagar" data-confirm="1" class="glyphicon glyphicon-remove questionnaire_delete" href="{{ urladm ~ '/questionnaire/' ~ questionnaire.id ~ '/delete' }}"></a>
+						{% else %}
+							<span title="Este questionário esta sendo usado por uma avaliação, que ja foi enviada e alguém já a o respondeu. Portanto não pode ser removido." class="glyphicon glyphicon-edit evaluation_delete" style="color:#ccc"></span>
+						    <span title="Este questionário esta sendo usado por uma avaliação, que ja foi enviada e alguém já a o respondeu. Portanto não pode ser alterado." class="glyphicon glyphicon-remove evaluation_delete" style="color:#ccc"></span>
+						{% endif %}
+					</td>
+				</tr>
+
+				{% endfor %}
+			</tbody>
+		</table>
+
+		<hr />
+
+		<div style="font-size:0.8em">
+			<p><b>Legendas</b></p>
+			<span class="glyphicon glyphicon-expand" style="color:#666"></span> Visualizar item<br />
+			<span class="glyphicon glyphicon-new-window" style="color:#666"></span> Duplicar Item<br />
+			<span class="glyphicon glyphicon-edit" style="color:#666"></span> e <span class="glyphicon glyphicon-remove evaluation_delete" style="color:#666"></span> Item esta sendo usado por uma avaliação, que ja foi enviada e alguém já a o respondeu. Portanto não pode ser removido/alterado.
+		</div>
+
+		{% else %}
+			<div class="panel text-center">
+				<strong>NENHUM QUESTIONÁRIO CRIADO ATÉ O MOMENTO.</strong>
+				<a href="{{ urladm ~ '/questionnaire/new' }}" class="button alert small">Criar um Questionário</a>
+			</div>
+		{% endif %}
+		</div>
+	</div>
+
+{% endblock %}

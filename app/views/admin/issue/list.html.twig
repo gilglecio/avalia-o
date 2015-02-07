@@ -1,0 +1,60 @@
+{% extends 'admin/issue/layout.html.twig' %}
+
+{% block breadcrumbs %}
+	{{ parent() }}
+	<a class="current" href="#">{{ title }}</a>
+	<a href="{{ urladm ~ '/issue/new' }}">CRIAR</a>
+	<a href="javascript:history.back();">voltar</a>
+{% endblock %}
+
+{% block group %}
+	
+	{% if response %}
+		{{ blocks.alert(response.text, response.class) }}
+	{% endif %}
+
+	<div class="row">
+		<div class="large-12 columns">
+		{% if issues %}
+		<table class="large-12 columns table">
+			<thead>
+				<tr>
+					<td><small><b>PERGUNTA</b></small></td>
+					<td><small><b>TIPO</b></small></td>
+					<td><small><b>MIN/MAX</b></small></td>
+					<td><small><b>OBRIGATÓRIA</b></small></td>
+					<td><small><b>JUSTIFICATIVA</b></small></td>
+					<td><small><b>AÇÕES</b></small></td>
+				</tr>
+			</thead>
+			<tbody>
+				{% for issue in issues %}
+
+				<tr id="issue-{{ issue.id }}">
+					<td><strong><a href="{{ urladm ~ '/issue/' ~ issue.id ~ '/edit' }}">{{ issue.enunciation }}</a></strong></td>
+					<td>
+						{{ issue.getType }}
+					</td>
+					<td title="Nota: Mínima {{ issue.min_note}} / Máxima {{ issue.max_note }}">{{ issue.min_note }}/{{ issue.max_note }}</td>
+					<td>{{ issue.getRequired }}</td>
+					<td>{{ issue.getJustification }}</td>
+					<td >
+						<a class="issue_transfer glyphicon glyphicon-new-window" title="Duplicar" href="{{ urladm ~ '/issue/' ~ issue.id ~ '/copy' }}"></a>
+						{% if issue.can_edit %}
+						<a data-confirm="1" class="issue_delete glyphicon glyphicon-remove" title="Apagar" href="{{ urladm ~ '/issue/' ~ issue.id ~ '/delete' }}"></a>
+						{% endif %}
+					</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+		{% else %}
+			<div class="panel text-center">
+				<strong>NENHUMA PERGUNTA FOI CRIADA.</strong>
+				<a href="{{ urladm ~ '/issue/new' }}" class="button alert small">Criar Perguntas</a>
+			</div>
+		{% endif %}
+		</div>
+	</div>
+
+{% endblock %}

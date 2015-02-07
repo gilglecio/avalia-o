@@ -1,0 +1,26 @@
+{% extends 'front/layout.html.twig' %}
+
+{% block nav_right %}
+	{{ parent() }}
+	<li><a href="">{{ valued.name }}</a></li>
+	<li><a href="">{{ valued.email }}</a></li>
+{% endblock %}
+
+{% block nav_left %}
+	{{ parent() }}
+	<li><a href="">{{ evaluation.subject }}</a></li>
+{% endblock %}
+
+{% block content %}
+	
+	{% if response %}
+		{{ blocks.alert(response.text, response.class) }}
+	{% endif %}
+
+	<div class="row">
+		<div class="large-12" style="margin-top:50px">
+			<p>O questionário foi encerrado em {{ evaluation.getEnd }}.</p>
+		</div>
+	</div>
+
+{% endblock %}

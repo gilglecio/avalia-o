@@ -1,0 +1,13 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title title %}
+
+{% block breadcrumbs %}
+	{{ parent() }}
+	<a href="{{ urladm ~ '/group' }}">Grupo</a>
+{% endblock %}
+
+{% block content %}
+	{{ blocks.heading('Grupo', title) }}
+	{% block group %}{% endblock %}
+{% endblock %}

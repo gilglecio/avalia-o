@@ -1,0 +1,354 @@
+{% extends 'admin/user/layout.html.twig' %}
+
+{% block breadcrumbs %}
+	{{ parent() }}
+	<a class="current" href="#">{{ title }}</a>
+	<a href="javascript:history.back();">voltar</a>
+{% endblock %}
+
+{% block group %}
+
+	{% if response %}
+		{{ blocks.alert(response.text, response.class) }}
+	{% endif %}
+
+	<form class="custom" action="{{ urladm ~ '/user/' ~ user.id ~ '/edit' }}" method="post">
+		<input type="hidden" name="{{ csrf_key }}" value="{{ csrf_token }}">
+		<fieldset>
+			<div class="row">
+				<div class="large-3 columns">
+        			<label>Perfil</label>
+					<select name="profile_type" id="profile_type">
+						{% for profile_type_value, profile_type_label in profile_types %}
+							<option {% if profile_type_value == profile_current %} selected="selected" {% endif %} value="{{ profile_type_value }}">{{ profile_type_label }}</option>
+						{% endfor %}
+					</select>
+				</div>
+				<div class="large-3 columns">
+        			<label>Nascimento</label>
+					<input required="1" data-mask="00/00/0000" class="large-10 columns" type="text" name="birth" placeholder="DD/MM/YYYY" value="{{ user.birth|date('d/m/Y') }}">
+				</div>
+				<div class="large-3 columns">
+        			<label>Ano Graduação</label>
+					<input data-mask="0000" type="text" name="graduated_at" value="{{ user.graduated_at }}">
+				</div>
+
+				<div class="large-3 columns">
+        			<label>Salário</label>
+					<input class="money" type="text" name="salary" value="{{ user.getSalary }}">
+				</div>
+			</div>
+			<div class="row">
+      			<div class="large-4 columns">
+        			<label>Nome</label>
+					<input required="1" class="large-10 columns" type="text" name="name" placeholder="Nome" value="{{ user.name }}">
+				</div>
+				<div class="large-5 columns">
+        			<label>E-Mail</label>
+					<input required="1" class="large-10 columns" type="email" name="email" placeholder="E-Mail" value="{{ user.email }}">
+				</div>
+				<div class="large-3  columns">
+        			<label>Data de entrada</label>
+					<input data-mask="00/00/0000" type="text" name="entry_at" value="{{ user.entry_at|date('d/m/Y') }}">
+				</div>
+			</div>
+
+		</fieldset>
+		
+		<fieldset id="input_access" class="{% if user.profile_type != 'admin' %}hide{% endif %}">
+			
+			<div class="row">
+      			<div class="large-6 columns">
+        			<label>Usuário</label>
+					<input autocomplete="off" {% if user.profile_type == 'admin' %}required="1"{% endif %}  class="large-10 columns" type="text" id="username" name="username" placeholder="Usuário" value="{{ user.username }}">
+				</div>
+				<div class="large-6 columns">
+        			<label>Senha</label>
+					<input autocomplete="off" class="large-10 columns" type="password" id="password" name="password" placeholder="Senha">
+				</div>
+			</div>
+			
+		</fieldset>
+		
+
+		<div class="row">
+  			<div class="large-12 columns">
+    			<input class="small alert button" type="submit" name="save" value="Finalizar">
+    			<input class="small button secondary" type="submit" name="finalize" value="Salvar e Visualizar">
+			</div>
+		</div>
+
+	</form>
+
+	{% if user.profile_type == 'valued' %}
+	<fieldset>
+		<div class="row">
+			<div class="large-4 columns">
+
+				<h6><a href="{{ urladm ~ '/user/valued/charge' }}">Cargos</a></h6>
+
+				<div class="">
+					<p><small>SEPARE POR VIRGULA</small>
+					<input type="text" name="new_charge" class="new_charge" placeholder="Adicionar Novos"></p>
+					<div class="charge_list">
+					{% if charges %}
+						{% for charge_id, charge in charges %}
+	      				<div class="switch small round" style="margin-bottom:5px">
+							<input id="{{ 'm' ~ charge_id }}" class="check_charge" type="radio" data-charge="{{ charge_id }}" data-action="rm" name="charge_id-{{ charge_id }}" checked value="{{ charge_id }}">
+						  	<label for="{{ 'm' ~ charge_id }}" onclick="">{{ charge.name }}</label>
+							
+							<input id="{{ 'm' ~ charge_id }}1" class="check_charge" type="radio" data-charge="{{ charge_id }}" data-action="add" name="charge_id-{{ charge_id }}" {% if charge.checked %}checked{% endif %} value="{{ charge_id }}">
+						  	<label for="{{ 'm' ~ charge_id }}1" onclick="">{{ charge.name }}</label>
+
+						  	<span></span>
+						</div>
+	      				{% endfor %}
+					{% endif %}
+					</div>					
+				</div>
+			</div>
+			<div class="large-4 columns">
+
+				<h6><a href="{{ urladm ~ '/user/valued/rating' }}">Classificações</a></h6>
+
+				<div class="">
+					<p><small>SEPARE POR VIRGULA</small>
+					<input type="text" name="new_rating" class="new_rating" placeholder="Adicionar Novos"></p>
+					<div class="rating_list">
+					{% if ratings %}
+						{% for rating_id, rating in ratings %}
+	      				<div class="switch small round" style="margin-bottom:5px">
+							<input id="{{ 'm' ~ rating_id }}" class="check_rating" type="radio" data-rating="{{ rating_id }}" data-action="rm" name="rating_id-{{ rating_id }}" checked value="{{ rating_id }}">
+						  	<label for="{{ 'm' ~ rating_id }}" onclick="">{{ rating.name }}</label>
+							
+							<input id="{{ 'm' ~ rating_id }}1" class="check_rating" type="radio" data-rating="{{ rating_id }}" data-action="add" name="rating_id-{{ rating_id }}" {% if rating.checked %}checked{% endif %} value="{{ rating_id }}">
+						  	<label for="{{ 'm' ~ rating_id }}1" onclick="">{{ rating.name }}</label>
+
+						  	<span></span>
+						</div>
+	      				{% endfor %}
+					{% endif %}
+					</div>
+				</div>
+			</div>
+			<div class="large-4 columns">
+				<h6><a href="{{ urladm ~ '/group' }}">Grupos</a></h6>
+				<div class="">
+					<p><small>SEPARE POR VIRGULA</small>
+					<input type="text" name="new_group" class="new_group" placeholder="Adicionar Novos"></p>
+					<div class="group_list">
+					{% if groups %}
+						{% for group_id, group in groups %}
+	      				<div class="switch small round" style="margin-bottom:5px">
+							<input id="{{ 'm' ~ group_id }}" class="check_group" type="radio" data-group="{{ group_id }}" data-action="rm" name="group_id-{{ group_id }}" checked value="{{ group_id }}">
+						  	<label for="{{ 'm' ~ group_id }}" onclick="">{{ group.name }}</label>
+							
+							<input id="{{ 'm' ~ group_id }}1" class="check_group" type="radio" data-group="{{ group_id }}" data-action="add" name="group_id-{{ group_id }}" {% if group.checked %}checked{% endif %} value="{{ group_id }}">
+						  	<label for="{{ 'm' ~ group_id }}1" onclick="">{{ group.name }}</label>
+
+						  	<span></span>
+						</div>
+	      				{% endfor %}
+					{% endif %}
+					</div>
+				</div>
+			</div>
+		</div>			
+	</fieldset>
+	{% endif %}
+		
+	
+{% endblock %}
+
+{% block js_bottom %}
+	{{ parent() }}
+	<script>
+
+		$(function () {
+			$('#profile_type').on('change', function () {
+				if ($(this).val() == 'admin') {
+					$('#input_access').show();
+					$('#username').attr('required', true);
+					// $('#password').attr('required', true);
+				} else {
+					$('#input_access').hide();
+					$('#username').attr('required', false);
+					$('#password').attr('required', false);
+				};
+			});
+			$('.new_charge').on('keypress', function (tecla) {
+				if (tecla.keyCode == 13) {
+					var that = $(this)
+						val = $.trim(that.val())
+
+						data = {
+							name: val,
+							{{ csrf_key }}: '{{ csrf_token }}'
+						};
+
+					if (val != '' && val.length > 3) {
+						beforeSend: that.val('Salvando...').attr('disabled', true);
+						$.post("{{ urladm ~ '/charge/new' }}", data, function(data, textStatus, xhr) {
+							
+							var html = '';
+
+							if ( data.errors ) {
+								that.val(data.errors[0]).attr('disabled', false).focus();
+								return false;
+							};
+
+							$.each(data.charges, function (i, charge) {
+								
+								html += '<div class="switch small round" style="margin-bottom:5px">';
+								html += '<input id="m'+charge.id+'" class="check_rating" type="radio" data-rating="'+charge.id+'" data-action="rm" name="rating_id-'+charge.id+'" checked value="'+charge.id+'">';
+							  	html += '<label for="m'+charge.id+'" onclick="">'+charge.name+'</label>';
+								html += '<input id="m'+charge.id+'1" class="check_rating" type="radio" data-rating="'+charge.id+'" data-action="add" name="rating_id-'+charge.id+'" value="'+charge.id+'">';
+							  	html += '<label for="m'+charge.id+'1" onclick="">'+charge.name+'</label>';
+							  	html += '<span></span>';
+								html += '</div>';
+							});
+							// $('.charge_list').prepend(html);
+							
+							location.reload();
+							// that.val('').attr('disabled', false).focus();
+
+						}, 'json');
+					} else {
+						that.val('Nome Curto Demais!');
+					};
+
+				};
+
+			});
+
+			$('.new_rating').on('keypress', function (tecla) {
+				if (tecla.keyCode == 13) {
+					var that = $(this)
+						val = $.trim(that.val())
+
+						data = {
+							name: val,
+							{{ csrf_key }}: '{{ csrf_token }}'
+						};
+
+					if (val != '' && val.length > 3) {
+						beforeSend: that.val('Salvando...').attr('disabled', true);
+						$.post("{{ urladm ~ '/rating/new' }}", data, function(data, textStatus, xhr) {
+							
+							var html = '';
+
+							if ( data.errors ) {
+								that.val(data.errors[0]).attr('disabled', false).focus();
+								return false;
+							};
+
+							$.each(data.ratings, function (i, rating) {
+								
+								html += '<div class="switch small round" style="margin-bottom:5px">';
+								html += '<input id="m'+rating.id+'" class="check_rating" type="radio" data-rating="'+rating.id+'" data-action="rm" name="rating_id-'+rating.id+'" checked value="'+rating.id+'">';
+							  	html += '<label for="m'+rating.id+'" onclick="">'+rating.name+'</label>';
+								html += '<input id="m'+rating.id+'1" class="check_rating" type="radio" data-rating="'+rating.id+'" data-action="add" name="rating_id-'+rating.id+'" value="'+rating.id+'">';
+							  	html += '<label for="m'+rating.id+'1" onclick="">'+rating.name+'</label>';
+							  	html += '<span></span>';
+								html += '</div>';
+							});
+							// $('.rating_list').prepend(html);
+							
+							location.reload();
+							// that.val('').attr('disabled', false).focus();
+
+						}, 'json');
+					} else {
+						that.val('Nome Curto Demais!');
+					};
+
+				};
+
+			});
+
+			$('.new_group').on('keypress', function (tecla) {
+				if (tecla.keyCode == 13) {
+					var that = $(this)
+						val = $.trim(that.val())
+
+						data = {
+							name: val,
+							{{ csrf_key }}: '{{ csrf_token }}'
+						};
+
+					if (val != '' && val.length > 3) {
+						beforeSend: that.val('Salvando...').attr('disabled', true);
+						$.post("{{ urladm ~ '/group/new' }}", data, function(data, textStatus, xhr) {
+							
+							var html = '';
+
+							if ( data.errors ) {
+								that.val(data.errors[0]).attr('disabled', false).focus();
+								return false;
+							};
+
+							$.each(data.groups, function (i, group) {
+								
+								html += '<div class="switch small round" style="margin-bottom:5px">';
+								html += '<input id="m'+group.id+'" class="check_rating" type="radio" data-rating="'+group.id+'" data-action="rm" name="rating_id-'+group.id+'" checked value="'+group.id+'">';
+							  	html += '<label for="m'+group.id+'" onclick="">'+group.name+'</label>';
+								html += '<input id="m'+group.id+'1" class="check_rating" type="radio" data-rating="'+group.id+'" data-action="add" name="rating_id-'+group.id+'" value="'+group.id+'">';
+							  	html += '<label for="m'+group.id+'1" onclick="">'+group.name+'</label>';
+							  	html += '<span></span>';
+								html += '</div>';
+							});
+							// $('.group_list').prepend(html);
+							
+							location.reload();
+							// that.val('').attr('disabled', false).focus();
+
+						}, 'json');
+					} else {
+						that.val('Nome Curto Demais!');
+					};
+
+				};
+
+			});
+
+			$('.check_rating').on('change', function () {
+				var that = $(this),
+					data = {
+						action: that.attr('data-action'),
+						rating_id: that.attr('data-rating'),
+						user_id: {{ user.id }},
+						{{ csrf_key }}: '{{ csrf_token }}'
+					};
+				$.post("{{ urladm ~ '/user/' ~ user.id ~ '/edit/rating' }}", data, function(data, textStatus, xhr) {
+					console.log(data);
+				}, 'json');
+			});
+
+			$('.check_charge').on('change', function () {
+				var that = $(this),
+					data = {
+						action: that.attr('data-action'),
+						charge_id: that.attr('data-charge'),
+						user_id: {{ user.id }},
+						{{ csrf_key }}: '{{ csrf_token }}'
+					};
+				$.post("{{ urladm ~ '/user/' ~ user.id ~ '/edit/charge' }}", data, function(data, textStatus, xhr) {
+					console.log(data);
+				}, 'json');
+			});
+
+			$('.check_group').on('change', function () {
+				var that = $(this),
+					data = {
+						action: that.attr('data-action'),
+						group_id: that.attr('data-group'),
+						member_id: {{ user.id }},
+						{{ csrf_key }}: '{{ csrf_token }}'
+					};
+				$.post("{{ urladm ~ '/group/' }}"+data.group_id+'/edit/members', data, function(data, textStatus, xhr) {
+					console.log(data);
+				}, 'json');
+			});
+		});
+	</script>
+{% endblock %}

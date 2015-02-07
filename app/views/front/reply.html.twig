@@ -1,0 +1,109 @@
+{% extends 'front/layout.html.twig' %}
+
+{% block nav_right %}
+	{{ parent() }}
+	<li><a href="">{{ valued.name }}</a></li>
+	<li><a href="">{{ valued.email }}</a></li>
+{% endblock %}
+
+{% block nav_left %}
+	{{ parent() }}
+	<li><a href="">{{ evaluation.subject }}</a></li>
+{% endblock %}
+
+{% block content %}
+	
+		<div style="margin-top: 20px">
+	{% if response %}
+			{{ blocks.alert(response.text, response.class) }}
+	{% endif %}
+		</div>
+
+	<div class="row">
+		<div class="large-12 panel">
+			<p>Questionário {{ key + 1 }} de {{ questionnaires|length }} | <b>{{ issues|length }} Perguntas</b></p>
+			<h3>{{ questionnaire.name }}</h3>
+			<p><b>Autoavaliação:</b> <span class="evaluation_note"></span></p>
+		</div>
+	</div>
+
+	<form method="post" action="{{ base }}reply">
+		
+		<input type="hidden" name="{{ csrf_key }}" value="{{ csrf_token }}">
+		<input type="hidden" name="questionnaire_id" value="{{ questionnaire.id }}">
+		<input type="hidden" name="token" value="{{ token }}">
+		<input type="hidden" name="key" value="{{ key }}">
+
+		<div class="row">
+			<div class="large-12">
+			{% if issues %}
+
+				{% set number = 1 %}
+
+				{% for issue in issues %}
+
+					{% if issue.type == 'open' %} {{ blocks.issue_open(number, issue, urladm, false, questionnaire) }} {% endif %}
+					{% if issue.type == 'boolean' %} {{ blocks.issue_boolean(number, issue, urladm, false, questionnaire) }} {% endif %}
+					{% if issue.type == 'only_choice' %} {{ blocks.issue_only_choice(number, issue, urladm, false, questionnaire) }} {% endif %}
+					{% if issue.type == 'multiple_choice' %} {{ blocks.issue_multiple_choice(number, issue, urladm, false, questionnaire) }} {% endif %}
+					{% if issue.type in ['0-10','0_10'] %} {{ blocks.issue_0_10(number, issue, urladm, false, questionnaire) }} {% endif %}
+					{% if issue.type == 'scale' %} {{ blocks.issue_scale(number, issue, urladm, false, questionnaire) }} {% endif %}
+
+					{% set number = number + 1 %}
+				{% endfor %}
+			{% else %}
+			<span class="alert-box">Questionário Vazio</span>
+			{% endif %}
+
+			<div class="panel row">
+				<div class="large-6 columns">
+					<p><b>Autoavaliação:</b> <span class="evaluation_note"></span></p>
+				</div>
+				<div class="large-6 text-right columns">
+					{% if next %}
+					<strong>{{ questionnaire_next.name }}</strong> <input type="submit" class="button alert small success" value="Próximo" name="save_next">
+					{% else %}
+					<input type="submit" class="button small alert" value="Finalizar" name="finalize">
+					{% endif %}
+				</div>
+			</div>
+
+			</div>
+		</div>
+	</form>
+
+{% endblock %}
+
+{% block js_bottom %}
+    {{ parent() }}
+    <script>
+
+    var note_sum_1_10 = {{ note_sum_1_10 }};
+
+    $('.issue_0_10_radio').on('click', function () {
+
+    	evaluation_note();
+    });
+
+    function evaluation_note () {
+    	var range_notes = $('.issue_0_10_radio:checked');
+    	var sum = note_sum_1_10;
+
+    	$.each(range_notes, function (i, range_note) {
+    		console.log($(range_note).val());
+    		var v = parseFloat($(range_note).val());
+    		sum = sum + v;
+    	});
+
+    	$.post('/reply/increment', { 
+    		note: sum,
+    		{{ csrf_key }}: '{{ csrf_token }}'
+    	});
+
+    	sum = sum + ',00';
+    	$('.evaluation_note').html(sum);
+    };
+
+	evaluation_note();
+    </script>
+{% endblock %}

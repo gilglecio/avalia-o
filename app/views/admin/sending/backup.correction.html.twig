@@ -1,0 +1,67 @@
+{% extends 'admin/sending/layout.html.twig' %}
+
+{% block breadcrumbs %}
+	{{ parent() }}
+	<a class="current" href="#">{{ sending.evaluation_sending.evaluation.name }}</a>
+	<a href="{{ urladm ~ '/evaluation/' ~ sending.evaluation_sending.evaluation.id ~ '/sending' }}">envios</a>
+	<a class="current" href="#">{{ title }}</a>
+	<a href="javascript:history.back();">voltar</a>
+{% endblock %}
+
+{% block group %}
+	
+	{% if response %}
+		{{ blocks.alert(response.text, response.class) }}
+	{% endif %}
+
+	<div class="row">
+		<div class="large-12 columns">
+		{% if data.answers %}
+		<table class="large-12 columns">
+			<thead>
+				<tr>
+					<td colspan="3"></td>
+					<td><small><b>AVALIADORES</b></small></td>
+				</tr>
+				<tr>
+					<td width="5"></td>
+					<td width="40%"><small><b>PERGUNTA</b></small></td>
+					<td><small><b>RESPOSTA</b></small></td>
+					{% set av = 1 %}
+					{% for evaluator in data.evaluators %}
+						<td width="5"><b title="Avaliador: {{ evaluator.firstName }}">AV{{ av }}</b></td>
+					{% set av = av + 1 %}
+					{% endfor %}
+				</tr>
+			</thead>
+			<tbody>
+				{% set q = 1 %}
+				{% for answer in data.answers %}
+
+				<tr id="sending-{{ sending.id }}">
+					<td><b>Q{{ q }}</b></td>
+					<td>{{ answer.issue.enunciation }}</td>
+					<td>{{ answer.answer.getAnswer|raw }}</td>
+
+					{% for evaluator in answer.evaluators %}
+					    <td><span title="Justificativa: {{ evaluator.correction.justification }}">{{ evaluator.correction.note }}</span></td>
+					{% endfor %}
+				
+				</tr>
+				{% set q = q + 1 %}
+				{% endfor %}
+
+				<tr>
+					<td colspan="3"></td>
+					{% for media in data.media %}
+						{% set value = media|replace('.', ',') %}
+					    <td><h4 title="Média {{ value }}">{{ value|slice(0, 5) }}</h4></td>
+					{% endfor %}	
+				</tr>
+			</tbody>
+		</table>
+		{% endif %}
+		</div>
+	</div>
+
+{% endblock %}

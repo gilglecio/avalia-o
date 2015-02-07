@@ -1,0 +1,47 @@
+{% extends 'front/layout.html.twig' %}
+
+{% block content %}
+
+	<div class="large-12 columns">
+
+		<h5>Página 1</h5>
+
+		{% if response  %}
+			{{ blocks.alert(response.text, response.class) }}
+		{% endif %}
+
+		<div class="row">
+			<div class="large-12 columns">
+				<h1>{{ questionnaire.name }}</h1>
+			</div>
+		</div>
+
+		<form action="{{ base }}questionnaire/finalize" method="post">
+			<input type="hidden" name="{{ csrf_key }}" value="{{ csrf_token }}">
+			<input type="hidden" name="questionnaire_id" value="{{ questionnaire.id }}">
+			<div class="row">
+				<div class="large-12 columns">
+				{% if questionnaire.issues %}
+
+					{% set number = 1 %}
+					{% for issue in questionnaire.issues %}
+						{% if issue.type == 'open' %} {{ blocks.issue_open(number, issue, urladm) }} {% endif %}
+						{% if issue.type == 'boolean' %} {{ blocks.issue_boolean(number, issue, urladm) }} {% endif %}
+						{% if issue.type == 'only_choice' %} {{ blocks.issue_only_choice(number, issue, urladm) }} {% endif %}
+						{% if issue.type == 'multiple_choice' %} {{ blocks.issue_multiple_choice(number, issue, urladm) }} {% endif %}
+						{% if issue.type == '0-10' %} {{ blocks.issue_0_10(number, issue, urladm) }} {% endif %}
+						{% if issue.type == 'scale' %} {{ blocks.issue_scale(number, issue, urladm) }} {% endif %}
+						{% set number = number + 1 %}
+					{% endfor %}
+				{% endif %}
+				</div>
+			</div>
+			<div class="row">
+				<div class="large-12 text-center columns">
+					<input class="button small" type="submit" value="Finalizar">
+				</div>
+			</div>
+		</form>
+	</div>
+
+{% endblock %}

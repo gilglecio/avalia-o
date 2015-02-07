@@ -1,0 +1,107 @@
+{% extends 'print.html.twig' %}
+
+{% import 'admin/blocks.html.twig' as blocks %}
+{% block css %}
+	{{ parent() }}
+	<style>
+	@media print{
+		body {
+			font-size: 0.7em;
+		}
+
+		hr {
+			margin: 0;
+			margin: 5px 0;
+		}
+	}
+	hr {
+		margin: 0;
+		margin: 3px 0;
+	}
+	</style>
+{% endblock %}
+
+{% block body %}
+	<div class="row">
+
+		<table style="border:none" width="100%">
+			<tr>
+				<td width="30%">
+					<img id="logo" width="200" src="{{ site_src_logo }}" alt="">
+				</td>
+				<td>
+					<span>Avaliação</span>
+					<h2>{{ evaluation.name }}</h2>
+					<span>De {{ evaluation.start_at|date('d/m/y à\\s H:i') ~ ' a ' ~ evaluation.end_at|date('d/m/y à\\s H:i') }}</span>
+				</td>
+			</tr>
+		</table>
+	</div>
+
+	<hr />
+
+	<div class="row">
+		<div class="large">
+			<table class="large-12" style="border:none">
+				<tr >
+					<td style="vertical-align:top">
+						<ul style="margin-bottom:0">
+							<li>Nome: <b>{{ valued.name }}</b></li>
+
+							{% if valued.groups|length > 0 %}
+							<li>Grupo{% if valued.groups|length > 1 %}s{% endif %}: <b>{{ valued.getNameGroups|join(', ') }}.</b></li>
+							{% endif %}
+
+							{% if valued.charges|length > 0 %}
+							<li>Cargo{% if valued.charges|length > 1 %}s{% endif %}: <b>{{ valued.getNameCharges|join(', ') }}.</b></li>
+							{% endif %}
+
+							{% if valued.ratings|length > 0 %}
+							<li>Classificaç{% if valued.ratings|length > 1 %}ões{% else %}ão{% endif %}: <b>{{ valued.getNameRatings|join(', ') }}.</b></li>
+							{% endif %}
+
+							<li>Data Nascimento: <b>{{ valued.birth|date('d/m/Y') }}</b></li>
+							<li>Ano Graduação: <b>{{ valued.graduated_at }}</b></li>
+						</ul>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+
+
+
+	<div class="row">
+		<p><b>Realização {{ sending.getAnswered('full') }}</b></p>
+		<div class="large-12 columns">
+
+			{% if answers %}
+
+				<div class="row">
+					<div class="large-12">
+						{% set number = 1 %}
+
+						{% for answer in answers %}
+
+							{% set issue = answer.issue %}
+							{% if issue.type == 'open' %} {{ blocks.issue_open(number, issue, urladm, false, null, answer, false) }} {% endif %}
+							{% if issue.type == 'boolean' %} {{ blocks.issue_boolean(number, issue, urladm, false, null, answer, false) }} {% endif %}
+							{% if issue.type == 'only_choice' %} {{ blocks.issue_only_choice(number, issue, urladm, false, null, answer, false) }} {% endif %}
+							{% if issue.type == 'multiple_choice' %} {{ blocks.issue_multiple_choice(number, issue, urladm, false, null, answer, false) }} {% endif %}
+							{% if issue.type in ['0_10', '0-10'] %} {{ blocks.issue_0_10(number, issue, urladm, false, null, answer, false) }} {% endif %}
+							{% if issue.type == 'scale' %} {{ blocks.issue_scale(number, issue, urladm, false, null, answer, false) }} {% endif %}
+							{% set number = number + 1 %}
+						{% endfor %}
+					</div>
+				</div>
+
+			{% endif %}
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="large-12 text-center">
+			<p style="font-size:0.8em">&copy; Copyright 2014 <img src="{{ site_src_logo }}" width="120" alt=""> <b>AVALIAÇÃO</b> - Todos os Direitos Reservados.</p>
+		</div>
+	</div>
+{% endblock %}

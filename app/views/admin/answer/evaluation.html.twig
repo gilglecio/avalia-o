@@ -1,0 +1,79 @@
+{% extends 'admin/answer/layout.html.twig' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block breadcrumbs %}
+	{{ parent() }}
+	<a class="current" href="#">{{ title }}</a>
+	<a href="{{ urladm ~ '/evaluation/new' }}">CRIAR AVALIAÇÃO</a>
+	<a href="javascript:history.back();">voltar</a>
+{% endblock %}
+
+{% block group %}
+	
+	{% if response %}
+		{{ blocks.alert(response.text, response.class) }}
+	{% endif %}
+
+	<div class="row">
+		<div class="large-12 columns">
+		{% if evaluations %}
+		<table class="large-12 columns">
+			<thead>
+				<tr>
+					<td width="5"><small><b>ENVIOS</b></small></td>
+					<td><small><b>NOME</b></small></td>
+					<td width="100"><small><b>CRIADA EM</b></small></td>
+					<td width="150"><small><b>QUESTIONÁRIO (s)</b></small></td>
+					<td width="150"><small><b>GRUPO (s)</b></small></td>
+					<td width="150"><small><b>AVALIADOR (s)</b></small></td>
+				</tr>
+			</thead>
+			<tbody>
+				{% for evaluation in evaluations %}
+					
+				<tr id="evaluation-{{ evaluation.id }}">
+					<td><span class="glyphicon glyphicon-send label success radius"> {{ evaluation.evaluation_sendings|length }}</span></td>
+					<td><strong><a href="{{ urladm ~ '/answer/evaluation/' ~ evaluation.id }}">{{ evaluation.name }}</a></strong></td>
+					<td>{{ evaluation.created_at|date('d M Y') }}</td>
+					<td>
+						{% if evaluation.evaluation_questionnaires %}
+						{% for key, evaluation_questionnaire in evaluation.evaluation_questionnaires %}
+						    <a class="glyphicon glyphicon-book" href="{{ urladm ~ '/questionnaire/' ~ evaluation_questionnaire.questionnaire_id }}" title="{{ evaluation_questionnaire.questionnaire.name }}"></a>
+						{% endfor %}
+						{% else %}
+						<a title="ADD Questionário" class="glyphicon glyphicon-plus-sign label alert radius" style="color:#fff" href="{{ urladm ~ '/evaluation/' ~ evaluation.id ~ '/edit#bottom' }}"> ADD</a>
+						{% endif %}
+					</td>
+					<td>
+						{% if evaluation.evaluation_groups %}
+						{% for key, evaluation_group in evaluation.evaluation_groups %}
+						    <a class="glyphicon glyphicon-th" href="{{ urladm ~ '/group/' ~ evaluation_group.group_id }}" title="{{ evaluation_group.group.name }} | {{ evaluation_group.group.members|length }} membros"></a>
+						{% endfor %}
+						{% else %}
+						<a title="ADD Grupo" class="glyphicon glyphicon-plus-sign label alert radius" style="color:#fff" href="{{ urladm ~ '/evaluation/' ~ evaluation.id ~ '/edit#bottom' }}"> ADD</a>
+						{% endif %}
+					</td>
+					<td>
+						{% if evaluation.evaluation_evaluators %}
+						{% for key, evaluation_evaluator in evaluation.evaluation_evaluators %}
+						    <a class="glyphicon glyphicon-user" title="{{ evaluation_evaluator.evaluator.name }}" href="{{ urladm ~ '/user/' ~ evaluation_evaluator.evaluator_id }}"></a>
+						{% endfor %}
+						{% else %}
+						<a class="glyphicon glyphicon-plus-sign label alert radius" style="color:#fff" title="ADD Avaliador" href="{{ urladm ~ '/evaluation/' ~ evaluation.id ~ '/edit#bottom' }}"> ADD</a>
+						{% endif %}
+					</td>
+				</tr>
+
+				{% endfor %}
+			</tbody>
+		</table>
+		{% else %}
+			<div class="panel text-center">
+				Vazio
+			</div>
+		{% endif %}
+		</div>
+	</div>
+
+{% endblock %}

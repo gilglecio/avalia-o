@@ -1,0 +1,57 @@
+{% extends 'admin/answer/layout.html.twig' %}
+
+{% block breadcrumbs %}
+	{{ parent() }}
+	<a href="{{ urladm ~ '/answer/evaluation/' ~ evaluation.id }}">{{ title }}</a>
+	<a class="current" href="#">envios</a>
+	<a class="current" href="#">avaliados</a>
+	<a href="javascript:history.back();">voltar</a>
+{% endblock %}
+
+{% block group %}
+
+	<div class="row">
+		<div class="large-12 columns">
+		{% if sendings %}
+		<table class="large-12 columns">
+			<thead>
+				<tr>
+					<td width="40%"><small><b>NOME</b></small></td>
+					<td><small><b>STATUS</b></small></td>
+					<td><small><b>MÉDIA</b></small></td>
+				</tr>
+			</thead>
+			<tbody>
+				{% for sending in sendings %}
+
+				<tr id="sending-{{ sending.id }}">
+					
+					{% if sending.status > 1 %}
+					<td><strong><a href="{{ urladm ~ '/sending/sending/' ~ sending.id ~ '/correction' }}">{{ sending.valued.name }}</a></strong></td>
+					{% else %}
+					<td>{{ sending.valued.name }}</td>
+					{% endif %}
+
+					<td>{{ sending.getStatus }}</td>
+					<td>{{ sending.getMedia.media|join(' / ') }}</td>
+					{# <td>	
+						{% if sending.status > 2 %}
+						<a href="{{ base ~ '/reply/' ~ sending.getEncodeToken }}">Respostas</a>
+						{% else %}-{% endif %}
+					</td>
+
+					{% if sending.status > 4 %}
+					<td><a href="{{ base ~ '/reply/' ~ sending.getEncodeToken }}">Correção</a></td>
+					{% else %}
+					<td>-</td>
+					{% endif %} #}
+				</tr>
+
+				{% endfor %}
+			</tbody>
+		</table>
+		{% endif %}
+		</div>
+	</div>
+
+{% endblock %}

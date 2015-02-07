@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Login - {{ parent() }} {% endblock %}
+
+{% import 'admin/blocks.html.twig' as blocks %}
+
+{% block nav_left %}
+	<li><a href="">AVALIAÇÃO</a></li>
+{% endblock %}
+
+{% block body %}
+	<div class="row" style="margin-top:50px">
+		<div class="large-4 push-4">
+
+			<h1>Login</h1>
+
+			{% if response %}
+				{{ blocks.alert(response.text, response.class) }}
+			{% endif %}
+
+			<form action="{{ base }}" method="post" class="custom" >
+					<input type="hidden" name="{{ csrf_key }}" value="{{ csrf_token }}">
+
+					<label for="username">Usuário</label>
+					<input type="text" required="1	" name="username">
+					<script>$('input[name="username"]').focus();</script>
+
+					<label for="password">Senha</label>
+					<input type="password" required="1	" name="password">
+					
+					<p><label for="remember_me"></label>
+					<input type="checkbox" name="remeber_me"> Lembrar-me</p>
+				
+				<input class="button alert small " type="submit" value="Logar">
+			</form>
+		</div>
+	</div>
+{% endblock %}

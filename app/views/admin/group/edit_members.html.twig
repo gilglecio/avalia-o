@@ -1,0 +1,88 @@
+{% extends 'admin/group/layout.html.twig' %}
+
+{% block breadcrumbs %}
+	{{ parent() }}
+	<a class="current" href="#">{{ group.name }} <span>(<span class="count_members">{{ members|length }}</span>)</span></a>
+	<a class="current" href="#">{{ title }}</a>
+	<a href="javascript:history.back();">voltar</a>
+{% endblock %}
+
+{% block group %}
+	
+	{% if response %}
+		{{ blocks.alert(response.text, response.class) }}
+	{% endif %}
+
+	<div class="row">
+		<div class="large-12 columns">
+			<p>Criado em {{ group.created_at|date('d M Y')}}, hoje com <strong><span class="count_members">{{ members|length }}</span></strong></p>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="large-12 columns">
+			
+				{% if checkboxes %}
+				<table class="large-12">
+					<thead>
+						<tr>
+							<td><small><b>AÇÕES</b></small></td>
+							<td><small><b>NOME</b></small></td>
+							<td><small><b>CRIADO EM</b></small></td>
+						</tr>
+					</thead>
+					<tbody>
+						{% for member_id, member in checkboxes %}
+						<tr>
+							<td width="150">
+								<div class="switch small round" style="margin-bottom:0">
+									<input id="{{ 'm' ~ member_id }}" class="check_member" type="radio" data-member="{{ member_id }}" data-action="rm" name="member_id-{{ member_id }}" checked value="{{ member_id }}">
+								  	<label for="{{ 'm' ~ member_id }}" onclick="">Adicionar</label>
+									
+									<input id="{{ 'm' ~ member_id }}1" class="check_member" type="radio" data-member="{{ member_id }}" data-action="add" name="member_id-{{ member_id }}" {% if member.checked %}checked{% endif %} value="{{ member_id }}">
+								  	<label for="{{ 'm' ~ member_id }}1" onclick="">Remover</label>
+
+								  	<span></span>
+								</div>
+							</td>
+							<td ><strong>{{ member.data.name }}</strong></td>
+							<td width="120"><strong>{{ member.data.created_at|date('d M Y') }}</strong></td>
+						</tr>    
+						{% endfor %}
+					</tbody>
+				</table>
+				{% else %}
+				<div class="panel text-center">
+					<strong>Não há nenhum AVALIADO cadastrado...</strong>
+					<a href="{{ urladm ~ '/user/new/valued' }}" class="button small">Cadastrar Avaliado</a>
+				</div>
+				{% endif %}
+		</div>
+	</div>
+
+{% endblock %}
+
+{% block js_bottom %}
+	{{ parent() }}
+	<script>
+		$(function () {
+			$('.check_member').on('change', function () {
+
+				var that = $(this),
+
+					data = {
+						action: that.attr('data-action'),
+						member_id: that.attr('data-member'),
+						group_id: {{ group.id }},
+						{{ csrf_key }}: '{{ csrf_token }}'
+					};
+
+				$.post("{{ urladm ~ '/group/' ~ group.id ~ '/edit/members' }}", data, function(data, textStatus, xhr) {
+					
+					$('.count_members').html(data);
+
+				}, 'json');
+			});
+		});
+	</script>
+{% endblock %}

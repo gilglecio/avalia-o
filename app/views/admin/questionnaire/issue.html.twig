@@ -1,0 +1,130 @@
+{% extends 'admin/questionnaire/layout.html.twig' %}
+
+{% block breadcrumbs %}
+	{{ parent() }}
+	<a class="current" href="#">{{ title }}</a>
+	<a href="{{ urladm ~ '/questionnaire/' ~ questionnaire.id ~ '/edit' }}">EDITAR</a>
+	<a href="{{ urladm ~ '/questionnaire/' ~ questionnaire.id ~ '/show' }}">VISUALIZAR</a>
+	<a href="javascript:history.back();">voltar</a>
+{% endblock %}
+
+{% block group %}
+	
+	{% if response %}
+		{{ blocks.alert(response.text, response.class) }}
+	{% endif %}
+
+	<div class="row">
+		<div class="large-12 columns">
+		{% if questionnaire.issues %}
+		<table class="large-12 columns">
+			<thead>
+				<tr>
+					<td width="5"></td>
+					<td><small><b>ENUNCIADO</b></small></td>
+					<td><small><b>TIPO</b></small></td>
+					<td><small><b>ORDEM</b></small></td>
+					<td><small><b>MIN/MAX</b></small></td>
+					{# <td><small><b>VALOR / Pts</b></small></td> #}
+					<td><small><b>OBRIGATÓRIA</b></small></td>
+					<td><small><b>JUSTIFICATIVA</b></small></td>
+					<td><small><b>AÇÕES</b></small></td>
+				</tr>
+			</thead>
+			<tbody>
+				{% set i = 1 %}
+				{% for issue in questionnaire.issues %}
+				
+				<tr id="issue-{{ issue.id }}">
+					<td><strong>Q{{ i }}</strong></td>
+					<td><strong><a href="{{ urladm ~ '/issue/' ~ issue.id ~ '/edit' }}">{{ issue.enunciation }}</a></strong></td>
+					<td>
+						{{ issue.getType }}
+					</td>
+					<td><input type="text" maxlength="2" data-old="{{ issue.order }}" data-issue="{{ issue.id }}" class="issue_order" style="width:30px; margin:0; margin-top:-6px;" value="{{ issue.order }}"></td>
+					
+					{% if issue.type in ['0-10'] %}
+					    <td title="Nota: Mínima {{ issue.min_note}} / Máxima {{ issue.max_note }}">{{ issue.min_note }}/{{ issue.max_note }}</td>
+					{% else %}
+						<td>-</td>
+					{% endif %}
+					{# <td><input type="number" min="0.5" max="20" step="0.25" data-old="{{ issue.value }}" data-issue="{{ issue.id }}" class="issue_value" style="width:60px; margin:0; margin-top:-6px;" value="{{ issue.value }}"></td> #}
+					<td>{{ issue.getRequired }}</td>
+					<td>{{ issue.getJustification }}</td>
+					<td >
+
+
+						<a class="evaluation_transfer glyphicon glyphicon-new-window" title="Duplicar" href="{{ urladm ~ '/issue/' ~ issue.id ~ '/copy' }}"></a>
+
+						{% if questionnaire.can_edit %}
+						<a  data-confirm="1" class="glyphicon glyphicon-remove evaluation_delete" href="{{ urladm ~ '/questionnaire/' ~ questionnaire.id ~ '/edit/issue/' ~ issue.id ~ '/delete' }}"></a>
+						{% else %}
+						<span title="Questionário está sendo usando em Avaliação" class="glyphicon glyphicon-remove evaluation_delete" style="color:#ccc"></span>
+						{% endif %}
+					</td>
+				</tr>
+				{% set i = i + 1 %}
+				{% endfor %}
+			</tbody>
+		</table>
+		{% else %}
+			<div class="panel text-center">
+				<strong>QUESTIONÁRIO SEM QUESTÕES.</strong>
+				<a href="{{ urladm ~ '/questionnaire/' ~ questionnaire.id ~ '/edit' }}" class="button small">Adicionar Perguntas</a>
+				<a href="{{ urladm ~ '/issue/new' }}" class="button small">Criar Perguntas</a>
+			</div>
+		{% endif %}
+		</div>
+	</div>
+
+{% endblock %}
+
+{% block js_bottom %}
+	{{ parent() }}
+<script>
+	$(function () {
+		$('.issue_order').on('blur', function () {
+
+			var that = $(this),
+				val = that.val(),
+				issue_id = that.attr('data-issue')
+				data = {
+					'order': val,
+					'issue_id': issue_id,
+					'questionnaire_id': {{ questionnaire.id }},
+					{{ csrf_key }}: '{{ csrf_token }}'
+				};
+
+			if (that.attr('data-old') == val) return false;
+
+			$.post("{{ urladm ~ '/issue/' }}" + issue_id + '/edit/order', data, function (response) {
+				if (response) {
+					window.location = "{{ urladm ~ '/questionnaire/' ~ questionnaire.id }}";
+				};
+			});
+		});
+
+		$('.issue_value').on('blur', function () {
+
+			var that = $(this),
+				val = that.val(),
+				issue_id = that.attr('data-issue')
+				data = {
+					'value': val,
+					'issue_id': issue_id,
+					'questionnaire_id': {{ questionnaire.id }},
+					{{ csrf_key }}: '{{ csrf_token }}'
+				};
+
+			if (that.attr('data-old') == val) return false;
+
+			$.post("{{ urladm ~ '/issue/' }}" + issue_id + '/edit/value', data, function (response) {
+				if (response) {
+					window.location = "{{ urladm ~ '/questionnaire/' ~ questionnaire.id }}";
+				};
+			});
+		});
+	});
+</script>
+{% endblock %}
+

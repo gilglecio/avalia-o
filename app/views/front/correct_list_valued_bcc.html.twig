@@ -1,0 +1,55 @@
+{% extends 'front/layout.html.twig' %}
+
+{% block nav_right %}
+	{{ parent() }}
+	<li><a href="">{{ evaluator.name }}</a></li>
+	<li><a href="">{{ evaluator.email }}</a></li>
+{% endblock %}
+
+{% block nav_left %}
+	{{ parent() }}
+	<li><a href="">{{ evaluation.subject }}</a></li>
+{% endblock %}
+
+{% block content %}
+	
+	{% if response %}
+		{{ blocks.alert(response.text, response.class) }}
+	{% endif %}
+
+	<div class="row">
+		<div class="large-12">
+			<h1>{{ title }}</h1>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="large-12">
+			<table class="large-12">
+				<thead>
+					<tr>
+						<td width="150"><small>STATUS</small></td>
+						<td><small>FUNCIONÁRIO</small></td>
+						<td width="150"><small>RESPONDIDO EM</small></td>
+					</tr>
+				</thead>
+				<tbody>
+					{% for sending in sendings %}
+						<tr>
+							<td>{{ sending.getStatus }}</td>
+							<td>
+								{% if sending.status > 1 %}
+								<a href="{{ base ~ 'not_evaluate/' ~ token ~ '/valued/' ~ sending.valued_id }}"><strong>{{ sending.valued.name }}</strong></a>
+								{% else %}
+								    {{ sending.valued.name }}
+								{% endif %}
+							</td>
+							<td>{% if sending.answered_at %}{{ sending.answered_at|date('d/m/y H:i') }}{% else %}-{% endif %}</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+{% endblock %}

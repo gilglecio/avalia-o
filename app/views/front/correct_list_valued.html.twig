@@ -1,0 +1,96 @@
+{% extends 'front/layout.html.twig' %}
+
+{% block nav_right %}
+	{{ parent() }}
+	<li><a href="">{{ evaluator.name }}</a></li>
+	<li><a href="">{{ evaluator.email }}</a></li>
+{% endblock %}
+
+{% block nav_left %}
+	{{ parent() }}
+	<li><a href="">{{ evaluation.subject|default(evaluation.name) }}</a></li>
+{% endblock %}
+
+{% block content %}
+	
+	{% if response %}
+		{{ blocks.alert(response.text, response.class) }}
+	{% endif %}
+
+	<div class="row">
+		<div class="large-12">
+			<h1>{{ title }}</h1>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="large-12">
+			<table class="large-12">
+				<thead>
+					<tr>
+						<td><small>STATUS</small></td>
+						<td><small>FUNCIONÁRIO</small></td>
+						<td><small>RESPONDIDO EM</small></td>
+						<td><small>CORRIGIDO EM</small></td>
+						<td><small>MÉDIA</small></td>
+					</tr>
+				</thead>
+				<tbody>
+					{% for sending in sendings %}
+
+						{% set isCorrectedByEvaluator = sending.isCorrectedByEvaluator(evaluator.id) %}
+						{% set media = sending.getMedia(evaluator.id) %}
+						{% set url_correction = base ~ 'correct/' ~ token ~ '/valued/' ~ sending.valued.id ~ '/sending/' ~ sending.id %}
+
+						<tr>
+							<td width="230">
+								{% if isCorrectedByEvaluator %}
+								    {{ sending.getStatus }}
+								{% else %}
+									{% if sending.status == 5 %}
+										<a href="{{ url_correction }}"><b>Corrigir</b></a>
+									{% else %}
+									    {{ sending.getStatus }}
+									{% endif %}
+								{% endif %}
+							</td>	
+							<td>
+								{#
+								{% if isCorrectedByEvaluator %}
+									<a href="{{ urladm ~ '/sending/sending/' ~ sending.id ~ '/correction' }}"><strong>{{ sending.valued.name }}</strong></a>
+								{% else %}
+								    <a href="{{ url_correction }}"><strong>{{ sending.valued.name }}</strong></a>
+								{% endif %}
+								#}
+
+								<a href="{{ url_correction }}"><strong>{{ sending.valued.name }}</strong></a>
+							</td>
+							
+							<td>
+								{% if sending.answered_at %}
+									{{ sending.answered_at|date('d/m/y H:i') }}
+									<a href="{{ url_correction }}?print=answered" target="_blank" class="glyphicon glyphicon-print"></a>
+								{% else %}
+									-
+								{% endif %}
+							</td>
+
+							<td>
+								{% if sending.corrected_at %}
+									{{ sending.corrected_at|date('d/m/y H:i') }}
+									<a href="{{ url_correction }}?print=corrected" target="_blank" class="glyphicon glyphicon-print"></a>
+								{% else %}
+									-
+								{% endif %}
+							</td>
+
+							<td>{{ media }}</td>
+							
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+{% endblock %}

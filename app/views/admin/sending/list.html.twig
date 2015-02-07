@@ -1,0 +1,141 @@
+{% extends 'admin/sending/layout.html.twig' %}
+
+{% block breadcrumbs %}
+	{{ parent() }}
+	<a class="current" href="#">{{ evaluation.name }}</a>
+	<a class="current" href="#">{{ title }}</a>
+	<a href="javascript:history.back();">voltar</a>
+{% endblock %}
+
+{% block group %}
+	
+	{% if response %}
+		{{ blocks.alert(response.text, response.class) }}
+	{% endif %}
+
+	<a class="reveal-link label alert radius" data-reveal-id="modal">Lembrete</a>
+
+	<hr />
+	
+	<div id="modal" class="reveal-modal small">
+		<h3>Lembrete</h3>
+	    <div id="modalContent">
+	    	<form method="post" action="{{ urladm ~ '/sending/' ~ evaluation_sending_id ~ '/remember' }}">
+	    		<input type="hidden" name="{{ csrf_key }}" value="{{ csrf_token }}">
+				<div class="row">
+					<label for="text">Texto (Use #tags)</label>
+					<textarea style="height:70px" id="message_email" name="text">{{ value.text }}</textarea>
+					<h5>Para</h5>
+					<label><input {% if value.to == 'all' %}checked{% endif %} type="radio" value="all" name="to"> Todos</label>
+					<label><input {% if value.to == 'not_answered' %}checked{% endif %} type="radio" checked value="not_answered" name="to"> Apenas para quem não respondeu</label>
+					<label><input {% if value.to == 'specify' %}checked{% endif %} type="radio" value="specify" name="to"> Especificar</label>
+					
+					{% for sending in sendings %}
+					<label title="{{ sending.getStatus }}" class="label radius alert" style="padding:0; padding:4px">
+						<input {% if sending.valued.id in value.valued_id %}{% endif %} style="margin:0" type="checkbox" name="valued_id[]" value="{{ sending.valued.id }}"> 
+						{{ sending.valued.firstName }}</label>
+					{% endfor %}
+
+					<hr />
+
+					<input type="submit" class="button small alert" value="Enviar">
+
+				</div>
+			</form>
+	    </div>
+	    <a class="close-reveal-modal">&#215;</a>
+	</div>
+
+	<div class="row">
+		<div class="large-12 columns">
+		{% if sendings %}
+		<table class="large-12 columns">
+			<thead>
+				<tr>
+					<td width="40%"><small><b>FUNCIONÁRIO</b></small></td>
+					<td><small><b>STATUS</b></small></td>
+					<td><small><b>MÉDIA</b></small></td>
+					<td width="180"><small><b>AÇÕES</b></small></td>
+				</tr>
+			</thead>
+			<tbody>
+				{% for sending in sendings %}
+
+				<tr id="sending-{{ sending.id }}">
+					
+					{% if sending.status > 2 %}
+					<td><strong><a title="Ver Correção" href="{{ urladm ~ '/sending/sending/' ~ sending.id ~ '/correction' }}">{{ sending.valued.name }}</a></strong></td>
+					{% else %}
+					<td>{{ sending.valued.name }}</td>
+					{% endif %}
+
+					<td>
+						{{ sending.getStatus }}
+						{% if sending.status == 1 %} em {{ sending.viewed_at|date('d M y  H:i') }}{% endif %}
+						{% if sending.status == 3 %} em {{ sending.answered_at|date('d M y  H:i') }}{% endif %}
+						{% if sending.status == 5 %} em {{ sending.corrected_at|date('d M y  H:i') }}{% endif %}
+					</td>
+
+					{% if sending.status > 4 %}
+					<td>
+						{{ sending.getMedia.media|join(' / ') }}
+					</td>
+					{% else %}
+					<td>-</td>
+					{% endif %}
+
+					<td>
+					{% if sending.status > 4 %}
+						<a target="_blank" title="Imprimir Respostas" class="label alert radius glyphicon glyphicon-print evaluation_sending_print " href="{{ urladm ~ '/sending/sending/' ~ sending.id ~ '/print' }}"> Respostas</a>
+
+						<a class="glyphicon glyphicon-align-justify" title="Ver Correção" href="{{ urladm ~ '/sending/sending/' ~ sending.id ~ '/correction' }}"></a>
+						<a class="glyphicon glyphicon" title="Editar PDF" href="{{ urladm ~ '/sending/sending/' ~ sending.id ~ '/pdf' }}"><img width="18" style="margin-top:-3px;" src="{{ base }}static/img/pdf.png" alt=""></a>
+					
+					{% elseif (sending.status > 2) %}
+						<a title="Imprimir Respostas" class="label alert radius glyphicon glyphicon-print evaluation_sending_print " href="{{ urladm ~ '/sending/sending/' ~ sending.id ~ '/print' }}"> Respostas</a>
+					{% else %}
+					    -
+					{% endif %}
+					</td>
+				</tr>
+
+				{% endfor %}
+			</tbody>
+		</table>
+		{% else %}
+			<div class="panel text-center">
+				<strong>NENHUM QUESTIONÁRIO CRIADO ATÉ O MOMENTO.</strong>
+				<a href="{{ urladm ~ '/sending/new' }}" class="button alert small">Criar um Questionário</a>
+			</div>
+		{% endif %}
+		</div>
+	</div>
+
+{% endblock %}
+
+{% block js_bottom %}
+	{{ parent() }}
+	<script>
+ 	$('#specify').textcomplete([
+ 		{
+	        match: /\B#(\w*)$/,
+	        search: function (term, callback) {
+	            callback($.map(valued_tags, function (mention) {
+	                return mention.indexOf(term) === 0 ? mention : null;
+	            }));
+	        },
+	        index: 1,
+	        replace: function (mention) {
+	            return '#' + mention + ' ';
+	        }
+	    }
+	]).overlay([
+	    {
+	        match: /\B@\w+/g,
+	        css: {
+	            'background-color': '#d8dfea'
+	        }
+	    }
+	]);
+	</script>
+{% endblock %}

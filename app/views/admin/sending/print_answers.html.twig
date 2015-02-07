@@ -1,0 +1,121 @@
+{% extends 'print.html.twig' %}
+
+{% import 'admin/blocks.html.twig' as blocks %}
+
+{% block css %}
+	{{ parent() }}
+	<style>
+	@media print{
+		body {
+			font-size: 0.7em;
+			padding: 45px;
+		}
+
+		hr {
+			margin: 0;
+			margin: 5px 0;
+		}
+
+		.panel {
+			padding:0;
+			border:none;
+		}
+	}
+	</style>
+{% endblock %}
+
+{% block body %}
+
+	<div class="row">
+		<div class="large-12">
+			<table border="0" style="border:none">
+				<tr>
+					<td><img src="{{ site_src_logo }}"></td>
+					<td>
+						<ul>
+							<li><b>Avaliação:</b> {{ evaluation.name }} (Período {{ evaluation.start_at|date('d/m/y') }} a {{ evaluation.start_at|date('d/m/y') }})</li>
+							<li><b>Respondida</b> por {{ valued.name }} em {{ sending.answered_at|date('d/m/y à\\s H:i') }}</li>
+							<li><b>Respostas:</b> {{ answers|length }}</li>
+						</ul>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+			
+
+	<hr />
+
+	{% if answers %}
+	<div class="row">
+		<div class="large-12 columns">
+			<ul>
+				{% set q = 1 %}
+				{% for answer in data.answers %}
+
+					<li>
+						<h5>Q{{ q }} - <b>{{ answer.issue.enunciation }}</b></h5><br />
+						<div class="row">
+							
+							<div class="large-12">
+								<div style="margin-left:29px">
+									<b>Autoavaliação</b>
+									<ul style="">
+										<li>
+											{% if answer.issue.type == '0-10' %}
+												<b>Nota:</b> {{ answer.answer.getAnswer|replace('.',',') }}
+											{% else %}
+												{{ answer.answer.getAnswer|raw }}
+											{% endif %} 
+										</li>
+
+										{% if answer.answer.justification %}
+										<li style="margin-top:10px"><p><b>Justificativa:</b> {{ answer.answer.justification }}</p></li>
+										{% endif %}
+									</ul>
+								</div>
+							</div>
+						</div>
+
+						<div class="row">
+
+							{% for answer_evaluator_id, evaluator in answer.evaluators %}
+								{% if answer_evaluator_id == evaluator_id %}
+							    <div style="margin-left:29px">
+							    	<b>Avaliação</b>
+							    	<hr />
+									<ul>
+										<li><b>Nota:</b> {{ evaluator.correction.note }}</li>
+										{% if evaluator.correction.justification %}
+											<li><b>Justificativa:</b> {{ evaluator.correction.justification }}</li>
+										{% endif %}
+									</ul>
+							    {% endif %}
+							{% endfor %}
+						</div>
+					</li>
+
+					<hr />
+				
+				</tr>
+				{% set q = q + 1 %}
+				{% endfor %}
+			</ul>
+		</div>
+	</div>
+	{% else %}
+	<div class="row">
+		<div class="large-12">
+			<strong>{{ valued.name }}</strong> ainda não respondeu a avaliação. <a href="{{ base ~ '/correct/' ~ token }}">Voltar</a>
+		</div>
+	</div>
+	{% endif %}
+
+{% endblock %}
+
+{% block js_bottom %}
+	{{ parent() }}
+	<script type="text/javascript">
+	window.print();
+	</script>    
+{% endblock %}

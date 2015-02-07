@@ -1,0 +1,22 @@
+{
+    "name": "avaliacao/main",
+    "description": "Blog com Slim Framework e PHP-ActiveRecord",
+    "require": {
+        "slim/views": "dev-master",
+        "slim/extras": "dev-master",
+        "slim/strong": "dev-develop",
+        "php-activerecord/php-activerecord": "dev-master",
+        "pfbc/pfbc": "dev-master",
+        "twig/twig": "dev-master",
+        "excelwebzone/zend-search": "dev-master",
+        "swiftmailer/swiftmailer": "5.1.*@dev"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Gilglécio Santos",
+            "email": "gilglecio_765@hotmail.com"
+        }
+    ],
+    "minimum-stability": "dev"
+}

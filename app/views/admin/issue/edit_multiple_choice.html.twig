@@ -1,0 +1,54 @@
+{% extends 'admin/issue/edit.html.twig' %}
+
+{% block issue %}
+
+	<h4>Opções de resposta</h4>
+
+	<label><b>Opções de resposta:</b> Insira cada opção em uma linha separada.</label>
+	<textarea style="height:120px;" name="alternatives">{{ issue.alternatives_for_textarea }}</textarea>
+	
+	<div class="row">
+		<div class="large-6">
+			<div class="large-6 columns">
+				<label for="min_choice">Minima Requerida</label>
+				<select name="min_choice">
+					<option value="">Aguardando alterantivas...</option>
+				</select>
+			</div>
+			<div class="large-6 columns">
+				<label for="min_choice">Máxima Permitida</label>
+				<select name="max_choice">
+					<option value="">Aguardando alterantivas...</option>
+				</select>
+			</div>
+		</div>
+	</div>
+	<hr />
+{% endblock %}
+
+{% block js_bottom %}
+	{{ parent() }}
+	<script>
+	$('textarea[name="alternatives"]').on('blur', function () {
+		
+		var alternatives = $(this).val().split("\n");
+
+		if ($.trim(alternatives) == '') {
+			return false;
+		};
+
+		$('select[name="min_choice"]').html('');
+		$('select[name="max_choice"]').html('');
+
+		var filter = $.grep(alternatives, function(alternative){
+		  	return (alternative != '');
+		});
+		var choices = '';
+		$.each(filter, function (i) {
+			choices += '<option value="'+(i+1)+'">-- ('+(i+1)+') --</option>';
+		});
+		$('select[name="min_choice"]').append(choices);
+		$('select[name="max_choice"]').append(choices);
+	});
+	</script>
+{% endblock %}

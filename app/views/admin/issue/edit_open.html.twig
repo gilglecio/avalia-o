@@ -1,0 +1,24 @@
+{% extends 'admin/issue/edit.html.twig' %}
+
+{% block options %}
+<label>
+	<input type="checkbox" {% if issue.required %}checked{% endif %} name="required"> 
+	<b>Exigir uma resposta para esta Pergunta.</b>
+	Exiba uma mensagem de erro quando os avaliados tentarem ignorar essa Pergunta. <small>(Opcional)</small>
+</label>
+{# <hr />
+<div class="large-4">
+	<div class="large-6 small-6">
+		<label for="min_note">
+			Nota Mínima
+			<input type="number" value="{{ issue.min_note|default(0) }}" name="min_note">
+		</label>
+	</div>
+	<div class="large-6 small-6">
+		<label for="min_note">
+			Nota Máxima
+			<input type="number" value="{{ issue.max_note|default(10) }}" name="max_note">
+		</label>
+	</div>
+</div> #}
+{% endblock %}

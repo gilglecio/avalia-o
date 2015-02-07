@@ -1,0 +1,14 @@
+body	{background: #FFF; color: #000; font: 12pt serif;}
+a:link, a:visited	{color: #333; text-decoration: underline;}
+
+.breadcrumbs,
+.top-bar,
+.button-print {
+	display: none;
+}
+
+.panel {
+	border: none;
+	padding: 0;
+	margin: 0;
+}

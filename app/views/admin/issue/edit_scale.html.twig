@@ -1,0 +1,80 @@
+{% extends 'admin/issue/edit.html.twig' %}
+
+{% block issue %}
+
+	<h4>Escalas</h4>
+
+	<label><input type="radio" name="action" {% if not scales %}disabled{% endif %} value="select" id="select_scale"> Selecionar uma Escala</label>
+
+	{% if scales %}
+	<div id="content_select_scale" class="hide">
+		<select name="scale_id">
+			<option value="">-- Selecione uma Escala --</option>
+			{% for scale in scales %}
+			    <option value="{{ scale.id }}">{{ scale.name }}</option>
+			{% endfor %}
+		</select>
+	</div>
+	{% endif %}
+
+	<label><input type="radio" value="new" name="action" checked id="new_scale"> Criar/Editar uma escala</label>
+
+	<div id="content_new_scale">
+		<div class="large-8">
+			<div class="large-9 columns">
+				<input type="text" placeholder="Nome/Apelido da Escala" value="{{ issue.scale.name }}" name="scale_name">
+			</div>
+			<div class="large-3 columns">
+				<label>Peso:</label>
+			</div>
+		</div>
+
+		{% if issue %}
+		{% for scale in issue.scale.options %}
+		
+		<div class="large-8">
+			<div class="large-9 columns">
+				<input value="{{ scale.row.name }}" name="scale_label[]" type="text">
+			</div>
+			<div class="large-3 columns">
+				<input name="scale_value[]" type="text" value="{{ scale.row.position }}">
+			</div>
+		</div>
+		{% endfor %}
+		{% else %}
+		{% for ind in 1..5 %}
+		<div class="large-8">
+			<div class="large-9 columns">
+				<input placeholder="Rótulo {{ ind }}" name="scale_label[]" type="text">
+			</div>
+			<div class="large-3 columns">
+				<input name="scale_value[]" type="text" value="{{ ind }}">
+			</div>
+		</div>
+		{% endfor %}
+		{% endif %}
+		
+	</div>
+
+	<hr />
+
+{% endblock %}
+
+{% block js_bottom %}
+
+	{{ parent() }}
+	
+	<script>
+		$(function () {
+			$('#select_scale').on('change', function () {
+				$('#content_select_scale').show();
+				$('#content_new_scale').hide();
+			});
+			$('#new_scale').on('change', function () {
+				$('#content_select_scale').hide();
+				$('#content_new_scale').show();
+			});
+		});
+
+	</script>
+{% endblock %}

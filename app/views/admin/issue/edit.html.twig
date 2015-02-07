@@ -1,0 +1,60 @@
+{% extends 'admin/issue/layout.html.twig' %}
+
+{% block breadcrumbs %}
+	{{ parent() }}
+	<a class="current" href="#">{{ title }}</a>
+	<a href="javascript:history.back();">voltar</a>
+{% endblock %}
+
+{% block group %}
+	
+	{% if response %}
+		{{ blocks.alert(response.text, response.class) }}
+	{% endif %}
+
+	{% block change_issue %}
+	{% endblock %}
+
+	<div class="row">
+		<div class="large-12 columns">
+			{% set action = 'new/' ~ type %}
+			{% if issue %}
+				{% set action = issue.id ~ '/edit' %}
+			{% endif %}
+			<form action="{{ urladm ~ '/issue/' ~ action }}" method="post">
+				<input type="hidden" name="{{ csrf_key }}" value="{{ csrf_token }}">
+				<input type="hidden" name="type" value="{{ type }}">
+
+				{% if questionnaire_id %}
+				<input type="hidden" name="questionnaire_id" value="{{ questionnaire_id }}">
+				{% endif %}
+
+				<fieldset>
+					<label for="enunciation">
+						<h6>Pergunta</h6>
+						<textarea required="1" style="height:80px" name="enunciation">{{ issue.enunciation }}</textarea>
+					</label>
+
+					{% block issue %}
+					{% endblock %}
+
+					{% block options %}
+						{{ blocks.issue_options(issue, type) }}
+					{% endblock %}
+
+				</fieldset>
+
+				<div>
+					<input type="submit" name="save" value="Finalizar" class="button alert small">
+					{% if issue %}
+						<a data-confirm="1" href="{{ urladm ~ '/issue/' ~ issue.id ~ '/delete' }}" class="button secondary small">Apagar</a>
+					{% endif %}
+					<a href="javascript:history.back();" class="button secondary small">Cancelar</a>
+				</div>
+
+			</form>
+		</div>
+	</div>
+
+{% endblock %}
+

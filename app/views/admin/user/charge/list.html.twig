@@ -1,0 +1,67 @@
+{% extends 'admin/user/charge/layout.html.twig' %}
+
+{% block breadcrumbs %}
+	{{ parent() }}
+	<a class="current" href="#">{{ title }}</a>
+	<a href="{{ urladm ~ '/user/valued/rating' }}">Classificações</a>
+	<a href="javascript:history.back();">voltar</a>
+{% endblock %}
+
+{% block content_charge %}
+	
+	{% if response %}
+		{{ blocks.alert(response.text, response.class) }}
+	{% endif %}
+
+	<div class="row">
+		<form action="{{ urladm ~ '/user/valued/charge/new' }}" class="custom" method="post">
+			<input type="hidden" name="{{ csrf_key }}" value="{{ csrf_token }}">
+			<div class="large-6 columns">
+				<div class="row collapse">
+					
+          			<label for="name">Separe cada cargo por "," Virgula</label>
+          			<div class="large-10 columns">
+	            		<input type="text" name="name">
+	          		</div>
+	          		<div class="large-2 columns">
+	            		<span class="postfix">
+	            			<input type="submit" class="button alert prefix" value="Finalizar">
+	            		</span>
+	          		</div>
+          		</div>
+        	</div>
+		</form>
+	</div>
+
+	<div class="row">
+		<div class="large-12 columns">
+		<table class="large-12 columns">
+			<thead>
+				<tr>
+					<td><small><b>NOME</b></small></td>
+					<td><small><b>USUÁRIOS</b></small></td>
+					<td><small><b>AÇÕES</b></small></td>
+				</tr>
+			</thead>
+			<tbody>
+				{% for charge in charges %}
+				<tr id="charge-{{ charge.id }}">
+					<td width="200" class="name"><strong>{{ charge.name }}</strong></td>
+					<td>
+						<span style="float:left; margin-top:-1px" class="label success radius">{{ charge.user_charges|length }}</span>&nbsp;
+						{% for user_charge in charge.user_charges %}
+						    <a class="glyphicon glyphicon-user" title="{{ user_charge.user.name }}" href="{{ urladm ~ '/user/' ~ user_charge.user_id }}"></a>
+						{% endfor %}
+					</td>
+					<td title="Apagar" width="10">
+						<a title="Editar" class="glyphicon glyphicon-edit" href="{{ urladm ~ '/user/valued/charge/' ~ charge.id ~ '/edit' }}"></a>
+						<a data-confirm="1" class="glyphicon glyphicon-remove charge_delete" href="{{ urladm ~ '/user/valued/charge/' ~ charge.id ~ '/delete' }}">
+					</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+		</div>
+	</div> 
+
+{% endblock %}

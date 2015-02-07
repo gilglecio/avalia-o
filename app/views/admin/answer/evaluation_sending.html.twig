@@ -1,0 +1,40 @@
+{% extends 'admin/answer/layout.html.twig' %}
+
+{% block breadcrumbs %}
+	{{ parent() }}
+	<a class="current" href="#">{{ evaluation.name }}</a>
+	<a class="current" href="#">envios</a>
+	<a href="javascript:history.back();">voltar</a>
+{% endblock %}
+
+{% block group %}
+
+	<div class="row">
+		<div class="large-12 columns">
+		{% if evaluation_sendings %}
+		<table class="large-12 columns">
+			<thead>
+				<tr>
+					<td ><small><b>NOME</b></small></td>
+					<td width="100"><small><b>PARA</b></small></td>
+					<td width="150"><small><b>ENVIADO EM</b></small></td>
+				</tr>
+			</thead>
+			<tbody>
+				{% set i = 1 %}
+				{% for evaluation_sending in evaluation_sendings %}
+
+				<tr>
+					<td><a href="{{ urladm ~ '/answer/evaluation/' ~ evaluation.id ~ '/sending/' ~ evaluation_sending.id }}"><b>{{ 'Envio ' ~ i }}</b></a></td>
+					<td><span class="glyphicon glyphicon-user label success radius"> {{ evaluation_sending.sendings|length }}</span></td>
+					<td>{{ evaluation_sending.created_at|date('d M y H:i') }}</td>
+				</tr>
+				{% set i = i + 1 %}
+				{% endfor %}
+			</tbody>
+		</table>
+		{% endif %}
+		</div>
+	</div>
+
+{% endblock %}

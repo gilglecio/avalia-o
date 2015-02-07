@@ -1,0 +1,37 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title title %}
+
+{% block breadcrumbs %}
+	{{ parent() }}
+	<a href="{{ urladm ~ '/issue' }}">Pergunta</a>
+	<a href="javascript:history.back();">voltar</a>
+{% endblock %}
+
+{% block content %}
+	{{ blocks.heading('Pergunta', title) }}
+	{% block group %}{% endblock %}
+{% endblock %}
+
+{% block js_bottom %}
+	{{ parent() }}
+	<script>
+	$('#required').on('click', function() {
+		if ($(this).is(':checked') == false) {
+			$('#accepted_justification').removeAttr('checked');
+			$('#justification_required').removeAttr('checked');
+		};
+	});
+	$('#accepted_justification').on('click', function() {
+		if ($(this).is(':checked')) {
+			$('#required').attr('checked' , true);
+		};
+	});
+	$('#justification_required').on('click', function() {
+		if ($(this).is(':checked')) {
+			$('#required').attr('checked' , true);
+			$('#accepted_justification').attr('checked' , true);
+		};
+	});
+	</script>
+{% endblock %}

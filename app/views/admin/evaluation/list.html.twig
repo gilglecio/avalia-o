@@ -1,0 +1,118 @@
+
+{% extends 'admin/evaluation/layout.html.twig' %}
+
+{% block breadcrumbs %}
+	{{ parent() }}
+	<a class="current" href="#">{{ title }}</a>
+	<a href="{{ urladm ~ '/evaluation/new' }}">CRIAR AVALIAÇÃO</a>
+	<a href="javascript:history.back();">voltar</a>
+{% endblock %}
+
+{% block group %}
+	
+	{% if response %}
+		{{ blocks.alert(response.text, response.class) }}
+	{% endif %}
+
+	<div class="row">
+		<div class="large-12 columns">
+		{% if evaluations %}
+		<table class="large-12 columns">
+			<thead>
+				<tr>
+					<td><small><b>STATUS</b></small></td>
+					<td><small><b>AVALIAÇÃO</b></small></td>
+					<td width="100"><small><b>CRIADA EM</b></small></td>
+					<td><small><b>QUESTIONÁRIO (s)</b></small></td>
+					<td><small><b>GRUPO (s)</b></small></td>
+					<td><small><b>AVALIADOR (s)</b></small></td>
+					
+					<td width="170"><small title="Envios"><b>AÇÕES</b></small></td>
+				</tr>
+			</thead>
+			<tbody>
+				{% set year = 0 %}
+				{% for evaluation in evaluations %}
+
+					{% set evaluation_year = evaluation.created_at|date('Y') %}
+
+					{% if evaluation_year != year %}
+						{% set year = evaluation_year %}
+
+						<tr>
+							<td style="background:#ccc" colspan="7"><b>{{ evaluation_year }}</b></td>
+						</tr>
+
+					{% endif %}
+
+				<tr id="evaluation-{{ evaluation.id }}">
+					<td>{{ evaluation.getStatus }}</td>
+					<td><strong><a href="{{ urladm ~ '/evaluation/' ~ evaluation.id ~ '/sending' }}">{{ evaluation.name }}</a></strong></td>
+					<td title="{{ evaluation.created_at|date('l, d M Y à\\s H:i') }}">{{ evaluation.created_at|date('d M, H\\h') }}</td>
+					<td>
+						{% if evaluation.evaluation_questionnaires %}
+						{% for key, evaluation_questionnaire in evaluation.evaluation_questionnaires %}
+						    <a class="glyphicon glyphicon-book" href="{{ urladm ~ '/questionnaire/' ~ evaluation_questionnaire.questionnaire_id }}" title="{{ evaluation_questionnaire.questionnaire.name }}"></a>
+						{% endfor %}
+						{% else %}
+						<a title="ADD Questionário" class="glyphicon glyphicon-plus-sign label alert radius" style="color:#fff" href="{{ urladm ~ '/evaluation/' ~ evaluation.id ~ '/edit#bottom' }}"> ADD</a>
+						{% endif %}
+					</td>
+					<td>
+						{% if evaluation.evaluation_groups %}
+						{% for key, evaluation_group in evaluation.evaluation_groups %}
+						    <a class="glyphicon glyphicon-th" href="{{ urladm ~ '/group/' ~ evaluation_group.group_id }}" title="{{ evaluation_group.group.name }} | {{ evaluation_group.group.members|length }} membros"></a>
+						{% endfor %}
+						{% else %}
+						<a title="ADD Grupo" class="glyphicon glyphicon-plus-sign label alert radius" style="color:#fff" href="{{ urladm ~ '/evaluation/' ~ evaluation.id ~ '/edit#bottom' }}"> ADD</a>
+						{% endif %}
+					</td>
+					<td>
+						{% if evaluation.evaluation_evaluators %}
+						{% for key, evaluation_evaluator in evaluation.evaluation_evaluators %}
+						    <a class="glyphicon glyphicon-user" title="{{ evaluation_evaluator.evaluator.name }}" href="{{ urladm ~ '/user/' ~ evaluation_evaluator.evaluator_id }}"></a>
+						{% endfor %}
+						{% else %}
+						<a class="glyphicon glyphicon-plus-sign label alert radius" style="color:#fff" title="ADD Avaliador" href="{{ urladm ~ '/evaluation/' ~ evaluation.id ~ '/edit#bottom' }}"> ADD</a>
+						{% endif %}
+					</td>
+					<td>
+						<a title="Finalizar" class="glyphicon glyphicon-send" href="{{ urladm ~ '/evaluation/' ~ evaluation.id ~ '/send' }}"></a>
+						<a title="Envios {{ evaluation.evaluation_sendings|length }}" class="evaluation_sending glyphicon glyphicon-send label success radius" href="{{ urladm ~ '/evaluation/' ~ evaluation.id ~ '/sending' }}"> <b>{{ evaluation.evaluation_sendings|length }}</b></a>
+						<a class="evaluation_transfer glyphicon glyphicon-new-window" title="Duplicar" href="{{ urladm ~ '/evaluation/new/copy/' ~ evaluation.id }}"></a>
+						<a class="evaluation_edit glyphicon glyphicon-edit" title="Editar" href="{{ urladm ~ '/evaluation/' ~ evaluation.id ~ '/edit' }}"></a>
+						<a class="glyphicon glyphicon-align-justify" title="Respostas" href="{{ urladm ~ '/answer/evaluation/' ~ evaluation.id }}"></a>			
+
+						{% if evaluation.can_delete %}
+						<a  data-confirm='{"title":"Apagar Avaliação", "body":"<h3>IMPORTANTE!</h3><p>Apagando esta avaliação, você excluirá todos os envios submetidos, impossibilitando o acesso dos usuários aos formularios de questões!</p><p>Quantidade de Envios: {{ evaluation.evaluation_sendings|length }}</p>"}' 
+							class="glyphicon glyphicon-remove evaluation_delete" 
+							href="{{ urladm ~ '/evaluation/' ~ evaluation.id ~ '/delete' }}"></a>
+						{% else %}
+						<span title="Alquem já respondeu esta avaliação. Por segurança, antes de remover apague o envio." class="glyphicon glyphicon-remove evaluation_delete" style="color:#ccc"></span>
+						{% endif %}
+					</td>
+				</tr>
+
+				{% endfor %}
+			</tbody>
+		</table>
+
+		<hr />
+		<div style="font-size:0.8em">
+		<p><b>Legendas</b></p>
+		<span class="glyphicon glyphicon-new-window" style="color:#999"></span> Duplicar item<br />
+		<span class="glyphicon glyphicon-edit" style="color:#999"></span> Editar Item<br />
+		<span class="glyphicon glyphicon-send" style="color:#999"></span> Enviar ou ver envios do item<br />
+		<span class="glyphicon glyphicon-remove" style="color:#999"></span> Alquem já respondeu a avaliação. Por segurança, antes de remover apague o envio desta.
+		</div>
+
+		{% else %}
+			<div class="panel text-center">
+				<strong>NENHUMA AVALIAÇÃO CRIADO ATÉ O MOMENTO.</strong>
+				<a href="{{ urladm ~ '/evaluation/new' }}" class="button alert small">Criar uma Avaliação</a>
+			</div>
+		{% endif %}
+		</div>
+	</div>
+
+{% endblock %}

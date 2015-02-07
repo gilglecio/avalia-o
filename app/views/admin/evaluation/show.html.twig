@@ -1,0 +1,22 @@
+{% extends 'admin/evaluation/layout.html.twig' %}
+
+{% block breadcrumbs %}
+	{{ parent() }}
+	<a class="current" href="#">{{ title }}</a>
+	<a href="{{ urladm ~ '/evaluation/' ~ evaluation.id ~ '/edit' }}">Editar</a>
+	<a href="javascript:history.back();">voltar</a>
+{% endblock %}
+
+{% block group %}
+	
+	{% if response %}
+		{{ blocks.alert(response.text, response.class) }}
+	{% endif %}
+
+	<div class="row">
+		<div class="large-12 columns">
+			
+		</div>
+	</div>
+
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends 'admin/user/layout.html.twig' %}
+
+{% block title title %}
+
+{% block breadcrumbs %}
+	{{ parent() }}
+	<a href="{{ urladm ~ '/user/valued/charge' }}">Avaliados</a>
+{% endblock %}
+
+{% block content %}
+	{{ blocks.heading('Avaliados', title) }}
+	{% block content_charge %}{% endblock %}
+{% endblock %}

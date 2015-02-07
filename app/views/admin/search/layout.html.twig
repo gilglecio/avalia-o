@@ -1,0 +1,13 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title title %}
+
+{% block breadcrumbs %}
+	{{ parent() }}
+	<a href="{{ urladm ~ '/search' }}">Busca</a>
+{% endblock %}
+
+{% block content %}
+	{{ blocks.heading('Busca', title) }}
+	{% block group %}{% endblock %}
+{% endblock %}

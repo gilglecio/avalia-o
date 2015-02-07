@@ -1,0 +1,186 @@
+{% extends 'admin/evaluation/layout.html.twig' %}
+
+{% block breadcrumbs %}
+	{{ parent() }}
+	<a class="current" href="#">{{ title }}</a>
+	<a href="javascript:history.back();">voltar</a>
+{% endblock %}
+
+{% block group %}
+
+	{% if response %}
+		{{ blocks.alert(response.text, response.class) }}
+	{% endif %}
+
+	<form class="" action="{{ urladm ~ '/evaluation/new' }}" method="post">
+
+		<input type="hidden" name="{{ csrf_key }}" value="{{ csrf_token }}">
+
+			<div class="content_copy panel">
+				<label><input type="radio" {% if evaluations == {} %}disabled{% endif %} {% if copy %}checked{% endif %} name="action" value="copy"> Copiar uma avaliação</label>
+				<div class="content {% if copy == false %}hide{% endif %}">
+					<label>Copiar:</label>
+					<select name="evaluation_id">
+						<option value="">- Selecione uma avaliação existente -</option>
+						{% for evaluation in evaluations %}
+						    <option {% if copy == evaluation.id %}selected{% endif %} value="{{ evaluation.id }}">{{ evaluation.name }}</option>
+						{% endfor %}
+					</select>
+					<label>
+						Para:
+						<input type="text" name="name_copy" value="{{ value.name_copy }}" placeholder="Título">
+					</label>
+					<div class="row">
+						<div class="large-6 columns">
+							<div class="row">
+								<div class="large-8 small-8 columns">
+									<label for="start_at_date">
+										<label for="start_at_time">Início Data (DD/MM/YYYY)</label>
+										<input type="text" maxlength="10" value="{{ value.copy_start_at_date }}" class="date" name="copy_start_at_date">
+										
+									</label>
+								</div>
+								<div class="large-4 hide small-4 columns">
+									<label for="name">
+										<label for="start_at_time">Horário</label>
+										<input type="text" maxlength="5" value="{{ value.copy_start_at_time|default('0000') }}" class="time" name="copy_start_at_time">
+									</label>
+								</div>
+							</div>
+						</div>
+						<div class="large-6 columns">
+							<div class="row">
+								<div class="large-8 small-8 columns">
+									<label for="name">
+										<label for="end_at_date">Término Data (DD/MM/YYYY)</label>
+										<input type="text" maxlength="10" value="{{ value.copy_end_at_date }}" class="date" name="copy_end_at_date">
+									</label>
+								</div>
+								<div class="large-4 hide small-4 columns">
+									<label for="name">
+										<label for="end_at_time">Horário</label>
+										<input type="text" maxlength="5" value="{{ value.copy_end_at_time|default('0000') }}" class="time" name="copy_end_at_time">
+									</label>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="content_new panel">
+				<label><input type="radio" name="action" value="new" {% if copy == false %}checked{% endif %} > Criar uma avaliação</label>
+				<div class="content {% if copy %}hide{% endif %}">
+					<div class="row">
+						<div class="large-8 columns">
+							<label for="name">
+								<label for="name">Nome:</label>
+								<input type="text" name="name" value="{{ value.name }}" placeholder="Nome da Avaliação">
+							</label>
+
+							<fieldset>
+								<legend>E-Mail</legend>
+								
+								<label for="subject">
+									<label for="mail_bcc">Bcc: <i>(Separe por virgula)</i></label>
+									<input id="Bcc" type="text" value="{{ value.mail_bcc }}" name="mail_bcc" placeholder="Copia Oculta para">
+								</label>
+
+								<label for="subject">
+									<label for="subject">Assunto:</label>
+									<input type="text" name="subject" value="{{ value.subject }}" placeholder="Assunto">
+								</label>
+
+								<label>
+									<label for="message_email">Mensagem</label>
+									<textarea id="message_email" style="min-height:200px" name="message_email" placeholder="Mensagem que irá no E-mail">{{ value.message_email }}</textarea>
+									{{ blocks.tags }}
+								</label>
+							</fieldset>
+						</div>
+
+						<div class="large-4 columns">
+							<h4>Início</h4>
+							<div class="row">
+								<div class="large-8 small-8 columns">
+									<label for="name">
+										<label for="start_at_date">Data (DD/MM/YYYY)</label>
+										<input type="text" value="{{ value.start_at_date }}" maxlength="10" class="date" name="start_at_date">
+									</label>
+								</div>
+								<div class="large-4 hide small-4 columns">
+									<label for="name">
+										<label for="start_at_time">Horário</label>
+										<input type="text" value="{{ value.start_at_time|default('0000') }}" maxlength="5" class="time" name="start_at_time">
+									</label>
+								</div>
+							</div>
+
+							<h4>Término</h4>
+							<div class="row">
+								<div class="large-8 small-8 columns">
+									<label for="name">
+										<label for="end_at_date">Data (DD/MM/YYYY)</label>
+										<input type="text" value="{{ value.end_at_date }}" maxlength="10"  class="date" value="" name="end_at_date">
+									</label>
+								</div>
+								<div class="large-4 hide small-4 columns">
+									<label for="name">
+										<label for="end_at_time">Horário</label>
+										<input type="text" value="{{ value.end_at_time|default('0000') }}" maxlength="5" class="time" name="end_at_time">
+									</label>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>			
+
+		<div class="row">
+  			<div class="large-10 columns">
+    			<input class="small button alert" type="submit" value="Finalizar">
+    			<a class="button small secondary" href="javascript:history.back();">Cancelar</a>
+			</div>
+		</div>
+	</form>
+{% endblock %}
+
+{% block js_bottom %}
+	{{ parent() }}
+
+	<script>
+
+	$('#message_email').textcomplete([
+	    { // html
+	        match: /\B#(\w*)$/,
+	        search: function (term, callback) {
+	            callback($.map(evaluation_tags, function (mention) {
+	                return mention.indexOf(term) === 0 ? mention : null;
+	            }));
+	        },
+	        index: 1,
+	        replace: function (mention) {
+	            return '#' + mention + ' ';
+	        }
+	    }
+	]).overlay([
+	    {
+	        match: /\B@\w+/g,
+	        css: {
+	            'background-color': '#d8dfea'
+	        }
+	    }
+	]);
+ 	</script>
+
+	<script>
+	$(function () {
+
+		$('input[name="action"]').on('change', function () {
+			var that = $(this);
+			$('.content').hide();
+			that.parent('label').parent('div').children('.content').show();
+		});
+	});
+	</script>
+{% endblock %}
