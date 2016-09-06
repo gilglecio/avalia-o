@@ -2,6 +2,14 @@
 
 class Questionnaire extends Model
 {
+	private $id;
+	private $name;
+	private $name_private;
+	private $created_at;
+	private $updated_at;
+	private $is_delete;
+	private $user_id;
+
 	static $has_many = array(
 		array('questionnaire_issues'),
 		array('issues', 

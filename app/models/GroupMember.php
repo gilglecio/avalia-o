@@ -2,6 +2,11 @@
 
 class GroupMember extends Model
 {
+	private $group_id;
+	private $user_id;
+	private $status;
+	private $created_at;
+
 	static $belongs_to = array(
 		array('members', 'class_name' => 'User'),
 		array('group')

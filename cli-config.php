@@ -17,7 +17,7 @@ $config = Doctrine\ORM\Tools\Setup::createAnnotationMetadataConfiguration([__DIR
  * @var Doctrine\ORM\EntityManager
  */
 $entityManager = Doctrine\ORM\EntityManager::create([
-	'dbname' => $db->name,
+	'dbname' => $db->dbname,
     'user' => $db->username,
     'password' => $db->password,
     'host' => $db->host,

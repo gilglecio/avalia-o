@@ -2,6 +2,9 @@
 
 class EvaluationGroup extends Model
 {
+	private $evaluation_id;
+	private $group_id;
+
 	static $belongs_to = array(
 		array('evaluation'),
 		array('group')

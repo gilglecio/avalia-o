@@ -2,6 +2,16 @@
 
 class Answer extends Model
 {
+	private $id;
+	private $evaluation_sending_id;
+	private $issue_id;
+	private $valued_id;
+	private $answer;
+	private $justification;
+	private $created_at;
+	private $updated_at;
+	private $status;
+
 	static $has_many = array(
 		array('corrections')
 	);

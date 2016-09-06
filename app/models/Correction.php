@@ -2,6 +2,14 @@
 
 class Correction extends Model
 {
+	private $id;
+	private $answer_id;
+	private $evaluator_id;
+	private $note;
+	private $justification;
+	private $created_at;
+	private $updated_at;
+
 	static $belongs_to = array(
 		array('answer'),
 		array('evaluator', 'class_name' => 'User', 'primary_key' => 'id', 'foreign_key' => 'evaluator_id')

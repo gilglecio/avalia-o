@@ -2,6 +2,10 @@
 
 class Alternative extends Model
 {
+	private $id;
+	
+	private $name;
+
 	static $has_many = array(
 		array('issue_alternatives'),
 		array('alternatives', 'through' => 'issue_alternatives')

@@ -2,6 +2,13 @@
 
 class Group extends Model
 {
+	private $id;
+	private $name;
+	private $created_at;
+	private $updated_at;
+	private $is_delete;
+	private $status;
+
 	static $has_many = array(
 		array('group_members'),
 		array('members', 'through' => 'group_members', 'class_name' => 'User')

@@ -2,6 +2,22 @@
 
 class Pdf extends Model
 {
+	private $id;
+	private $sending_id;
+	private $evaluator_id;
+	private $salary;
+	private $new_salary;
+	private $final_note;
+	private $perf;
+	private $bonus;
+	private $bonus_prop;
+	private $nr_salary_prop;
+	private $perf_prop;
+	private $nr_salary;
+	private $comment;
+	private $evaluator_note;
+	private $is_available;
+
 	public function no_after_save()
 	{
 		if ($this->is_available) {

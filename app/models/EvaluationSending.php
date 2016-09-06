@@ -2,6 +2,11 @@
 
 class EvaluationSending extends Model
 {
+	private $id;
+	private $evaluation_id;
+	private $created_at;
+	private $name;
+
 	static $belongs_to = array(
 		array('evaluation')
 	);

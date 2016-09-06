@@ -2,6 +2,9 @@
 
 class EvaluationQuestionnaire extends Model
 {
+	private $evaluation_id;
+	private $questionnaire_id;
+
 	static $belongs_to = array(
 		array('evaluation'),
 		array('questionnaire')

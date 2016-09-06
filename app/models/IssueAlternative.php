@@ -2,6 +2,10 @@
 
 class IssueAlternative extends Model
 {
+	private $issue_id;
+	private $alternative_id;
+	private $position;
+
 	static $belongs_to = array(
 		array('issue'),
 		array('alternative')
