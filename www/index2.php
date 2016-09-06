@@ -1,2 +1,0 @@
-<?php //require dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'app'.DIRECTORY_SEPARATOR.'bootstrap.php' ?>
-<?php require dirname(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR.'data'.DIRECTORY_SEPARATOR.'app'.DIRECTORY_SEPARATOR.'bootstrap.php' ?>
