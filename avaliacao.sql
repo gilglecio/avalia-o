@@ -3,18 +3,12 @@
 -- http://www.phpmyadmin.net
 --
 -- Servidor: localhost
--- Tempo de Geração: 14/07/2015 às 07:27
--- Versão do servidor: 5.5.43-0ubuntu0.14.04.1
--- Versão do PHP: 5.5.9-1ubuntu4.9
+-- Tempo de Geração: 06/09/2016 às 17:15
+-- Versão do servidor: 5.5.49-0ubuntu0.14.04.1
+-- Versão do PHP: 5.5.9-1ubuntu4.19
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
-
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
 
 --
 -- Banco de dados: `avaliacao`
@@ -85,7 +79,16 @@ CREATE TABLE IF NOT EXISTS `charges` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=20 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=23 ;
+
+--
+-- Fazendo dump de dados para tabela `charges`
+--
+
+INSERT INTO `charges` (`id`, `name`) VALUES
+(20, 'programador'),
+(21, 'testador'),
+(22, 'gerente');
 
 -- --------------------------------------------------------
 
@@ -127,7 +130,14 @@ CREATE TABLE IF NOT EXISTS `evaluations` (
   `is_alerted` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_evaluations_users1` (`user_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=134 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=135 ;
+
+--
+-- Fazendo dump de dados para tabela `evaluations`
+--
+
+INSERT INTO `evaluations` (`id`, `user_id`, `name`, `subject`, `start_at`, `end_at`, `message_email`, `mail_bcc`, `created_at`, `updated_at`, `status`, `is_alerted`) VALUES
+(134, 135, 'erwerwer', '', '2016-06-10 00:00:00', '2016-06-12 00:00:00', 'werwerwer', '[]', '2016-09-06 17:08:53', '2016-09-06 17:08:53', 0, 0);
 
 -- --------------------------------------------------------
 
@@ -157,6 +167,13 @@ CREATE TABLE IF NOT EXISTS `evaluation_groups` (
   KEY `fk_evaluations_has_groups_evaluations1` (`evaluation_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+--
+-- Fazendo dump de dados para tabela `evaluation_groups`
+--
+
+INSERT INTO `evaluation_groups` (`evaluation_id`, `group_id`) VALUES
+(134, 60);
+
 -- --------------------------------------------------------
 
 --
@@ -170,6 +187,13 @@ CREATE TABLE IF NOT EXISTS `evaluation_questionnaires` (
   KEY `fk_evaluations_has_questionnaires_questionnaires1` (`questionnaire_id`),
   KEY `fk_evaluations_has_questionnaires_evaluations1` (`evaluation_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Fazendo dump de dados para tabela `evaluation_questionnaires`
+--
+
+INSERT INTO `evaluation_questionnaires` (`evaluation_id`, `questionnaire_id`) VALUES
+(134, 46);
 
 -- --------------------------------------------------------
 
@@ -200,7 +224,14 @@ CREATE TABLE IF NOT EXISTS `groups` (
   `is_delete` tinyint(1) NOT NULL DEFAULT '0',
   `status` smallint(6) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=60 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=61 ;
+
+--
+-- Fazendo dump de dados para tabela `groups`
+--
+
+INSERT INTO `groups` (`id`, `name`, `created_at`, `updated_at`, `is_delete`, `status`) VALUES
+(60, 'programadores', '2016-09-06 17:00:43', '2016-09-06 17:00:43', 0, 1);
 
 -- --------------------------------------------------------
 
@@ -217,6 +248,13 @@ CREATE TABLE IF NOT EXISTS `group_members` (
   KEY `fk_groups_has_users_users1` (`user_id`),
   KEY `fk_groups_has_users_groups` (`group_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Fazendo dump de dados para tabela `group_members`
+--
+
+INSERT INTO `group_members` (`group_id`, `user_id`, `status`, `created_at`) VALUES
+(60, 136, 0, '2016-09-06 17:00:45');
 
 -- --------------------------------------------------------
 
@@ -245,7 +283,15 @@ CREATE TABLE IF NOT EXISTS `issues` (
   PRIMARY KEY (`id`),
   KEY `fk_issues_users1` (`user_id`),
   KEY `fk_issues_scales1` (`scale_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=109 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=111 ;
+
+--
+-- Fazendo dump de dados para tabela `issues`
+--
+
+INSERT INTO `issues` (`id`, `user_id`, `enunciation`, `type`, `status`, `is_delete`, `created_at`, `updated_at`, `required`, `accepted_justification`, `justification_required`, `page`, `min_choice`, `max_choice`, `max_note`, `min_note`, `scale_id`) VALUES
+(109, 135, 'CSS Ã© uma linguagem de programaÃ§Ã£o?', 'boolean', 1, 0, '2016-09-06 17:03:01', '2016-09-06 17:03:01', 1, 0, 0, 1, 1, NULL, 10, 1, NULL),
+(110, 135, 'CÃ³pia de: CSS Ã© uma linguagem de programaÃ§Ã£o?', 'boolean', 1, 0, '2016-09-06 17:07:22', '2016-09-06 17:07:22', 1, 0, 0, 1, 1, NULL, 10, 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -316,7 +362,14 @@ CREATE TABLE IF NOT EXISTS `questionnaires` (
   `user_id` int(10) unsigned NOT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_questionnaires_users1` (`user_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=46 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=47 ;
+
+--
+-- Fazendo dump de dados para tabela `questionnaires`
+--
+
+INSERT INTO `questionnaires` (`id`, `name`, `name_private`, `created_at`, `updated_at`, `is_delete`, `user_id`) VALUES
+(46, 'LÃ³gica de ProgramaÃ§Ã£o', 'LÃ³gica de ProgramaÃ§Ã£o', '2016-09-06 10:44:09', '2016-09-06 17:02:23', 0, 135);
 
 -- --------------------------------------------------------
 
@@ -334,6 +387,13 @@ CREATE TABLE IF NOT EXISTS `questionnaire_issues` (
   KEY `fk_questionnaires_has_issues_questionnaires1` (`questionnaire_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+--
+-- Fazendo dump de dados para tabela `questionnaire_issues`
+--
+
+INSERT INTO `questionnaire_issues` (`questionnaire_id`, `issue_id`, `order`, `value`) VALUES
+(46, 109, 10, 10);
+
 -- --------------------------------------------------------
 
 --
@@ -344,7 +404,16 @@ CREATE TABLE IF NOT EXISTS `ratings` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=21 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=24 ;
+
+--
+-- Fazendo dump de dados para tabela `ratings`
+--
+
+INSERT INTO `ratings` (`id`, `name`) VALUES
+(21, 'junior'),
+(22, 'pleno'),
+(23, 'sÃªnior');
 
 -- --------------------------------------------------------
 
@@ -483,7 +552,15 @@ CREATE TABLE IF NOT EXISTS `users` (
   `profile_type` varchar(15) COLLATE utf8_unicode_ci NOT NULL DEFAULT '1' COMMENT '1=avaliado;\n2=avaliador;',
   `entry_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=135 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=137 ;
+
+--
+-- Fazendo dump de dados para tabela `users`
+--
+
+INSERT INTO `users` (`id`, `name`, `email`, `username`, `password`, `created_at`, `updated_at`, `is_delete`, `status`, `birth`, `graduated_at`, `salary`, `profile_type`, `entry_at`) VALUES
+(135, 'gilglecio', 'gilglecio_765@hotmail.com', 'gilglecio', '$1$oL91gTT5$c//sEfhQM1l7x8TBzeZxw1', '2016-09-06 10:39:54', '2016-09-06 10:39:54', 0, 1, '1994-03-16', 2016, 0.00, 'admin', '2016-09-06 00:00:00'),
+(136, 'fernando dutra', 'fernando@inova2b.com.br', NULL, NULL, '2016-09-06 16:58:54', '2016-09-06 16:58:54', 0, 0, '1994-03-16', 2011, 5.00, 'valued', '2000-01-01 00:00:00');
 
 -- --------------------------------------------------------
 
@@ -499,6 +576,13 @@ CREATE TABLE IF NOT EXISTS `user_charges` (
   KEY `fk_users_has_charges_users1` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+--
+-- Fazendo dump de dados para tabela `user_charges`
+--
+
+INSERT INTO `user_charges` (`user_id`, `charge_id`) VALUES
+(136, 20);
+
 -- --------------------------------------------------------
 
 --
@@ -512,6 +596,13 @@ CREATE TABLE IF NOT EXISTS `user_ratings` (
   KEY `fk_users_has_ratings_ratings1` (`rating_id`),
   KEY `fk_users_has_ratings_users1` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Fazendo dump de dados para tabela `user_ratings`
+--
+
+INSERT INTO `user_ratings` (`user_id`, `rating_id`) VALUES
+(136, 22);
 
 --
 -- Restrições para dumps de tabelas
@@ -642,7 +733,3 @@ ALTER TABLE `user_charges`
 ALTER TABLE `user_ratings`
   ADD CONSTRAINT `fk_users_has_ratings_ratings1` FOREIGN KEY (`rating_id`) REFERENCES `ratings` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   ADD CONSTRAINT `fk_users_has_ratings_users1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

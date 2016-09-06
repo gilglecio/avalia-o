@@ -12,14 +12,14 @@ function config($param)
                 'pass' => 'NovaSenha14',
             ),
 
-            'domain' => 'http://www.freitasleite.com.br/avaliacao/',
+            'domain' => 'http://www.avaliacao.com.br/avaliacao/',
 
             'db' => array(
                 'driver' => 'mysql',
                 'host' => 'localhost',
-                'user' => 'freitasleite',
+                'user' => 'avaliacao',
                 'pass' => 'FladVtMp30',
-                'base' => 'freitasleite',
+                'base' => 'avaliacao',
             )
         ),
 
