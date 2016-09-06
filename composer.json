@@ -2,12 +2,11 @@
     "name": "avaliacao/main",
     "description": "Blog com Slim Framework e PHP-ActiveRecord",
     "require": {
-        "slim/views": "dev-master",
-        "slim/extras": "dev-master",
-        "slim/strong": "dev-develop",
+        "slim/slim": "2.4.0",
+        "slim/views": "0.1.3",
         "php-activerecord/php-activerecord": "dev-master",
         "pfbc/pfbc": "dev-master",
-        "twig/twig": "dev-master",
+        "twig/twig": "1.19.0",
         "excelwebzone/zend-search": "dev-master",
         "swiftmailer/swiftmailer": "5.1.*@dev"
     },

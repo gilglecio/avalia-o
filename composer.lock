@@ -1,10 +1,123 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "This file is @generated automatically"
     ],
-    "hash": "a04dbca821d3758b9434256dc8ec1239",
+    "hash": "b83b51f0edb5986de8add2e5b13befc6",
+    "content-hash": "3662a90da969a7c08a88496db6a82ad6",
     "packages": [
+        {
+            "name": "doctrine/lexer",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/doctrine/lexer.git",
+                "reference": "83893c552fd2045dd78aef794c31e694c37c0b8c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/doctrine/lexer/zipball/83893c552fd2045dd78aef794c31e694c37c0b8c",
+                "reference": "83893c552fd2045dd78aef794c31e694c37c0b8c",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.2"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Doctrine\\Common\\Lexer\\": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Roman Borschel",
+                    "email": "roman@code-factory.org"
+                },
+                {
+                    "name": "Guilherme Blanco",
+                    "email": "guilhermeblanco@gmail.com"
+                },
+                {
+                    "name": "Johannes Schmitt",
+                    "email": "schmittjoh@gmail.com"
+                }
+            ],
+            "description": "Base library for a lexer that can be used in Top-Down, Recursive Descent Parsers.",
+            "homepage": "http://www.doctrine-project.org",
+            "keywords": [
+                "lexer",
+                "parser"
+            ],
+            "time": "2014-09-09 13:34:57"
+        },
+        {
+            "name": "egulias/email-validator",
+            "version": "2.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/egulias/EmailValidator.git",
+                "reference": "30562b69fc6c8e9740645877a98063b3842204b2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/egulias/EmailValidator/zipball/30562b69fc6c8e9740645877a98063b3842204b2",
+                "reference": "30562b69fc6c8e9740645877a98063b3842204b2",
+                "shasum": ""
+            },
+            "require": {
+                "doctrine/lexer": "^1.0.1",
+                "php": ">= 5.5"
+            },
+            "require-dev": {
+                "dominicsayers/isemail": "dev-master",
+                "phpunit/phpunit": "^4.8.0",
+                "satooshi/php-coveralls": "dev-master"
+            },
+            "suggest": {
+                "ext/php-intl": "PHP Internationalization Libraries are required to use the SpoofChecking validation"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Egulias\\EmailValidator\\": "EmailValidator"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Eduardo Gulias Davis"
+                }
+            ],
+            "description": "A library for validating emails against several RFCs",
+            "homepage": "https://github.com/egulias/EmailValidator",
+            "keywords": [
+                "email",
+                "emailvalidation",
+                "emailvalidator",
+                "validation",
+                "validator"
+            ],
+            "time": "2016-08-07 21:18:59"
+        },
         {
             "name": "excelwebzone/zend-search",
             "version": "dev-master",
@@ -48,56 +161,17 @@
             "time": "2013-05-19 03:09:37"
         },
         {
-            "name": "ircmaxell/password-compat",
-            "version": "1.0.x-dev",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/ircmaxell/password_compat.git",
-                "reference": "1fc1521b5e9794ea77e4eca30717be9635f1d4f4"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/ircmaxell/password_compat/zipball/1fc1521b5e9794ea77e4eca30717be9635f1d4f4",
-                "reference": "1fc1521b5e9794ea77e4eca30717be9635f1d4f4",
-                "shasum": ""
-            },
-            "type": "library",
-            "autoload": {
-                "files": [
-                    "lib/password.php"
-                ]
-            },
-            "notification-url": "http://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Anthony Ferrara",
-                    "email": "ircmaxell@php.net",
-                    "homepage": "http://blog.ircmaxell.com"
-                }
-            ],
-            "description": "A compatibility library for the proposed simplified password hashing algorithm: https://wiki.php.net/rfc/password_hash",
-            "homepage": "https://github.com/ircmaxell/password_compat",
-            "keywords": [
-                "hashing",
-                "password"
-            ],
-            "time": "2013-04-30 19:58:08"
-        },
-        {
             "name": "pfbc/pfbc",
             "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/lkorth/php-form-builder-class.git",
-                "reference": "c51e767900a1d6a7f76736f1c439a9d7dbbc7ee5"
+                "reference": "e1f9c25b71ee82c60a62a61de63a5926f9d8fc17"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/lkorth/php-form-builder-class/zipball/c51e767900a1d6a7f76736f1c439a9d7dbbc7ee5",
-                "reference": "c51e767900a1d6a7f76736f1c439a9d7dbbc7ee5",
+                "url": "https://api.github.com/repos/lkorth/php-form-builder-class/zipball/e1f9c25b71ee82c60a62a61de63a5926f9d8fc17",
+                "reference": "e1f9c25b71ee82c60a62a61de63a5926f9d8fc17",
                 "shasum": ""
             },
             "require": {
@@ -109,7 +183,7 @@
                     "PFBC": "."
                 }
             },
-            "notification-url": "http://packagist.org/downloads/",
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "GNU GPL v3"
             ],
@@ -130,7 +204,7 @@
                 "html",
                 "php"
             ],
-            "time": "2013-02-18 14:30:52"
+            "time": "2014-03-14 04:14:24"
         },
         {
             "name": "php-activerecord/php-activerecord",
@@ -138,20 +212,21 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jpfuentes2/php-activerecord.git",
-                "reference": "e3d20fd87eb24c0166ed2a9b43ba6e6d10883f22"
+                "reference": "7220379c2f1ac31cd0633a781879a4bf584bbb31"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jpfuentes2/php-activerecord/zipball/e3d20fd87eb24c0166ed2a9b43ba6e6d10883f22",
-                "reference": "e3d20fd87eb24c0166ed2a9b43ba6e6d10883f22",
+                "url": "https://api.github.com/repos/jpfuentes2/php-activerecord/zipball/7220379c2f1ac31cd0633a781879a4bf584bbb31",
+                "reference": "7220379c2f1ac31cd0633a781879a4bf584bbb31",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.0"
             },
             "require-dev": {
-                "pear/log": "dev-master",
-                "phpunit/phpunit": "3.7.*"
+                "pear/log": "~1.12",
+                "pear/pear_exception": "1.0-beta1",
+                "phpunit/phpunit": "4.*"
             },
             "type": "library",
             "autoload": {
@@ -159,7 +234,7 @@
                     "ActiveRecord.php"
                 ]
             },
-            "notification-url": "http://packagist.org/downloads/",
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -169,70 +244,19 @@
                 "activerecord",
                 "orm"
             ],
-            "time": "2013-11-14 02:26:01"
-        },
-        {
-            "name": "slim/extras",
-            "version": "dev-master",
-            "target-dir": "Slim/Extras",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/codeguy/Slim-Extras.git",
-                "reference": "59300d25d62f2f299b4065ed99eb71ca91f8a434"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/codeguy/Slim-Extras/zipball/59300d25d62f2f299b4065ed99eb71ca91f8a434",
-                "reference": "59300d25d62f2f299b4065ed99eb71ca91f8a434",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.0",
-                "slim/slim": ">=2.0.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "Twig_Extensions_": "Views/Extension/",
-                    "Slim\\Extras": "."
-                }
-            },
-            "notification-url": "http://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Andrew Smith",
-                    "email": "a.smith@silentworks.co.uk",
-                    "homepage": "http://thoughts.silentworks.co.uk/"
-                },
-                {
-                    "name": "Josh Lockhart",
-                    "email": "info@joshlockhart.com",
-                    "homepage": "http://www.joshlockhart.com/"
-                }
-            ],
-            "description": "Extras package for the Slim Framework",
-            "homepage": "http://github.com/codeguy/Slim-Extras",
-            "keywords": [
-                "extensions",
-                "middleware",
-                "templating"
-            ],
-            "time": "2013-08-01 12:08:36"
+            "time": "2016-08-13 00:25:55"
         },
         {
             "name": "slim/slim",
-            "version": "dev-master",
+            "version": "2.4.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/codeguy/Slim.git",
+                "url": "https://github.com/slimphp/Slim.git",
                 "reference": "ff7d7148848fa4f45712984d7b91ac3cbced586b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/codeguy/Slim/zipball/ff7d7148848fa4f45712984d7b91ac3cbced586b",
+                "url": "https://api.github.com/repos/slimphp/Slim/zipball/ff7d7148848fa4f45712984d7b91ac3cbced586b",
                 "reference": "ff7d7148848fa4f45712984d7b91ac3cbced586b",
                 "shasum": ""
             },
@@ -248,7 +272,7 @@
                     "Slim": "."
                 }
             },
-            "notification-url": "http://packagist.org/downloads/",
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -269,66 +293,17 @@
             "time": "2013-11-29 20:33:36"
         },
         {
-            "name": "slim/strong",
-            "version": "dev-develop",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/silentworks/Strong.git",
-                "reference": "55b411d2579259fb29e6f00cf8ab24e9b9216a67"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/silentworks/Strong/zipball/55b411d2579259fb29e6f00cf8ab24e9b9216a67",
-                "reference": "55b411d2579259fb29e6f00cf8ab24e9b9216a67",
-                "shasum": ""
-            },
-            "require": {
-                "ircmaxell/password-compat": "1.0.*",
-                "php": ">=5.3.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "Strong": "src/"
-                }
-            },
-            "notification-url": "http://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Andrew Smith",
-                    "email": "a.smith@silentworks.co.uk",
-                    "homepage": "http://www.silentworks.co.uk/"
-                },
-                {
-                    "name": "Jakub Westfalewski",
-                    "email": "jwest@jwest.pl",
-                    "homepage": "http://jwest.pl/"
-                }
-            ],
-            "description": "Authentication Library with multiple drivers",
-            "homepage": "http://github.com/silentworks/Strong",
-            "keywords": [
-                "Authentication",
-                "extensions"
-            ],
-            "time": "2013-05-15 16:53:38"
-        },
-        {
             "name": "slim/views",
-            "version": "dev-master",
-            "target-dir": "Slim/Views",
+            "version": "0.1.3",
             "source": {
                 "type": "git",
-                "url": "https://github.com/codeguy/Slim-Views.git",
-                "reference": "8c7e0f3067e5e10b7b4ca98f29bdef8d5cfe5371"
+                "url": "https://github.com/slimphp/Slim-Views.git",
+                "reference": "8561c785e55a39df6cb6f95c3aba3281a60ed5b0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/codeguy/Slim-Views/zipball/8c7e0f3067e5e10b7b4ca98f29bdef8d5cfe5371",
-                "reference": "8c7e0f3067e5e10b7b4ca98f29bdef8d5cfe5371",
+                "url": "https://api.github.com/repos/slimphp/Slim-Views/zipball/8561c785e55a39df6cb6f95c3aba3281a60ed5b0",
+                "reference": "8561c785e55a39df6cb6f95c3aba3281a60ed5b0",
                 "shasum": ""
             },
             "require": {
@@ -341,24 +316,24 @@
             },
             "type": "library",
             "autoload": {
-                "psr-0": {
-                    "Slim\\Views": ""
+                "psr-4": {
+                    "Slim\\Views\\": "./"
                 }
             },
-            "notification-url": "http://packagist.org/downloads/",
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "authors": [
                 {
-                    "name": "Andrew Smith",
-                    "email": "a.smith@silentworks.co.uk",
-                    "homepage": "http://thoughts.silentworks.co.uk/"
-                },
-                {
                     "name": "Josh Lockhart",
                     "email": "info@joshlockhart.com",
                     "homepage": "http://www.joshlockhart.com/"
+                },
+                {
+                    "name": "Andrew Smith",
+                    "email": "a.smith@silentworks.co.uk",
+                    "homepage": "http://thoughts.silentworks.co.uk/"
                 }
             ],
             "description": "Smarty and Twig View Parser package for the Slim Framework",
@@ -368,7 +343,7 @@
                 "slimphp",
                 "templating"
             ],
-            "time": "2013-12-08 10:18:35"
+            "time": "2014-12-09 23:48:51"
         },
         {
             "name": "swiftmailer/swiftmailer",
@@ -385,7 +360,8 @@
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.2.4"
+                "egulias/email-validator": "~2.0",
+                "php": ">=5.5.0"
             },
             "type": "library",
             "extra": {
@@ -421,25 +397,25 @@
         },
         {
             "name": "twig/twig",
-            "version": "dev-master",
+            "version": "v1.19.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/fabpot/Twig.git",
-                "reference": "27f3e0fc1efd1dbaf6d10598d148d7ec3070b51d"
+                "url": "https://github.com/twigphp/Twig.git",
+                "reference": "edbeaf43b0a606cdaadc32a11d2673614a377b90"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fabpot/Twig/zipball/27f3e0fc1efd1dbaf6d10598d148d7ec3070b51d",
-                "reference": "27f3e0fc1efd1dbaf6d10598d148d7ec3070b51d",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/edbeaf43b0a606cdaadc32a11d2673614a377b90",
+                "reference": "edbeaf43b0a606cdaadc32a11d2673614a377b90",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.2.4"
+                "php": ">=5.2.7"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.15-dev"
+                    "dev-master": "1.19-dev"
                 }
             },
             "autoload": {
@@ -447,18 +423,26 @@
                     "Twig_": "lib/"
                 }
             },
-            "notification-url": "http://packagist.org/downloads/",
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "BSD-3-Clause"
             ],
             "authors": [
                 {
                     "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com"
+                    "email": "fabien@symfony.com",
+                    "homepage": "http://fabien.potencier.org",
+                    "role": "Lead Developer"
                 },
                 {
                     "name": "Armin Ronacher",
-                    "email": "armin.ronacher@active-4.com"
+                    "email": "armin.ronacher@active-4.com",
+                    "role": "Project Founder"
+                },
+                {
+                    "name": "Twig Team",
+                    "homepage": "http://twig.sensiolabs.org/contributors",
+                    "role": "Contributors"
                 }
             ],
             "description": "Twig, the flexible, fast, and secure template language for PHP",
@@ -466,30 +450,20 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2013-12-27 14:37:02"
+            "time": "2015-07-31 13:45:26"
         }
     ],
-    "packages-dev": [
-
-    ],
-    "aliases": [
-
-    ],
+    "packages-dev": [],
+    "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "slim/views": 20,
-        "slim/extras": 20,
-        "slim/strong": 20,
         "php-activerecord/php-activerecord": 20,
         "pfbc/pfbc": 20,
-        "twig/twig": 20,
         "excelwebzone/zend-search": 20,
         "swiftmailer/swiftmailer": 20
     },
-    "platform": [
-
-    ],
-    "platform-dev": [
-
-    ]
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": [],
+    "platform-dev": []
 }
