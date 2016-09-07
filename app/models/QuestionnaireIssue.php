@@ -2,50 +2,70 @@
 
 class QuestionnaireIssue extends Model
 {
+    /**
+     * @var int
+     */
+    protected $questionnaire_id;
 
-	static $belongs_to = array(
-		array('questionnaire'),
-		array('issue')
-	);
+    /**
+     * @var int
+     */
+    protected $issue_id;
 
-	static $validates_presence_of = array(
-		array('questionnaire_id'),
-		array('issue_id')
-	);
+    /**
+     * @var int
+     */
+    protected $order;
 
-	// public function before_destroy()
-	// {
-	// 	$evaluation_questionnaire = EvaluationQuestionnaire::find_by_questionnaire_id($this->questionnaire_id);
+    /**
+     * @var float
+     */
+    protected $value;
 
-	// 	if ($evaluation_questionnaire) {
-	// 		return false;
-	// 	}
-	// }
+    public static $belongs_to = array(
+        array('questionnaire'),
+        array('issue'),
+    );
 
-	public function issue()
-	{
-		return $this->issue;
-	}
+    public static $validates_presence_of = array(
+        array('questionnaire_id'),
+        array('issue_id'),
+    );
 
-	public static function uniqueness(array $attributes)
-	{
-		$find = self::find(array(
-			'conditions' => array(
-				'issue_id=? AND questionnaire_id=?', 
-				$attributes['issue_id'], 
-				$attributes['questionnaire_id']
-			)
-		));
+    // public function before_destroy()
+    // {
+    // 	$evaluation_questionnaire = EvaluationQuestionnaire::find_by_questionnaire_id($this->questionnaire_id);
 
-		if ($find) {
-			return $find;
-		}
+    // 	if ($evaluation_questionnaire) {
+    // 		return false;
+    // 	}
+    // }
 
-		if ( ! isset($attributes['order']))
-			$attributes['order'] = 10;
+    public function issue()
+    {
+        return $this->issue;
+    }
 
-		$create = self::create($attributes);
+    public static function uniqueness(array $attributes)
+    {
+        $find = self::find(array(
+            'conditions' => array(
+                'issue_id=? AND questionnaire_id=?',
+                $attributes['issue_id'],
+                $attributes['questionnaire_id'],
+            ),
+        ));
 
-		return $create;
-	}
+        if ($find) {
+            return $find;
+        }
+
+        if (!isset($attributes['order'])) {
+            $attributes['order'] = 10;
+        }
+
+        $create = self::create($attributes);
+
+        return $create;
+    }
 }

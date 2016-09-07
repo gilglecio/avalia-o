@@ -2,49 +2,59 @@
 
 class Scale extends Model
 {
-	static $has_many = array(
-		array('options', 'class_name' => 'ScaleOption'),
-	);
+    /**
+     * @var int
+     */
+    protected $id;
 
-	static $validates_presence_of = array(
-		array('name')
-	);
+    /**
+     * @var string
+     */
+    protected $name;
 
-	static $validates_uniqueness_of = array(
-		array('name')
-	);
+    public static $has_many = array(
+        array('options', 'class_name' => 'ScaleOption'),
+    );
 
-	static $validates_size_of = array(
-		array('name', 'within' => array(3, 60))
-	);
+    public static $validates_presence_of = array(
+        array('name'),
+    );
 
-	public function options()
-	{
-		return $this->options;
-	}
+    public static $validates_uniqueness_of = array(
+        array('name'),
+    );
 
-	public function before_destroy()
-	{
-		$options = array(
+    public static $validates_size_of = array(
+        array('name', 'within' => array(3, 60)),
+    );
+
+    public function options()
+    {
+        return $this->options;
+    }
+
+    public function before_destroy()
+    {
+        $options = array(
             'conditions' => array(
-                'scale_id' => $this->id)
+                'scale_id' => $this->id, ),
         );
 
         IssueScale::delete_all($options);
-	}
+    }
 
-	public static function uniqueness(array $attributes)
-	{
-		$find = self::find(array(
-			'conditions' => array('name=?', $attributes['name'])
-		));
+    public static function uniqueness(array $attributes)
+    {
+        $find = self::find(array(
+            'conditions' => array('name=?', $attributes['name']),
+        ));
 
-		if ($find) {
-			return $find;
-		}
+        if ($find) {
+            return $find;
+        }
 
-		$create = self::create($attributes);
+        $create = self::create($attributes);
 
-		return $create;
-	}
+        return $create;
+    }
 }

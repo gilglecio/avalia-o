@@ -2,303 +2,342 @@
 
 class Evaluation extends Model
 {
-	private $id;
-	private $user_id;
-	private $name;
-	private $subject;
-	private $start_at;
-	private $end_at;
-	private $message_email;
-	private $mail_bcc;
-	private $created_at;
-	private $updated_at;
-	private $status;
-	private $is_alerted;
+    /**
+     * @var int
+     */
+    protected $id;
 
-	static $has_many = array(
-		array('evaluation_groups'),
-		array('groups', 'through' => 'evaluation_groups'),
-		array('evaluation_evaluators'),
+    /**
+     * @var int
+     */
+    protected $user_id;
 
-		array('evaluation_questionnaires'),
-		array('questionnaires', 'through' => 'evaluation_questionnaires'),
+    /**
+     * @var string
+     */
+    protected $name;
 
-		array('evaluation_sendings'),
-		array('sendings', 'through' => 'evaluation_sendings'),
+    /**
+     * @var string
+     */
+    protected $subject;
 
-		array('answers')
-	);
+    /**
+     * @var \Datetime
+     */
+    protected $start_at;
 
-	static $evaluation_tags = array(
-		'avaliacao',
-		'nome',
-		'questionario',
-		'inicio',
-		'termino'
-	);
+    /**
+     * @var \Datetime
+     */
+    protected $end_at;
 
-	static $validates_presence_of = array(
-		array('name'),
-		array('start_at'),
-		array('end_at'),
-		array('user_id')
-	);
+    /**
+     * @var \Datetime
+     */
+    protected $created_at;
 
-	static $validates_uniqueness_of = array(
-		array('name', 'message' => 'Avaliação já existe')
-	);
+    /**
+     * @var \Datetime
+     */
+    protected $updated_at;
 
-	static $status = array(
-		0 => 'Não Enviada',
-		1 => 'Enviada',
-		2 => 'Respondendo',
-		3 => 'Respondida',
-		4 => 'Corrigindo',
-		5 => 'Corrigida'
-	);
+    /**
+     * @var string
+     */
+    protected $message_email;
 
-	static $validates_size_of = array(
-		array('name', 'within' => array(5, 120))
-	);
+    /**
+     * @var string
+     */
+    protected $mail_bcc;
 
-	public function can_delete()
-	{
-		if ($this->evaluation_sendings) {
-			foreach ($this->evaluation_sendings as $evaluation_sending) {
-				if ($evaluation_sending->answers) {
-					return false;
-				}
-			}
-		}
+    /**
+     * @var bool
+     */
+    protected $is_alerted;
 
-		return true;
-	}
+    public static $has_many = array(
+        array('evaluation_groups'),
+        array('groups', 'through' => 'evaluation_groups'),
+        array('evaluation_evaluators'),
 
-	public function getEnd()
-	{
-		return date('D', strtotime($this->end_at)).' de '.mes(date('m', strtotime($this->end_at))).' de '.date('Y', strtotime($this->end_at));
-	}
+        array('evaluation_questionnaires'),
+        array('questionnaires', 'through' => 'evaluation_questionnaires'),
 
-	public function before_create()
-	{
-		
-	}
+        array('evaluation_sendings'),
+        array('sendings', 'through' => 'evaluation_sendings'),
 
-	public function getSubject()
-	{
-		$subject = trim($this->subject);
-		return $subject == '' ? $this->name : $subject;
-	}
+        array('answers'),
+    );
 
-	public function validate()
-	{
-		$date = date('Y-m-d H:i:s');
+    public static $evaluation_tags = array(
+        'avaliacao',
+        'nome',
+        'questionario',
+        'inicio',
+        'termino',
+    );
 
-		if ($this->start_at AND $this->start_at < $date) {
-			$this->errors->add('Error 1', 'Data Inicial ja passou');
-		}
+    public static $validates_presence_of = array(
+        array('name'),
+        array('start_at'),
+        array('end_at'),
+        array('user_id'),
+    );
 
-		if ($this->end_at AND $this->end_at < $date) {
-			$this->errors->add('Error 2', 'Data Término ja passou');
-		}
+    public static $validates_uniqueness_of = array(
+        array('name', 'message' => 'Avaliação já existe'),
+    );
 
-		if ($this->start_at AND ! $this->end_at) {
-			$this->errors->add('Error 3', 'Informe a data de Termino');	
-		}
+    public static $status = array(
+        0 => 'Não Enviada',
+        1 => 'Enviada',
+        2 => 'Respondendo',
+        3 => 'Respondida',
+        4 => 'Corrigindo',
+        5 => 'Corrigida',
+    );
 
-		if ($this->start_at AND $this->end_at) {
-			if ($this->start_at > $this->end_at) {
-				$this->errors->add('Error 3', 'Data inicial não pode ser maior que a data de termino');
-			}
+    public static $validates_size_of = array(
+        array('name', 'within' => array(5, 120)),
+    );
 
-			// if ($this->start_at == $this->end_at) {
-			// 	$this->errors->add('Error 4', 'Data inicial não pode ser igual a data de termino');
-			// }
-		}
-	}
+    public function can_delete()
+    {
+        if ($this->evaluation_sendings) {
+            foreach ($this->evaluation_sendings as $evaluation_sending) {
+                if ($evaluation_sending->answers) {
+                    return false;
+                }
+            }
+        }
 
-	public function getStatus()
-	{
+        return true;
+    }
 
-		if ($this->start_at == '') {
-			return 'Início não definido';
-		}
+    public function getEnd()
+    {
+        return date('D', strtotime($this->end_at)).' de '.mes(date('m', strtotime($this->end_at))).' de '.date('Y', strtotime($this->end_at));
+    }
 
-		if ($this->end_at == '') {
-			return 'Término não definido';	
-		}
+    public function before_create()
+    {
+    }
 
-		$start_at = strtotime($this->start_at);
-		$end_at = strtotime($this->end_at);
-		$now = strtotime('now');
+    public function getSubject()
+    {
+        $subject = trim($this->subject);
 
-		if ($start_at > $now) {
-			return 'A Iniciar';
-		} elseif ($start_at < $now AND $now < $end_at) {
-			return 'Aberta';
-		} elseif ($now > $end_at) {
-			return 'Expirada';
-		} else {
-			return '-';
-		}
-	}
+        return $subject == '' ? $this->name : $subject;
+    }
 
-	public static function send_mail_admins($subject, $message)
-	{
-		$admins = User::find_all_by_profile_type('admin');
+    public function validate()
+    {
+        $date = date('Y-m-d H:i:s');
 
-		$input = array(
-			'subject' => $subject,
-			'message' => $message
-		);
+        if ($this->start_at and $this->start_at < $date) {
+            $this->errors->add('Error 1', 'Data Inicial ja passou');
+        }
 
-		$fails = array();
+        if ($this->end_at and $this->end_at < $date) {
+            $this->errors->add('Error 2', 'Data Término ja passou');
+        }
 
-		foreach ($admins as $admin) {
-			
-			$input['to']['email'] = $admin->email;
-			$input['to']['name'] = $admin->name;
+        if ($this->start_at and !$this->end_at) {
+            $this->errors->add('Error 3', 'Informe a data de Termino');
+        }
 
-			$mail = new Mail($input);
+        if ($this->start_at and $this->end_at) {
+            if ($this->start_at > $this->end_at) {
+                $this->errors->add('Error 3', 'Data inicial não pode ser maior que a data de termino');
+            }
 
-			
-			$send = $mail->send();
+            // if ($this->start_at == $this->end_at) {
+            // 	$this->errors->add('Error 4', 'Data inicial não pode ser igual a data de termino');
+            // }
+        }
+    }
 
-			if (isset($send['error'])) {
-				array_push($fails, $admin->email);
-			}
-		}
+    public function getStatus()
+    {
+        if ($this->start_at == '') {
+            return 'Início não definido';
+        }
 
-		return $fails;
-	}
+        if ($this->end_at == '') {
+            return 'Término não definido';
+        }
 
-	public function evaluation_sendings()
-	{
-		return $this->evaluation_sendings;
-	}
+        $start_at = strtotime($this->start_at);
+        $end_at = strtotime($this->end_at);
+        $now = strtotime('now');
 
-	public function getMailBcc()
-	{
-		if ($this->mail_bcc == '')
-			return $this->mail_bcc;
+        if ($start_at > $now) {
+            return 'A Iniciar';
+        } elseif ($start_at < $now and $now < $end_at) {
+            return 'Aberta';
+        } elseif ($now > $end_at) {
+            return 'Expirada';
+        } else {
+            return '-';
+        }
+    }
 
-		$mail_bcc = json_decode($this->mail_bcc);
+    public static function send_mail_admins($subject, $message)
+    {
+        $admins = User::find_all_by_profile_type('admin');
 
-		$mails = array();
+        $input = array(
+            'subject' => $subject,
+            'message' => $message,
+        );
 
-		foreach ($mail_bcc as $mail => $name) {
-			$mails[] = $mail . Mail::SEPARATOR_FIND . $name;
-		}
+        $fails = array();
 
-		return implode(Mail::SEPARATOR_LIST.' ', $mails);
-	}
+        foreach ($admins as $admin) {
+            $input['to']['email'] = $admin->email;
+            $input['to']['name'] = $admin->name;
 
-	public function sendings()
-	{
-		return $this->sendings;
-	}
+            $mail = new Mail($input);
 
-	public function evaluation_questionnaires()
-	{
-		return $this->evaluation_questionnaires;
-	}
+            $send = $mail->send();
 
-	public function questionnaires()
-	{
-		return $this->questionnaires;
-	}
+            if (isset($send['error'])) {
+                array_push($fails, $admin->email);
+            }
+        }
 
-	public function evaluation_groups()
-	{
-		return $this->evaluation_groups;
-	}
+        return $fails;
+    }
 
-	public function evaluation_evaluators()
-	{
-		return $this->evaluation_evaluators;
-	}
+    public function evaluation_sendings()
+    {
+        return $this->evaluation_sendings;
+    }
 
-	public function getFullValueds()
-	{
-		$valueds = array();
+    public function getMailBcc()
+    {
+        if ($this->mail_bcc == '') {
+            return $this->mail_bcc;
+        }
 
-		foreach ($this->evaluation_groups as $evaluation_groups) {
-			
-			$group = $evaluation_groups->group;
+        $mail_bcc = json_decode($this->mail_bcc);
 
-			foreach ($group->members as $member) {
-				array_push($valueds, $member);
-			}
-		}
+        $mails = array();
 
-		return $valueds;
-	}
+        foreach ($mail_bcc as $mail => $name) {
+            $mails[] = $mail.Mail::SEPARATOR_FIND.$name;
+        }
 
-	public function sent($evaluation_sending)
-	{
-		$valueds = $this->getFullValueds();
+        return implode(Mail::SEPARATOR_LIST.' ', $mails);
+    }
 
-		if (empty($valueds)) {
-			return false;
-		}
+    public function sendings()
+    {
+        return $this->sendings;
+    }
 
-		$sendings = array();
+    public function evaluation_questionnaires()
+    {
+        return $this->evaluation_questionnaires;
+    }
 
-		foreach ($valueds as $valued) {
-			
-			$sending = Sending::create(array(
-				'valued_id' => $valued->id,
-				'evaluation_sending_id' => $evaluation_sending->id
-			));
+    public function questionnaires()
+    {
+        return $this->questionnaires;
+    }
 
-			if ($sending->is_invalid()) {
-				return $sending->errors->full_messages();
-			}
+    public function evaluation_groups()
+    {
+        return $this->evaluation_groups;
+    }
 
-			array_push($sendings, $sending);
-		}
+    public function evaluation_evaluators()
+    {
+        return $this->evaluation_evaluators;
+    }
 
-		$this->update_attributes(array('status' => 1));
+    public function getFullValueds()
+    {
+        $valueds = array();
 
-		return $sendings;
-	}
+        foreach ($this->evaluation_groups as $evaluation_groups) {
+            $group = $evaluation_groups->group;
 
-	public function copy(array $attributes)
-	{
-		$evaluation = self::create($attributes);
+            foreach ($group->members as $member) {
+                array_push($valueds, $member);
+            }
+        }
 
-		if ($evaluation->is_invalid())
-			return $evaluation->errors->full_messages();
+        return $valueds;
+    }
 
-		foreach ($this->evaluation_groups as $group) {
-			EvaluationGroup::create(array(
-				'evaluation_id' => $evaluation->id,
-				'group_id' => $group->group_id
-			));
-		}
+    public function sent($evaluation_sending)
+    {
+        $valueds = $this->getFullValueds();
 
-		foreach ($this->evaluation_evaluators as $evaluator) {
-			EvaluationEvaluator::create(array(
-				'evaluation_id' => $evaluation->id,
-				'evaluator_id' => $evaluator->evaluator_id
-			));
-		}
+        if (empty($valueds)) {
+            return false;
+        }
 
-		foreach ($this->evaluation_questionnaires as $questionnaire) {
-			EvaluationQuestionnaire::create(array(
-				'evaluation_id' => $evaluation->id,
-				'questionnaire_id' => $questionnaire->questionnaire_id
-			));
-		}
+        $sendings = array();
 
-		return $evaluation;
-	}
+        foreach ($valueds as $valued) {
+            $sending = Sending::create(array(
+                'valued_id' => $valued->id,
+                'evaluation_sending_id' => $evaluation_sending->id,
+            ));
 
-	public function before_destroy()
-	{
-		$options = array(
+            if ($sending->is_invalid()) {
+                return $sending->errors->full_messages();
+            }
+
+            array_push($sendings, $sending);
+        }
+
+        $this->update_attributes(array('status' => 1));
+
+        return $sendings;
+    }
+
+    public function copy(array $attributes)
+    {
+        $evaluation = self::create($attributes);
+
+        if ($evaluation->is_invalid()) {
+            return $evaluation->errors->full_messages();
+        }
+
+        foreach ($this->evaluation_groups as $group) {
+            EvaluationGroup::create(array(
+                'evaluation_id' => $evaluation->id,
+                'group_id' => $group->group_id,
+            ));
+        }
+
+        foreach ($this->evaluation_evaluators as $evaluator) {
+            EvaluationEvaluator::create(array(
+                'evaluation_id' => $evaluation->id,
+                'evaluator_id' => $evaluator->evaluator_id,
+            ));
+        }
+
+        foreach ($this->evaluation_questionnaires as $questionnaire) {
+            EvaluationQuestionnaire::create(array(
+                'evaluation_id' => $evaluation->id,
+                'questionnaire_id' => $questionnaire->questionnaire_id,
+            ));
+        }
+
+        return $evaluation;
+    }
+
+    public function before_destroy()
+    {
+        $options = array(
             'conditions' => array(
-                'evaluation_id' => $this->id)
+                'evaluation_id' => $this->id, ),
         );
 
         EvaluationEvaluator::delete_all($options);
@@ -308,7 +347,7 @@ class Evaluation extends Model
         $evaluation_sendings = EvaluationSending::all($options);
 
         foreach ($evaluation_sendings as $evaluation_sending) {
-        	$evaluation_sending->delete();
+            $evaluation_sending->delete();
         }
-	}
+    }
 }

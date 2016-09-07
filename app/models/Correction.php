@@ -2,165 +2,190 @@
 
 class Correction extends Model
 {
-	private $id;
-	private $answer_id;
-	private $evaluator_id;
-	private $note;
-	private $justification;
-	private $created_at;
-	private $updated_at;
+    /**
+     * @var int
+     */
+    protected $id;
 
-	static $belongs_to = array(
-		array('answer'),
-		array('evaluator', 'class_name' => 'User', 'primary_key' => 'id', 'foreign_key' => 'evaluator_id')
-	);
+    /**
+     * @var int
+     */
+    protected $answer_id;
 
-	static $validates_presence_of = array(
-		array('answer_id'),
-		array('evaluator_id'),
-		array('note')
-	);
+    /**
+     * @var int
+     */
+    protected $evaluator_id;
 
-	public function answer()
-	{
-		return $this->answer;
-	}
+    /**
+     * @var decimal
+     */
+    protected $note;
 
-	public function getNote()
-	{
-		return number_format($this->note, 2, ',', '.');
-	}
+    /**
+     * @var string
+     */
+    protected $justification;
 
-	public static function bySending($sending_id)
-	{
-		$sending = Sending::find_by_id($sending_id);
+    /**
+     * @var \Datetime
+     */
+    protected $created_at;
 
-		if ( ! $sending)
-			return array();
+    /**
+     * @var \Datetime
+     */
+    protected $updated_at;
 
-		$evaluation_sending = $sending->evaluation_sending;
-		
-		$answers = Answer::find_all_by_evaluation_sending_id_and_valued_id($evaluation_sending->id, $sending->valued_id);
+    public static $belongs_to = array(
+        array('answer'),
+        array('evaluator', 'class_name' => 'User', 'primary_key' => 'id', 'foreign_key' => 'evaluator_id'),
+    );
 
-		$data = array();
+    public static $validates_presence_of = array(
+        array('answer_id'),
+        array('evaluator_id'),
+        array('note'),
+    );
 
-		foreach ($answers as $answer) {
-			
-			$answer_corrections = $answer->corrections;
+    public function answer()
+    {
+        return $this->answer;
+    }
 
-			$a['issue'] = $answer->issue;
-			$a['answer'] = $answer;
+    public function getNote()
+    {
+        return number_format($this->note, 2, ',', '.');
+    }
 
-			foreach ($answer_corrections as $correction) {
+    public static function bySending($sending_id)
+    {
+        $sending = Sending::find_by_id($sending_id);
 
-				$c['note'] = $correction->getNote();
-				$c['justification'] = $correction->justification;
+        if (!$sending) {
+            return array();
+        }
 
-				$a['evaluators'][$correction->evaluator_id]['evaluator'] = $correction->evaluator;
-				$a['evaluators'][$correction->evaluator_id]['correction'] = $c;
+        $evaluation_sending = $sending->evaluation_sending;
 
-				$data['evaluators'][$correction->evaluator_id] = $correction->evaluator;
+        $answers = Answer::find_all_by_evaluation_sending_id_and_valued_id($evaluation_sending->id, $sending->valued_id);
 
-				if ( ! isset($data['sum'][$correction->evaluator_id]))
-					$data['sum'][$correction->evaluator_id] = 0;
+        $data = array();
 
-				$data['sum'][$correction->evaluator_id] += $correction->note;
+        foreach ($answers as $answer) {
+            $answer_corrections = $answer->corrections;
 
-				$data['media'][$correction->evaluator_id] = $data['sum'][$correction->evaluator_id] / count($answers);
-			}
+            $a['issue'] = $answer->issue;
+            $a['answer'] = $answer;
 
-			$data['answers'][$answer->id] = $a;
-		}
+            foreach ($answer_corrections as $correction) {
+                $c['note'] = $correction->getNote();
+                $c['justification'] = $correction->justification;
 
-		if ( ! isset($data['evaluators'])) {
-			$data['evaluators'] = array();
-		}
+                $a['evaluators'][$correction->evaluator_id]['evaluator'] = $correction->evaluator;
+                $a['evaluators'][$correction->evaluator_id]['correction'] = $c;
 
-		if ( ! isset($data['media'])) {
-			$data['media'] = array();
-		}
+                $data['evaluators'][$correction->evaluator_id] = $correction->evaluator;
 
-		return $data;
-	}
+                if (!isset($data['sum'][$correction->evaluator_id])) {
+                    $data['sum'][$correction->evaluator_id] = 0;
+                }
 
-	public static function getByValuedId($valued_id)
-	{
-		$corrections = Correction::all();
+                $data['sum'][$correction->evaluator_id] += $correction->note;
 
-		$data = array();
+                $data['media'][$correction->evaluator_id] = $data['sum'][$correction->evaluator_id] / count($answers);
+            }
 
-		if ($corrections) {
-			foreach ($corrections as $correction) {
-				
-				if ($correction->answer->valued_id == $valued_id) {
-					array_push($data, $correction);
-				}
+            $data['answers'][$answer->id] = $a;
+        }
 
-			}
-		}
+        if (!isset($data['evaluators'])) {
+            $data['evaluators'] = array();
+        }
 
-		return $data;
-	}
+        if (!isset($data['media'])) {
+            $data['media'] = array();
+        }
 
-	public static function uniqueness($corrections, $evaluator_id)
-	{
-		if (empty($corrections))
-			return false;
+        return $data;
+    }
 
-		foreach ($corrections as $answer_id => $column) {
-			
-			$find = self::find(array(
-				'conditions' => array('answer_id=? AND evaluator_id=?',
-					$answer_id,
-					$evaluator_id
-				)
-			));
+    public static function getByValuedId($valued_id)
+    {
+        $corrections = self::all();
 
-			if ($find) {
-				//dd($find);
-				continue;
-			}
+        $data = array();
 
-			$column['note'] = isset($column['note']) ? $column['note'] : 0;
+        if ($corrections) {
+            foreach ($corrections as $correction) {
+                if ($correction->answer->valued_id == $valued_id) {
+                    array_push($data, $correction);
+                }
+            }
+        }
 
-			$attributes = array(
-				'answer_id' => $answer_id,
-				'evaluator_id' => $evaluator_id,
-				'note' => $column['note'],
-				'justification' => $column['justification']
-			);
+        return $data;
+    }
 
-			$correction = self::create($attributes);
+    public static function uniqueness($corrections, $evaluator_id)
+    {
+        if (empty($corrections)) {
+            return false;
+        }
 
-			if ($correction->is_invalid())
-				return $correction->errors->full_messages();
-		}
+        foreach ($corrections as $answer_id => $column) {
+            $find = self::find(array(
+                'conditions' => array('answer_id=? AND evaluator_id=?',
+                    $answer_id,
+                    $evaluator_id,
+                ),
+            ));
 
-		return true;
-	}
+            if ($find) {
+                //dd($find);
+                continue;
+            }
 
-	public static function prepare($post)
-	{
-		if (empty($post))
-			return false;
+            $column['note'] = isset($column['note']) ? $column['note'] : 0;
 
-		$issues = array();
+            $attributes = array(
+                'answer_id' => $answer_id,
+                'evaluator_id' => $evaluator_id,
+                'note' => $column['note'],
+                'justification' => $column['justification'],
+            );
 
-		foreach ($post as $key => $value) {
+            $correction = self::create($attributes);
 
-			$split = explode('-', $key);
+            if ($correction->is_invalid()) {
+                return $correction->errors->full_messages();
+            }
+        }
 
-			if ($split[0] == 'correct') {
-				
-				if ($split[2] == 'note') {
-					$issues[$split[1]]['note'] = $value;
-					continue;
-				}
+        return true;
+    }
 
-				$issues[$split[1]]['justification'] = $value;
-			}
-		}
+    public static function prepare($post)
+    {
+        if (empty($post)) {
+            return false;
+        }
 
-		return $issues;
-	}
+        $issues = array();
+
+        foreach ($post as $key => $value) {
+            $split = explode('-', $key);
+
+            if ($split[0] == 'correct') {
+                if ($split[2] == 'note') {
+                    $issues[$split[1]]['note'] = $value;
+                    continue;
+                }
+
+                $issues[$split[1]]['justification'] = $value;
+            }
+        }
+
+        return $issues;
+    }
 }

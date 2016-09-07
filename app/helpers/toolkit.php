@@ -1,4 +1,5 @@
 <?php
+
 function config($param)
 {
     $paramns = array(
@@ -20,7 +21,7 @@ function config($param)
                 'user' => 'avaliacao',
                 'pass' => 'FladVtMp30',
                 'base' => 'avaliacao',
-            )
+            ),
         ),
 
         'dev' => array(
@@ -41,8 +42,8 @@ function config($param)
                 'user' => 'root',
                 'pass' => '123',
                 'base' => 'avaliacao',
-            )
-        )
+            ),
+        ),
     );
 
     $paramns = $paramns[ENV_DEFAULT];
@@ -80,7 +81,7 @@ function join_e($list, $separator = ', ', $and = ' e ')
         case 1:
             return $input[0];
         break;
-        
+
         default:
             return implode($separator, $list).$and.$end;
             break;
@@ -114,7 +115,7 @@ function full_date($date)
         'Quarta-Feira',
         'Quinta-Feira',
         'Sexta-Feira',
-        'Sabado'
+        'Sabado',
     );
 
     return $week_days[date('w', strtotime($date))].', '.date('d M Y à\s H:i');
@@ -137,9 +138,10 @@ function joinDateTime($date, $time)
 }
 function date_db($date)
 {
-    if (! $date) {
+    if (!$date) {
         return null;
     }
+
     return implode('-', array_reverse(explode('/', $date)));
 }
 function money($money)
@@ -152,14 +154,14 @@ function set_user_charge($charges_id, $user)
         $find = UserCharge::find(array(
             'conditions' => array(
                 'user_id=? AND charge_id=?',
-                $user->id, $charge_id
-            )
+                $user->id, $charge_id,
+            ),
         ));
 
-        if (! $find) {
+        if (!$find) {
             $UserCharge = UserCharge::create(array(
                 'user_id' => $user->id,
-                'charge_id' => $charge_id
+                'charge_id' => $charge_id,
             ));
 
             if ($UserCharge->is_invalid()) {
@@ -175,14 +177,14 @@ function set_user_rating($ratings_id, $user)
         $find = UserRating::find(array(
             'conditions' => array(
                 'user_id=? AND rating_id=?',
-                $user->id, $rating_id
-            )
+                $user->id, $rating_id,
+            ),
         ));
 
-        if (! $find) {
+        if (!$find) {
             $UserRating = UserRating::create(array(
                 'user_id' => $user->id,
-                'rating_id' => $rating_id
+                'rating_id' => $rating_id,
             ));
 
             if ($UserRating->is_invalid()) {
@@ -196,7 +198,7 @@ function split_charges($charges)
 {
     $charges_id = array();
     $charges = array_filter(explode(',', $charges));
-    
+
     $errors = array();
 
     foreach ($charges as $charge) {
@@ -208,7 +210,7 @@ function split_charges($charges)
             array_push($charges_id, $find->id);
         } else {
             $create = Charge::create(array(
-                'name' => strip_tags(trim($charge))
+                'name' => strip_tags(trim($charge)),
             ));
             if ($create->is_valid()) {
                 array_push($charges_id, $create->id);
@@ -217,15 +219,16 @@ function split_charges($charges)
             }
         }
     }
+
     return $charges_id;
 }
 function split_ratings($ratings)
 {
     $ratings_id = array();
     $ratings = array_filter(explode(',', $ratings));
-    
+
     $errors = array();
-    
+
     foreach ($ratings as $rating) {
         $rating = trim($rating);
         $find = Rating::find_by_name($rating);
@@ -234,7 +237,7 @@ function split_ratings($ratings)
             array_push($ratings_id, $find->id);
         } else {
             $create = Rating::create(array(
-                'name' => strip_tags(trim($rating))
+                'name' => strip_tags(trim($rating)),
             ));
             if ($create->is_valid()) {
                 array_push($ratings_id, $create->id);
@@ -243,6 +246,7 @@ function split_ratings($ratings)
             }
         }
     }
+
     return $ratings_id;
 }
 function check_evaluation_questionnaires($questionnaires, $evaluation = null)
@@ -257,7 +261,7 @@ function check_evaluation_questionnaires($questionnaires, $evaluation = null)
             'issues' => $questionnaire->questionnaire_issues,
         );
     }
-    
+
     if ($evaluation) {
         foreach ($evaluation->evaluation_questionnaires as $questionnaire) {
             $data[$questionnaire->questionnaire_id]['checked'] = 1;
@@ -273,10 +277,10 @@ function check_evaluation_evaluators($evaluators, $evaluation = null)
     foreach ($evaluators as $evaluator) {
         $data[$evaluator->id] = array(
             'checked' => 0,
-            'name' => $evaluator->name
+            'name' => $evaluator->name,
         );
     }
-    
+
     if ($evaluation) {
         foreach ($evaluation->evaluation_evaluators as $evaluator) {
             $data[$evaluator->evaluator_id]['checked'] = 1;
@@ -292,10 +296,10 @@ function check_evaluation_groups($groups, $evaluation = null)
     foreach ($groups as $group) {
         $data[$group->id] = array(
             'checked' => 0,
-            'name' => $group->name
+            'name' => $group->name,
         );
     }
-    
+
     if ($evaluation) {
         foreach ($evaluation->evaluation_groups as $group) {
             $data[$group->group_id]['checked'] = 1;
@@ -311,10 +315,10 @@ function check_groups($groups, $user = null)
     foreach ($groups as $group) {
         $data[$group->id] = array(
             'checked' => 0,
-            'name' => $group->name
+            'name' => $group->name,
         );
     }
-    
+
     if ($user) {
         foreach ($user->user_groups as $group) {
             $data[$group->group_id]['checked'] = 1;
@@ -330,10 +334,10 @@ function check_charges($charges, $user = null)
     foreach ($charges as $charge) {
         $data[$charge->id] = array(
             'checked' => 0,
-            'name' => $charge->name
+            'name' => $charge->name,
         );
     }
-    
+
     if ($user) {
         foreach ($user->user_charges as $charge) {
             $data[$charge->charge_id]['checked'] = 1;
@@ -349,7 +353,7 @@ function check_ratings($ratings, $user = null)
     foreach ($ratings as $rating) {
         $data[$rating->id] = array(
             'checked' => 0,
-            'name' => $rating->name
+            'name' => $rating->name,
         );
     }
 
@@ -402,7 +406,7 @@ function slug($string, $slug = false)
 
     if ($slug) {
         $string = preg_replace('/[^a-z0-9]/i', $slug, $string);
-        $string = preg_replace('/' . $slug . '{2,}/i', $slug, $string);
+        $string = preg_replace('/'.$slug.'{2,}/i', $slug, $string);
         $string = trim($string, $slug);
     }
 
@@ -425,13 +429,13 @@ function response(array $itens, $class = 'success')
 
 function dd($input, $dump = false)
 {
-    echo "<pre>";
+    echo '<pre>';
     if ($dump) {
         var_dump($input);
     } else {
         print_r($input);
     }
-    echo "</pre>";
+    echo '</pre>';
 
     exit;
 }

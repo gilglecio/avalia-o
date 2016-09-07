@@ -1,4 +1,6 @@
-<?php session_start();
+<?php
+
+session_start();
 
 date_default_timezone_set('America/Sao_Paulo');
 
@@ -13,7 +15,7 @@ define('ROUTES', APP.DS.'routes');
 define('CACHE', APP.DS.'cache');
 define('MODELS', APP.DS.'models');
 
-$env = require APP . DS . 'env.php';
+$env = require APP.DS.'env.php';
 
 define('ENV_DEFAULT', $env['env']);
 
@@ -26,19 +28,15 @@ require VENDOR.DS.'autoload.php';
 require HELPERS.DS.'toolkit.php';
 require HELPERS.DS.'ValidateDate.php';
 
-
-
 // ini_set("SMTP", config('mail.smtp'));
 // ini_set("smtp_port", config('mail.port'));
 
 \ActiveRecord\Config::initialize(function ($cfg) use ($env) {
-
     $dns = $env['db']['driver'].'://'.$env['db']['username'].':'.$env['db']['password'].'@'.$env['db']['host'].'/'.$env['db']['dbname'];
 
     $cfg->set_model_directory(MODELS);
-    // $cfg->set_date_format(\ActiveRecord\Datetime::$FORMATS['db']);
     $cfg->set_connections(array(
-        'development' => $dns
+        'development' => $dns,
     ));
 });
 
@@ -49,13 +47,13 @@ $app = new \Slim\Slim(array(
     'view' => new \Slim\Views\Twig(),
     'urladm' => '/admin',
     'urlbase_adm' => config('domain').'admin',
-    'env' => $env
+    'env' => $env,
 ));
 
 $view = $app->view();
 $view->parserOptions = array(
     'debug' => true,
-    'cache' => ENV_DEFAULT == 'dev' ? CACHE : null
+    'cache' => ENV_DEFAULT == 'dev' ? CACHE : null,
 );
 
 $view->parserExtensions = array(
@@ -68,12 +66,12 @@ $app->add(new \Slim\Middleware\Flash());
 $authenticate = function ($rule = 'RULE_ADMIN') use ($app) {
     $_SESSION['before'] = $_SERVER['REQUEST_URI'];
 
-    if (! isset($_SESSION['app.user_id'])) {
+    if (!isset($_SESSION['app.user_id'])) {
         return $app->redirect(config('domain'));
     }
-    
+
     $app->view->appendData(array(
-        'app_user' => User::getUserLogger()
+        'app_user' => User::getUserLogger(),
     ));
 };
 
@@ -87,22 +85,20 @@ $app->view->appendData(array(
     'env' => ENV_DEFAULT,
     'evaluation_tags' => Evaluation::$evaluation_tags,
     'csrf_key' => 'csrf_token',
-    'csrf_token' => 'token'
+    'csrf_token' => 'token',
 ));
-
 
 \Slim\Route::setDefaultConditions(array(
     'id' => '[0-9]+',
-    'profile_type' => 'appraiser|valued|admin'
+    'profile_type' => 'appraiser|valued|admin',
 ));
 
 foreach (array(
     'admin',
     'front',
-    'hooks'
+    'hooks',
 ) as $route) {
     require ROUTES.DS.$route.'.php';
 }
-
 
 $app->run();

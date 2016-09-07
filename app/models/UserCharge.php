@@ -2,33 +2,43 @@
 
 class UserCharge extends Model
 {
-	static $belongs_to = array(
-		array('user'),
-		array('charge')
-	);
+    /**
+     * @var int
+     */
+    protected $user_id;
 
-	static $validates_presence_of = array(
-		array('user_id'),
-		array('charge_id')
-	);
+    /**
+     * @var int
+     */
+    protected $charge_id;
 
-	public function user()
-	{
-		return $this->user;
-	}
+    public static $belongs_to = array(
+        array('user'),
+        array('charge'),
+    );
 
-	public function before_create()
-	{
-		$find = self::find(array(
-			'conditions' => array(
-				'user_id=? AND charge_id=?',
-				$this->user_id,
-				$this->charge_id
-			)
-		));		
+    public static $validates_presence_of = array(
+        array('user_id'),
+        array('charge_id'),
+    );
 
-		if ($find) {
-			return false;
-		}
-	}
+    public function user()
+    {
+        return $this->user;
+    }
+
+    public function before_create()
+    {
+        $find = self::find(array(
+            'conditions' => array(
+                'user_id=? AND charge_id=?',
+                $this->user_id,
+                $this->charge_id,
+            ),
+        ));
+
+        if ($find) {
+            return false;
+        }
+    }
 }

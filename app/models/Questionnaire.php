@@ -2,121 +2,151 @@
 
 class Questionnaire extends Model
 {
-	private $id;
-	private $name;
-	private $name_private;
-	private $created_at;
-	private $updated_at;
-	private $is_delete;
-	private $user_id;
+    /**
+     * @var int
+     */
+    protected $id;
 
-	static $has_many = array(
-		array('questionnaire_issues'),
-		array('issues', 
-			'through' => 'questionnaire_issues', 
-			'select' => 'issues.*, questionnaire_issues.order, questionnaire_issues.value', 
-			'order' => 'questionnaire_issues.order'),
+    /**
+     * @var int
+     */
+    protected $user_id;
 
-		array('evaluation_questionnaires'),
-		array('evaluations', 'through' => 'evaluation_questionnaires')
-	);
+    /**
+     * @var string
+     */
+    protected $name;
 
-	static $belongs_to = array(
-		array('user')
-	);
+    /**
+     * @var string
+     */
+    protected $name_private;
 
-	static $validates_presence_of = array(
-		array('name'),
-		array('user_id')
-	);
+    /**
+     * @var \Datetime
+     */
+    protected $created_at;
 
-	static $validates_size_of = array(
-		array('name', 'within' => array(5, 255))
-	);
+    /**
+     * @var \Datetime
+     */
+    protected $updated_at;
 
-	public function questionnaire_issues()
-	{
-		return $this->questionnaire_issues;
-	}
+    /**
+     * @var bool
+     */
+    protected $is_delete;
 
-	public function can_edit()
-	{
-		if ($this->evaluation_questionnaires) {
-			foreach ($this->evaluation_questionnaires as $evaluation_questionnaire) {
-				if ( ! $evaluation_questionnaire->evaluation->can_delete()) {
-					return false;
-				}
-			}
-		}
+    public static $has_many = array(
+        array('questionnaire_issues'),
+        array('issues',
+            'through' => 'questionnaire_issues',
+            'select' => 'issues.*, questionnaire_issues.order, questionnaire_issues.value',
+            'order' => 'questionnaire_issues.order', ),
 
-		return true;
-	}
+        array('evaluation_questionnaires'),
+        array('evaluations', 'through' => 'evaluation_questionnaires'),
+    );
 
-	public function getIssues()
-	{
-		return $this->issues;
-	}
+    public static $belongs_to = array(
+        array('user'),
+    );
 
-	public function name_private()
-	{
-		return $this->name_private;
-	}
+    public static $validates_presence_of = array(
+        array('name'),
+        array('user_id'),
+    );
 
-	public function before_destroy()
-	{
-		$evaluation_questionnaire = EvaluationQuestionnaire::find_by_questionnaire_id($this->id);
+    public static $validates_size_of = array(
+        array('name', 'within' => array(5, 255)),
+    );
 
-		if ($evaluation_questionnaire) {
-			return false;
-		}
+    public function questionnaire_issues()
+    {
+        return $this->questionnaire_issues;
+    }
 
-		$options = array(
+    public function can_edit()
+    {
+        if ($this->evaluation_questionnaires) {
+            foreach ($this->evaluation_questionnaires as $evaluation_questionnaire) {
+                if (!$evaluation_questionnaire->evaluation->can_delete()) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    public function getIssues()
+    {
+        return $this->issues;
+    }
+
+    public function name_private()
+    {
+        return $this->name_private;
+    }
+
+    public function before_destroy()
+    {
+        $evaluation_questionnaire = EvaluationQuestionnaire::find_by_questionnaire_id($this->id);
+
+        if ($evaluation_questionnaire) {
+            return false;
+        }
+
+        $options = array(
             'conditions' => array(
-                'questionnaire_id' => $this->id)
+                'questionnaire_id' => $this->id, ),
         );
 
         EvaluationQuestionnaire::delete_all($options);
         QuestionnaireIssue::delete_all($options);
-	}
+    }
 
-	public function evaluationNames($separator = ', ')
-	{
-		$evaluations = $this->evaluations;
+    public function evaluationNames($separator = ', ')
+    {
+        $evaluations = $this->evaluations;
 
-		if (empty($evaluations)) return null;
+        if (empty($evaluations)) {
+            return null;
+        }
 
-		$names = array();
+        $names = array();
 
-		foreach ($evaluations as $evaluation) {
-			array_push($names, $evaluation->name);
-		}
+        foreach ($evaluations as $evaluation) {
+            array_push($names, $evaluation->name);
+        }
 
-		return implode($separator, $names);
-	}
+        return implode($separator, $names);
+    }
 
-	public function copy(array $attributes)
-	{
-		$user_id = User::getUserLogger('id');
+    public function copy(array $attributes)
+    {
+        $user_id = User::getUserLogger('id');
 
-		$questionnaire = self::create($attributes);
+        $questionnaire = self::create($attributes);
 
-		if ($questionnaire->is_invalid())
-			return $questionnaire->errors->full_messages();
+        if ($questionnaire->is_invalid()) {
+            return $questionnaire->errors->full_messages();
+        }
 
-		$questionnaire_issues = $this->questionnaire_issues;
+        $questionnaire_issues = $this->questionnaire_issues;
 
-		foreach ($questionnaire_issues as $questionnaire_issue) {
-			
-			$copy_issue = QuestionnaireIssue::uniqueness(array(
-				'issue_id' => $questionnaire_issue->issue_id,
-				'questionnaire_id' => $questionnaire->id,
-				'order' => $questionnaire_issue->order
-			));
+        foreach ($questionnaire_issues as $questionnaire_issue) {
+            $copy_issue = QuestionnaireIssue::uniqueness(array(
+                'issue_id' => $questionnaire_issue->issue_id,
+                'questionnaire_id' => $questionnaire->id,
+                'order' => $questionnaire_issue->order,
+            ));
 
-			if ($copy_issue->is_invalid())
-				return $copy_issue->errors->full_messages();
-		}
+            if ($copy_issue->is_invalid()) {
+                return $copy_issue->errors->full_messages();
+            }
+        }
 
-		return $questionnaire;		
-	}
+        return $questionnaire;
+    }
 }

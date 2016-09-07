@@ -2,33 +2,48 @@
 
 class ScaleOption extends Model
 {
-	static $belongs_to = array(
-		array('scale'),
-		array('row', 'class_name' => 'ScaleRow')
-	);
+    /**
+     * @var int
+     */
+    protected $scale_id;
 
-	static $validates_presence_of = array(
-		array('scale_id'),
-		array('scale_row_id')
-	);
+    /**
+     * @var int
+     */
+    protected $scale_row_id;
 
-	public function row()
-	{
-		return $this->row;
-	}
+    /**
+     * @var int
+     */
+    protected $position;
 
-	public static function uniqueness(array $attributes)
-	{
-		$find = self::find(array(
-			'conditions' => array('scale_id=? AND scale_row_id=?', $attributes['scale_id'], $attributes['scale_row_id'])
-		));
+    public static $belongs_to = array(
+        array('scale'),
+        array('row', 'class_name' => 'ScaleRow'),
+    );
 
-		if ($find) {
-			return $find;
-		}
+    public static $validates_presence_of = array(
+        array('scale_id'),
+        array('scale_row_id'),
+    );
 
-		$create = self::create($attributes);
+    public function row()
+    {
+        return $this->row;
+    }
 
-		return $create;
-	}
+    public static function uniqueness(array $attributes)
+    {
+        $find = self::find(array(
+            'conditions' => array('scale_id=? AND scale_row_id=?', $attributes['scale_id'], $attributes['scale_row_id']),
+        ));
+
+        if ($find) {
+            return $find;
+        }
+
+        $create = self::create($attributes);
+
+        return $create;
+    }
 }

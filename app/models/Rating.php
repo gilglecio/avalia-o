@@ -2,31 +2,41 @@
 
 class Rating extends Model
 {
-	static $has_many = array(
-		array('user'),
-		array('user_ratings')
-	);
+    /**
+     * @var int
+     */
+    protected $id;
 
-	static $validates_presence_of = array(
-		array('name', 'message' => 'Classificação já cadastrada.')
-	);
+    /**
+     * @var string
+     */
+    protected $name;
 
-	static $validates_size_of = array(
-		// array('name', 'within' => array(3, 25), 'too_short' => 'muito curto.', 'too_long' => 'muito grande.')
-	);
+    public static $has_many = array(
+        array('user'),
+        array('user_ratings'),
+    );
 
-	public function user_ratings()
-	{
-		return $this->user_ratings;
-	}
+    public static $validates_presence_of = array(
+        array('name', 'message' => 'Classificação já cadastrada.'),
+    );
 
-	public function before_destroy()
-	{
-		$options = array(
+    public static $validates_size_of = array(
+        // array('name', 'within' => array(3, 25), 'too_short' => 'muito curto.', 'too_long' => 'muito grande.')
+    );
+
+    public function user_ratings()
+    {
+        return $this->user_ratings;
+    }
+
+    public function before_destroy()
+    {
+        $options = array(
             'conditions' => array(
-                'rating_id' => $this->id)
+                'rating_id' => $this->id, ),
         );
 
-		UserRating::delete_all($options);
-	}
+        UserRating::delete_all($options);
+    }
 }

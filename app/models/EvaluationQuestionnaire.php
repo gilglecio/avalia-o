@@ -2,21 +2,28 @@
 
 class EvaluationQuestionnaire extends Model
 {
-	private $evaluation_id;
-	private $questionnaire_id;
+    /**
+     * @var int
+     */
+    protected $evaluation_id;
 
-	static $belongs_to = array(
-		array('evaluation'),
-		array('questionnaire')
-	);
+    /**
+     * @var int
+     */
+    protected $questionnaire_id;
 
-	static $validates_presence_of = array(
-		array('evaluation_id'),
-		array('questionnaire_id')
-	);
+    public static $belongs_to = array(
+        array('evaluation'),
+        array('questionnaire'),
+    );
 
-	public function questionnaire()
-	{
-		return $this->questionnaire;
-	}
+    public static $validates_presence_of = array(
+        array('evaluation_id'),
+        array('questionnaire_id'),
+    );
+
+    public function questionnaire()
+    {
+        return $this->questionnaire;
+    }
 }

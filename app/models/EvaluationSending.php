@@ -2,123 +2,140 @@
 
 class EvaluationSending extends Model
 {
-	private $id;
-	private $evaluation_id;
-	private $created_at;
-	private $name;
+    /**
+     * @var int
+     */
+    protected $id;
 
-	static $belongs_to = array(
-		array('evaluation')
-	);
+    /**
+     * @var int
+     */
+    protected $evaluation_id;
 
-	static $has_many = array(
-		array('sendings'),
-		array('answers'),
-		array('averages')
-	);
+    /**
+     * @var \Datetime
+     */
+    protected $created_at;
 
-	static $validates_presence_of = array(
-		array('evaluation_id')
-	);
+    /**
+     * @var string
+     */
+    protected $name;
 
-	public function validade()
-	{
-		$this->errors->add('nome', 'nome é igual');
-		return false;
-		// $evaluation = Evaluation::find_by_id($this->evaluation_id);
-		// $errors = array();
+    public static $belongs_to = array(
+        array('evaluation'),
+    );
 
-		// // verificar usuarios
-		// if (count($evaluation->evaluation_groups)) {
+    public static $has_many = array(
+        array('sendings'),
+        array('answers'),
+        array('averages'),
+    );
 
-		// 	foreach ($$evaluation->groups as $group) {
-		// 		if ( ! count($group->group_members)) {
-		// 			array_push($errors, 'Grupo '.$group->name.': VAZIO');
-		// 		}
-		// 	}
+    public static $validates_presence_of = array(
+        array('evaluation_id'),
+    );
 
-		// } else {
-		// 	array_push($errors, 'Nenhum grupo foi adicionado');
-		// }
+    public function validade()
+    {
+        $this->errors->add('nome', 'nome é igual');
 
-		// // verificar questoes
-		// if (count($evaluation->evaluation_questionnaires)) {
+        return false;
+        // $evaluation = Evaluation::find_by_id($this->evaluation_id);
+        // $errors = array();
 
-		// 	foreach ($$evaluation->questionnaires as $questionnaire) {
-		// 		if ( ! count($questionnaire->questionnaire_issues)) {
-		// 			array_push($errors, 'Questionário '.$questionnaire->name.': VAZIO');
-		// 		}
-		// 	}
+        // // verificar usuarios
+        // if (count($evaluation->evaluation_groups)) {
 
-		// } else {
-		// 	array_push($errors, 'Nenhum Questionário foi adicionado');
-		// }
+        // 	foreach ($$evaluation->groups as $group) {
+        // 		if ( ! count($group->group_members)) {
+        // 			array_push($errors, 'Grupo '.$group->name.': VAZIO');
+        // 		}
+        // 	}
 
-		// $this->errors->add('errors', $errors);
+        // } else {
+        // 	array_push($errors, 'Nenhum grupo foi adicionado');
+        // }
 
-		// return $errors ? $errors : array('Sucesso');
-	}
+        // // verificar questoes
+        // if (count($evaluation->evaluation_questionnaires)) {
 
-	public function getStatus()
-	{
-		$status['viewed'] = Sending::all(array(
-			'conditions' => array(
-				'evaluation_sending_id = ? AND viewed_at is not null', $this->id)));
+        // 	foreach ($$evaluation->questionnaires as $questionnaire) {
+        // 		if ( ! count($questionnaire->questionnaire_issues)) {
+        // 			array_push($errors, 'Questionário '.$questionnaire->name.': VAZIO');
+        // 		}
+        // 	}
 
-		$status['answered'] = Sending::all(array(
-			'conditions' => array(
-				'evaluation_sending_id = ? AND answered_at is not null', $this->id)));
+        // } else {
+        // 	array_push($errors, 'Nenhum Questionário foi adicionado');
+        // }
 
-		$status['corrected'] = Sending::all(array(
-			'conditions' => array(
-				'evaluation_sending_id = ? AND corrected_at is not null', $this->id)));
+        // $this->errors->add('errors', $errors);
 
-		return $status;
-	}
+        // return $errors ? $errors : array('Sucesso');
+    }
 
-	public function countStatus()
-	{
-		$count = array();
-
-		foreach (self::getStatus() as $key => $rows)
-			$count[$key] = count($rows);
-
-		return $count;
-	}
-
-	public function evaluation()
-	{
-		return $this->evaluation;
-	}
-
-	public function sendings()
-	{
-		return $this->sendings;
-	}
-
-	public function before_destroy()
-	{
-		$options = array(
+    public function getStatus()
+    {
+        $status['viewed'] = Sending::all(array(
             'conditions' => array(
-                'evaluation_sending_id' => $this->id)
+                'evaluation_sending_id = ? AND viewed_at is not null', $this->id, ), ));
+
+        $status['answered'] = Sending::all(array(
+            'conditions' => array(
+                'evaluation_sending_id = ? AND answered_at is not null', $this->id, ), ));
+
+        $status['corrected'] = Sending::all(array(
+            'conditions' => array(
+                'evaluation_sending_id = ? AND corrected_at is not null', $this->id, ), ));
+
+        return $status;
+    }
+
+    public function countStatus()
+    {
+        $count = array();
+
+        foreach (self::getStatus() as $key => $rows) {
+            $count[$key] = count($rows);
+        }
+
+        return $count;
+    }
+
+    public function evaluation()
+    {
+        return $this->evaluation;
+    }
+
+    public function sendings()
+    {
+        return $this->sendings;
+    }
+
+    public function before_destroy()
+    {
+        $options = array(
+            'conditions' => array(
+                'evaluation_sending_id' => $this->id, ),
         );
 
         $sendings = Sending::all($options);
-        
+
         foreach ($sendings as $sending) {
-        	$sending->delete();
+            $sending->delete();
         }
 
         foreach (Answer::all($options) as $answer) {
-        	$answer->delete();	
+            $answer->delete();
         }
 
         $sending_evaluators = SendingEvaluator::all($options);
 
         foreach ($sending_evaluators as $sending_evaluator) {
-        	$sending_evaluator->delete();
+            $sending_evaluator->delete();
         }
 
         SendingBcc::delete_all($options);
-	}
+    }
 }

@@ -2,17 +2,28 @@
 
 class IssueAlternative extends Model
 {
-	private $issue_id;
-	private $alternative_id;
-	private $position;
+    /**
+     * @var int
+     */
+    protected $issue_id;
 
-	static $belongs_to = array(
-		array('issue'),
-		array('alternative')
-	);
+    /**
+     * @var int
+     */
+    protected $alternative_id;
 
-	static $validates_presence_of = array(
-		array('issue_id'),
-		array('alternative_id')
-	);
+    /**
+     * @var int
+     */
+    protected $position;
+
+    public static $belongs_to = array(
+        array('issue'),
+        array('alternative'),
+    );
+
+    public static $validates_presence_of = array(
+        array('issue_id'),
+        array('alternative_id'),
+    );
 }
