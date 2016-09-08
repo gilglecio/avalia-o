@@ -6,7 +6,7 @@ require_once 'vendor/autoload.php';
  * Database params
  */
 $db = require 'app/env.php';
-$db = $db->db;
+$db = (object) $db['db'];
 
 /**
  * @var Doctrine\ORM\Tools\Setup
@@ -17,7 +17,7 @@ $config = Doctrine\ORM\Tools\Setup::createAnnotationMetadataConfiguration([__DIR
  * @var Doctrine\ORM\EntityManager
  */
 $entityManager = Doctrine\ORM\EntityManager::create([
-	'dbname' => $db->dbname,
+    'dbname' => $db->dbname,
     'user' => $db->username,
     'password' => $db->password,
     'host' => $db->host,

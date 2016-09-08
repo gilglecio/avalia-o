@@ -2,16 +2,6 @@
 
 class Charge extends Model
 {
-    /**
-     * @var int
-     */
-    protected $id;
-
-    /**
-     * @var string
-     */
-    protected $name;
-
     public static $has_many = array(
         array('user_charges'),
         array('users', 'trhough' => 'user_charges'),

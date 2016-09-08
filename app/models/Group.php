@@ -2,36 +2,6 @@
 
 class Group extends Model
 {
-    /**
-     * @var int
-     */
-    protected $id;
-
-    /**
-     * @var string
-     */
-    protected $name;
-
-    /**
-     * @var \Datetime
-     */
-    protected $created_at;
-
-    /**
-     * @var \Datetime
-     */
-    protected $updated_at;
-
-    /**
-     * @var bool
-     */
-    protected $is_delete;
-
-    /**
-     * @var int
-     */
-    protected $status;
-
     public static $has_many = array(
         array('group_members'),
         array('members', 'through' => 'group_members', 'class_name' => 'User'),

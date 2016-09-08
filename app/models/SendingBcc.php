@@ -2,36 +2,6 @@
 
 class SendingBcc extends Model
 {
-    /**
-     * @var int
-     */
-    protected $id;
-
-    /**
-     * @var int
-     */
-    protected $evaluation_sending_id;
-
-    /**
-     * @var string
-     */
-    protected $name;
-
-    /**
-     * @var string
-     */
-    protected $email;
-
-    /**
-     * @var string
-     */
-    protected $token;
-
-    /**
-     * @var \Datetime
-     */
-    protected $created_at;
-
     public static $table_name = 'sending_bcc';
 
     public static $belongs_to = array(

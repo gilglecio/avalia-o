@@ -2,21 +2,6 @@
 
 class ScaleRow extends Model
 {
-    /**
-     * @var int
-     */
-    protected $id;
-
-    /**
-     * @var string
-     */
-    protected $name;
-
-    /**
-     * @var int
-     */
-    protected $position;
-
     public static $has_many = array(
         array('scale_options'),
         array('scales', 'through' => 'scale_options'),

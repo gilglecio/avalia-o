@@ -2,36 +2,6 @@
 
 class Setting extends Model
 {
-    /**
-     * @var int
-     */
-    protected $id;
-
-    /**
-     * @var string
-     */
-    protected $site_name;
-
-    /**
-     * @var string
-     */
-    protected $site_description;
-
-    /**
-     * @var string
-     */
-    protected $site_email;
-
-    /**
-     * @var string
-     */
-    protected $src_logo;
-
-    /**
-     * @var int
-     */
-    protected $status;
-
     public function getEmail()
     {
         return $this->site_email;

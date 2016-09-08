@@ -2,26 +2,6 @@
 
 class QuestionnaireIssue extends Model
 {
-    /**
-     * @var int
-     */
-    protected $questionnaire_id;
-
-    /**
-     * @var int
-     */
-    protected $issue_id;
-
-    /**
-     * @var int
-     */
-    protected $order;
-
-    /**
-     * @var float
-     */
-    protected $value;
-
     public static $belongs_to = array(
         array('questionnaire'),
         array('issue'),

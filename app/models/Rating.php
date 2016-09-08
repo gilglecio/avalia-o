@@ -2,16 +2,6 @@
 
 class Rating extends Model
 {
-    /**
-     * @var int
-     */
-    protected $id;
-
-    /**
-     * @var string
-     */
-    protected $name;
-
     public static $has_many = array(
         array('user'),
         array('user_ratings'),

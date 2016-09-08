@@ -2,16 +2,6 @@
 
 class UserRating extends Model
 {
-    /**
-     * @var int
-     */
-    protected $user_id;
-
-    /**
-     * @var int
-     */
-    protected $rating_id;
-
     public static $belongs_to = array(
         array('user'),
         array('rating'),

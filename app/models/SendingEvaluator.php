@@ -2,46 +2,6 @@
 
 class SendingEvaluator extends Model
 {
-    /**
-     * @var int
-     */
-    protected $id;
-
-    /**
-     * @var int
-     */
-    protected $evaluator_id;
-
-    /**
-     * @var int
-     */
-    protected $evaluation_sending_id;
-
-    /**
-     * @var int
-     */
-    protected $sending_id;
-
-    /**
-     * @var string
-     */
-    protected $token;
-
-    /**
-     * @var \Datetime
-     */
-    protected $created_at;
-
-    /**
-     * @var int
-     */
-    protected $evaluate;
-
-    /**
-     * @var bool
-     */
-    protected $is_corrected;
-
     public static $belongs_to = array(
         array('evaluation_sending'),
         array('evaluator', 'class_name' => 'User', 'foreign_key' => 'evaluator_id'),

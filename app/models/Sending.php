@@ -2,56 +2,6 @@
 
 class Sending extends Model
 {
-    /**
-     * @var int
-     */
-    protected $id;
-
-    /**
-     * @var int
-     */
-    protected $valued_id;
-
-    /**
-     * @var int
-     */
-    protected $evaluation_sending_id;
-
-    /**
-     * @var string
-     */
-    protected $token;
-
-    /**
-     * @var \Datetime
-     */
-    protected $created_at;
-
-    /**
-     * @var \Datetime
-     */
-    protected $updated_at;
-
-    /**
-     * @var \Datetime
-     */
-    protected $answered_at;
-
-    /**
-     * @var \Datetime
-     */
-    protected $corrected_at;
-
-    /**
-     * @var \Datetime
-     */
-    protected $viewed_at;
-
-    /**
-     * @var int
-     */
-    protected $status;
-
     public static $belongs_to = array(
         array('evaluation_sending'),
         array('valued', 'class_name' => 'User', 'primary_key' => 'id', 'foreign_key' => 'valued_id')
@@ -71,7 +21,7 @@ class Sending extends Model
         array('token')
     );
 
-    public static $status = array(
+    public static $list_status = array(
         0 => 'Não visualizado',
         1 => 'Visualizado',
         2 => 'Respondendo',
@@ -192,7 +142,7 @@ class Sending extends Model
 
     public function getStatus()
     {
-        return self::$status[$this->status];
+        return self::$list_status[$this->status];
     }
 
     public function valued()

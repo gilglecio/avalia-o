@@ -2,51 +2,6 @@
 
 class Answer extends Model
 {
-    /**
-     * @var int
-     */
-    protected $id;
-
-    /**
-     * @var int
-     */
-    protected $evaluation_sending_id;
-
-    /**
-     * @var int
-     */
-    protected $issue_id;
-
-    /**
-     * @var int
-     */
-    protected $valued_id;
-
-    /**
-     * @var string
-     */
-    protected $answer;
-
-    /**
-     * @var string
-     */
-    protected $justification;
-
-    /**
-     * @var \Datetime
-     */
-    protected $created_at;
-
-    /**
-     * @var \Datetime
-     */
-    protected $updated_at;
-
-    /**
-     * @var int
-     */
-    protected $status;
-
     public static $has_many = array(
         array('corrections'),
     );
@@ -67,7 +22,6 @@ class Answer extends Model
     {
         switch ($this->issue->type) {
             case 'multiple_choice':
-
                 $alternatives = $this->issue->alternatives;
                 $answer = json_decode($this->answer);
                 $answer = array_flip($answer);
@@ -83,7 +37,6 @@ class Answer extends Model
                 break;
 
             case 'only_choice':
-
                 $alternatives = $this->issue->alternatives;
 
                 foreach ($alternatives as $alternative) {
@@ -99,7 +52,6 @@ class Answer extends Model
                 break;
 
             case 'scale':
-
                 $scale_row = $this->issue->getOptionsScale($this->answer);
 
                 return $scale_row->name;
@@ -113,7 +65,6 @@ class Answer extends Model
                 return $boolean[$this->answer];
 
             default:
-
                 return $this->answer;
 
                 break;

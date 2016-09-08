@@ -2,16 +2,6 @@
 
 class Scale extends Model
 {
-    /**
-     * @var int
-     */
-    protected $id;
-
-    /**
-     * @var string
-     */
-    protected $name;
-
     public static $has_many = array(
         array('options', 'class_name' => 'ScaleOption'),
     );

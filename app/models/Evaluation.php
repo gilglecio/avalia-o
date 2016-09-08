@@ -2,61 +2,6 @@
 
 class Evaluation extends Model
 {
-    /**
-     * @var int
-     */
-    protected $id;
-
-    /**
-     * @var int
-     */
-    protected $user_id;
-
-    /**
-     * @var string
-     */
-    protected $name;
-
-    /**
-     * @var string
-     */
-    protected $subject;
-
-    /**
-     * @var \Datetime
-     */
-    protected $start_at;
-
-    /**
-     * @var \Datetime
-     */
-    protected $end_at;
-
-    /**
-     * @var \Datetime
-     */
-    protected $created_at;
-
-    /**
-     * @var \Datetime
-     */
-    protected $updated_at;
-
-    /**
-     * @var string
-     */
-    protected $message_email;
-
-    /**
-     * @var string
-     */
-    protected $mail_bcc;
-
-    /**
-     * @var bool
-     */
-    protected $is_alerted;
-
     public static $has_many = array(
         array('evaluation_groups'),
         array('groups', 'through' => 'evaluation_groups'),

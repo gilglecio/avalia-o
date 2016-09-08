@@ -2,16 +2,6 @@
 
 class Alternative extends Model
 {
-    /**
-     * @var int
-     */
-    protected $id;
-
-    /**
-     * @var string
-     */
-    protected $name;
-
     public static $has_many = array(
         array('issue_alternatives'),
         array('alternatives', 'through' => 'issue_alternatives'),

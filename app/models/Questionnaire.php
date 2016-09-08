@@ -2,41 +2,6 @@
 
 class Questionnaire extends Model
 {
-    /**
-     * @var int
-     */
-    protected $id;
-
-    /**
-     * @var int
-     */
-    protected $user_id;
-
-    /**
-     * @var string
-     */
-    protected $name;
-
-    /**
-     * @var string
-     */
-    protected $name_private;
-
-    /**
-     * @var \Datetime
-     */
-    protected $created_at;
-
-    /**
-     * @var \Datetime
-     */
-    protected $updated_at;
-
-    /**
-     * @var bool
-     */
-    protected $is_delete;
-
     public static $has_many = array(
         array('questionnaire_issues'),
         array('issues',

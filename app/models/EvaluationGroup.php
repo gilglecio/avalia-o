@@ -2,16 +2,6 @@
 
 class EvaluationGroup extends Model
 {
-    /**
-     * @var int
-     */
-    private $evaluation_id;
-
-    /**
-     * @var int
-     */
-    private $group_id;
-
     public static $belongs_to = array(
         array('evaluation'),
         array('group'),

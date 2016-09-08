@@ -2,21 +2,6 @@
 
 class ScaleOption extends Model
 {
-    /**
-     * @var int
-     */
-    protected $scale_id;
-
-    /**
-     * @var int
-     */
-    protected $scale_row_id;
-
-    /**
-     * @var int
-     */
-    protected $position;
-
     public static $belongs_to = array(
         array('scale'),
         array('row', 'class_name' => 'ScaleRow'),

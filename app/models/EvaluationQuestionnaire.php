@@ -2,16 +2,6 @@
 
 class EvaluationQuestionnaire extends Model
 {
-    /**
-     * @var int
-     */
-    protected $evaluation_id;
-
-    /**
-     * @var int
-     */
-    protected $questionnaire_id;
-
     public static $belongs_to = array(
         array('evaluation'),
         array('questionnaire'),

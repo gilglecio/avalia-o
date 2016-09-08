@@ -2,26 +2,6 @@
 
 class EvaluationSending extends Model
 {
-    /**
-     * @var int
-     */
-    protected $id;
-
-    /**
-     * @var int
-     */
-    protected $evaluation_id;
-
-    /**
-     * @var \Datetime
-     */
-    protected $created_at;
-
-    /**
-     * @var string
-     */
-    protected $name;
-
     public static $belongs_to = array(
         array('evaluation'),
     );

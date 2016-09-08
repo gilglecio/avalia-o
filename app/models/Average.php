@@ -2,46 +2,6 @@
 
 class Average extends Model
 {
-    /**
-     * @var int
-     */
-    protected $id;
-
-    /**
-     * @var int
-     */
-    protected $evaluator_id;
-
-    /**
-     * @var int
-     */
-    protected $valued_id;
-
-    /**
-     * @var int
-     */
-    protected $evaluation_sending_id;
-
-    /**
-     * @var decimal
-     */
-    protected $average;
-
-    /**
-     * @var \Datetime
-     */
-    protected $created_at;
-
-    /**
-     * @var \Datetime
-     */
-    protected $updated_at;
-
-    /**
-     * @var int
-     */
-    protected $status;
-
     public static $belongs_to = array(
         array('evaluation'),
         array('valued', 'class_name' => 'User', 'primary_key' => 'id', 'foreign_key' => 'valued_id'),

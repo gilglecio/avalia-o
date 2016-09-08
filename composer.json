@@ -10,7 +10,7 @@
         "excelwebzone/zend-search": "dev-master",
         "swiftmailer/swiftmailer": "5.1.*@dev"
     },
-    "require-dev2": {
+    "require-dev": {
         "doctrine/orm": "^2.5",
         "doctrine/migrations": "^1.4",
         "behat/behat": "2.4.*@stable",

@@ -2,41 +2,6 @@
 
 class Correction extends Model
 {
-    /**
-     * @var int
-     */
-    protected $id;
-
-    /**
-     * @var int
-     */
-    protected $answer_id;
-
-    /**
-     * @var int
-     */
-    protected $evaluator_id;
-
-    /**
-     * @var decimal
-     */
-    protected $note;
-
-    /**
-     * @var string
-     */
-    protected $justification;
-
-    /**
-     * @var \Datetime
-     */
-    protected $created_at;
-
-    /**
-     * @var \Datetime
-     */
-    protected $updated_at;
-
     public static $belongs_to = array(
         array('answer'),
         array('evaluator', 'class_name' => 'User', 'primary_key' => 'id', 'foreign_key' => 'evaluator_id'),
