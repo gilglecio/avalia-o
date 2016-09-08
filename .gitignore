@@ -2,3 +2,5 @@ vendor
 app/cache
 *.bak
 *.local.json
+scripts
+public/behat.html

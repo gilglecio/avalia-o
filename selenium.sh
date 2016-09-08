@@ -4,11 +4,11 @@ PORT='3000'
 SELENIUM_SERVER="selenium-server.jar"
 CHROME="chromedriver"
 
-if [ ! -d "./run/files" ]; then
-	mkdir ./run/files
+if [ ! -d "./scripts" ]; then
+	mkdir ./scripts
 fi
 
-cd run/files
+cd scripts
 
 if [ ! -f "./$SELENIUM_SERVER" ]; then
 	echo -ne "--------------------------------------------------------\n"
@@ -26,6 +26,6 @@ if [ ! -f "./$CHROME" ]; then
 	rm $CHROME.zip
 fi
 
-cd ../../
+cd ../
 
-java -jar ./run/files/$SELENIUM_SERVER -Dwebdriver.chrome.driver=./run/files/$CHROME
+java -jar ./scripts/$SELENIUM_SERVER -Dwebdriver.chrome.driver=./scripts/$CHROME

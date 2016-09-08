@@ -1,24 +1,17 @@
 <?php
 
-use Behat\Behat\Context\ClosuredContextInterface,
-    Behat\Behat\Context\TranslatedContextInterface,
-    Behat\Behat\Context\BehatContext,
-    Behat\Behat\Exception\PendingException;
-use Behat\Gherkin\Node\PyStringNode,
-    Behat\Gherkin\Node\TableNode;
+use Behat\Behat\Context\ClosuredContextInterface;
+use Behat\Behat\Context\TranslatedContextInterface;
+use Behat\Behat\Context\BehatContext;
+use Behat\Behat\Exception\PendingException;
+use Behat\Gherkin\Node\PyStringNode;
+use Behat\Gherkin\Node\TableNode;
 use Behat\MinkExtension\Context\MinkContext;
-
-//
-// Require 3rd-party libraries here:
-//
-//   require_once 'PHPUnit/Autoload.php';
-//   require_once 'PHPUnit/Framework/Assert/Functions.php';
-//
 
 /**
  * Features context.
  */
-class FeatureContext extends MinkContext 
+class FeatureContext extends MinkContext
 {
     public $parameters;
 
@@ -36,7 +29,7 @@ class FeatureContext extends MinkContext
     }
 
     /**
-     * @Then /^I should see an error modal "([^"]*)"$/                                
+     * @Then /^I should see an error modal "([^"]*)"$/
      */
     public function iShouldSeeAnErrorModal($args)
     {
@@ -82,7 +75,7 @@ class FeatureContext extends MinkContext
     /**
      * @When  /^(?:|I )will wait "([0-9])"$/
      */
-    public function iWillWaitSeconds($seconds) 
+    public function iWillWaitSeconds($seconds)
     {
         sleep($seconds);
     }
@@ -165,7 +158,7 @@ JS;
         $button_element = $page->find('named', $button_selector);
  
         if (null === $button_element) {
-                throw new Exception("'$button' button not found");
+            throw new Exception("'$button' button not found");
         }
  
         $this->ajaxClickHandler_before();
@@ -176,17 +169,17 @@ JS;
     /**
      * @Then /^"([^"]*)" in "([^"]*)" should be selected$/
      */
-    public function inShouldBeSelected($optionValue, $select) 
+    public function inShouldBeSelected($optionValue, $select)
     {
         $selectElement = $this->getSession()->getPage()->find('named', array('select', "\"{$select}\""));
         $optionElement = $selectElement->find('named', array('option', "\"{$optionValue}\""));
 
         //it should have the attribute selected and it should be set to selected
-        if(!$optionElement->hasAttribute("selected")) {
+        if (!$optionElement->hasAttribute("selected")) {
             throw new Exception("'$select' has no selected attribute");
         }
 
-        if($optionElement->getAttribute("selected") != "true") {
+        if ($optionElement->getAttribute("selected") != "true") {
             throw new Exception("'$select' has no selected attribute iquals selected");
         }
     }
@@ -194,11 +187,11 @@ JS;
     /**
      * @Then /^I check with click on "([^"]*)"$/
      */
-    public function checkWithClickOn($checkbox) 
+    public function checkWithClickOn($checkbox)
     {
         $element = $this->getSession()->getPage()->find('named', array('checkbox', "\"{$checkbox}\""));
         
-        if(!$element) {
+        if (!$element) {
             throw new Exception("checkbox {$checkbox} not found", 1);
         }
 
@@ -208,13 +201,13 @@ JS;
     /**
      * @Then /^I select option "([^"]*)" from "([^"]*)"$/
      */
-    public function selectOptionFrom($option, $select) 
+    public function selectOptionFrom($option, $select)
     {
         $element = $this->getSession()->getPage()->find('named', array('select', "\"{$select}\""));
         $optionElements = $element->findAll('css', 'option');
         
-        if(!$optionElements) {
-           throw new Exception("Select not {$select} found", 1);
+        if (!$optionElements) {
+            throw new Exception("Select not {$select} found", 1);
         }
 
         $element->selectOption($optionElements[$option]->getValue());
@@ -230,16 +223,16 @@ JS;
 
         $element = $this->getSession()->getPage()->find('named', array('button', "\"search\""));
 
-        if(count($fields) != count($values)) {
+        if (count($fields) != count($values)) {
             throw new Exception("Number of fields not match with the number of values");
         }
 
         $element->click();
         $i = 0;
-        foreach($fields as $field) {
+        foreach ($fields as $field) {
             $field = explode(':', $field);
             $value = trim($values[$i]);
-            if(count($field) > 1) {
+            if (count($field) > 1) {
                 switch ($field[0]) {
                     case 'select':
                         $this->getSession()->getPage()->selectFieldOption(trim($field[1]), $value);
@@ -265,25 +258,23 @@ JS;
      */
     public function login($user, $pass, $go)
     {
-        $this->visit( $this->parameters['base_url'] . '/login/logout');
-        $entrar = $this->getSession()->getPage()->find('named', array('button', "\"Entrar\""));
+        $this->visit($this->parameters['base_url'] . '/logout');
+        $entrar = $this->getSession()->getPage()->find('named', array('button', "\"Logar\""));
 
-        $this->getSession()->getPage()->fillField('email', $user);
+        $this->getSession()->getPage()->fillField('username', $user);
         $this->getSession()->getPage()->fillField('password', $pass);
         $entrar->click();
 
         $this->assertPageAddress($go);
-
-        sleep(2);
     }
 
     /**
      * Verify, if a element contains one or more occurrences
      * Usage: Then the element ".tbody_tr:nth-child(1)" contain "13455|NF|John Snash|receita|QUITADO|450,00"
-     * 
+     *
      * @Then /^the element "(?P<element>[^"]*)" contain "(?P<text>(?:[^"]|\\")*)"$/
      */
-    public function elementHasContains($element, $text) 
+    public function elementHasContains($element, $text)
     {
         $arr = explode('|', $text);
 
@@ -295,7 +286,7 @@ JS;
 
             if (!preg_match($regex, $actual)) {
                 throw new Exception("The element \"{$element}\" not contains \"{$text}\"");
-            } 
+            }
         }
     }
 
@@ -307,7 +298,7 @@ JS;
     public function doubleClickLink($link)
     {
         $page = $this->getSession()->getPage();
-        $element = $page->find('css',"a:contains('" . $link . "')");
+        $element = $page->find('css', "a:contains('" . $link . "')");
         $element->doubleClick();
     }
 }
