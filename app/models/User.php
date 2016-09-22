@@ -34,7 +34,7 @@ class User extends Model
     );
 
     public static $validates_uniqueness_of = array(
-        //array('email', 'message' => 'já existe.')
+        array(['email', 'profile_type'], 'message' => 'já existe.')
     );
 
     public static $validates_format_of = array(
@@ -217,7 +217,7 @@ class User extends Model
 
     public static function crypt_password($password)
     {
-        return crypt($password);
+        return password_hash($password, PASSWORD_DEFAULT);
     }
 
     public static function credentials()

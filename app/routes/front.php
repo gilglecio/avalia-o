@@ -4,19 +4,29 @@ $app->get('/login', function () use ($app) {
     $app->redirect(config('domain'));
 });
 
-$app->get('/adduser', function () {
+$app->get('/resetar', function () {
+
+    exec('cd ' . ROOT . ' && ./reset');
+
+    die('OK');
+});
+
+$app->get('/add/user/testador', function () {
     $data = array(
-        'name' => 'gilglecio',
-        'email' => 'gilglecio_765@hotmail.com',
+        'name' => 'testador',
+        'username' => 'testador',
+        'email' => 'testador@avaliacao.com',
         'profile_type' => 'admin',
         'birth' => dateBRtoUS('16/03/1994'),
         'graduated_at' => date('Y-m-d'),
-        'password' => User::crypt_password('gilglecio'),
+        'password' => User::crypt_password('testador'),
         'salary' => money(0),
         'entry_at' => date('Y-m-d')
     );
 
     $user = User::create($data);
+
+    die('OK');
 });
 
 $app->post('/reply/increment', function () use ($app) {
@@ -100,7 +110,7 @@ $app->map('/', function () use ($app) {
 
         if ($users) {
             foreach ($users as $user) {
-                if (crypt($password, $user->password) == $user->password) {
+                if (password_verify($password, $user->password)) {
                     $_SESSION['app.user_id'] = $user->id;
                     break;
                 }

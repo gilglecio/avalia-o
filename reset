@@ -1,0 +1,21 @@
+#!/bin/bash
+
+echo -ne "--------------------------------------------------------\n"
+echo -ne "Apagando e criando a base de dados...\n"
+echo -ne "--------------------------------------------------------\n"
+
+mysql --user=avaliacao --password=avaliacao --database=avaliacao --execute="DROP DATABASE avaliacao; CREATE DATABASE avaliacao;"
+
+echo -ne "--------------------------------------------------------\n"
+echo -ne "Rodando as migrações...\n"
+echo -ne "--------------------------------------------------------\n"
+
+./vendor/bin/doctrine-migrations migrations:migrate  --write-sql
+rm migrations.sql
+mv ./*.sql migrations.sql
+
+echo -ne "--------------------------------------------------------\n"
+echo -ne "Importando estrutura no banco de dados...\n"
+echo -ne "--------------------------------------------------------\n"
+
+mysql --user=avaliacao --password=avaliacao avaliacao < ./migrations.sql

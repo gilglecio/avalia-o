@@ -57,7 +57,7 @@ class FeatureContext extends MinkContext
      */
     public function assertPageAddress($page)
     {
-        $time = 2000; // time should be in milliseconds
+        $time = 100; // time should be in milliseconds
         $this->getSession()->wait($time, '(0 === jQuery.active)');
 
         $this->assertSession()->addressEquals($this->locatePath($page));
@@ -68,7 +68,8 @@ class FeatureContext extends MinkContext
      */
     public function whenIFillInWith($arg1, $arg2)
     {
-        throw new PendingException();
+        // throw new PendingException();
+        $this->getSession()->getPage()->fillField($arg1, $arg2);
     }
 
 
@@ -118,7 +119,7 @@ class FeatureContext extends MinkContext
      */
     public function ajaxClickHandler_before()
     {
-        sleep(1);
+        // sleep(1);
 
         $javascript = <<<JS
 window.jQuery(document).one('ajaxStart.ss.test', function(){
@@ -141,8 +142,8 @@ JS;
      */
     public function ajaxClickHandler_after()
     {
-        sleep(1);
-        $this->getSession()->wait(1000, "(typeof window.__ajaxStatus !== 'undefined' ? window.__ajaxStatus() : 'no ajax') !== 'waiting'");
+        // sleep(1);
+        $this->getSession()->wait(100, "(typeof window.__ajaxStatus !== 'undefined' ? window.__ajaxStatus() : 'no ajax') !== 'waiting'");
     }
 
     /**
@@ -150,7 +151,7 @@ JS;
      */
     public function stepIPressButton($button)
     {
-        $this->iWillWaitSeconds(2);
+        // $this->iWillWaitSeconds(2);
         
         $page = $this->getSession()->getPage();
  
@@ -251,6 +252,15 @@ JS;
 
         $submit = $this->getSession()->getPage()->find('named', array('button', "\"grid-pesquisar\""));
         $submit->click();
+    }
+
+    /**
+     * @Given /^(?:|I )am on "(?P<page>[^"]+)" visit$/
+     * @When /^(?:|I )go to "(?P<page>[^"]+)" visit$/
+     */
+    public function visitPage($page)
+    {
+        $this->getSession()->visit($this->parameters['base_url'] . $this->locatePath($page));
     }
 
     /**

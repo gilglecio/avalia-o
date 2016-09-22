@@ -22,9 +22,9 @@
 {% block nav_left %}
 <li class="divider"></li>
 
-<li class="has-dropdown"><a href="{{ urladm ~ '/user' }}">Cadastros</a>
+<li class="has-dropdown"><a id="menu-cadastros" href="{{ urladm ~ '/user' }}">Cadastros</a>
 	<ul class="dropdown">
-		<li><a href="{{ urladm ~ '/user/new/valued' }}">Cadastrar Usuário</a></li>
+		<li><a id="menu-cadastros-usuarios" href="{{ urladm ~ '/user/new/valued' }}">Cadastrar Usuário</a></li>
 		<li class="divider"></li>
 		<li><a href="{{ urladm ~ '/user/valued/charge' }}">Gerenciar Cargos</a></li>
 		<li><a href="{{ urladm ~ '/user/valued/rating' }}">Gerenciar Classificações</a></li>
