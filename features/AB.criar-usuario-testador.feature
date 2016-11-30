@@ -1,7 +1,6 @@
-@criarTestador
 Feature: Criar usuário testador
 
-    @javascript
+    @javascript @criarTestador
     Scenario:
 
         Given I am on "/add/user/testador" visit

@@ -6,7 +6,9 @@
 	{{ parent() }}
 	<a class="current" href="#">{{ title }}</a>
 	<a href="{{ urladm ~ '/user/new' }}{% if profile_current %}{{ '/' ~ profile_current }}{% endif %} ">criar</a>
-	<a href="javascript:history.back();">voltar</a>
+	<a href="{{ urladm ~ '/user/valued/charge' }}{% if profile_current %}{{ '/' ~ profile_current }}{% endif %} ">add cargos</a>
+	<a href="{{ urladm ~ '/user/valued/rating' }}{% if profile_current %}{{ '/' ~ profile_current }}{% endif %} ">add classificações</a>
+	<a href="javascript:history.back();" id="link-voltar">voltar</a>
 {% endblock %}
 
 {% block page title %}

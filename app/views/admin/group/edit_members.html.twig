@@ -4,7 +4,7 @@
 	{{ parent() }}
 	<a class="current" href="#">{{ group.name }} <span>(<span class="count_members">{{ members|length }}</span>)</span></a>
 	<a class="current" href="#">{{ title }}</a>
-	<a href="javascript:history.back();">voltar</a>
+	<a href="javascript:history.back();" id="link-voltar">voltar</a>
 {% endblock %}
 
 {% block group %}

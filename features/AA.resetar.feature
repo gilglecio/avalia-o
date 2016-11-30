@@ -1,7 +1,6 @@
-@resetar
-Feature: Apaga e recria o banco de dados
+Feature: Resetar
 
-    @javascript
+    @javascript @resetar
     Scenario:
 
     	When I go to "/resetar" visit

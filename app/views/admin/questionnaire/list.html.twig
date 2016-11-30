@@ -4,7 +4,7 @@
 	{{ parent() }}
 	<a class="current" href="#">{{ title }}</a>
 	<a href="{{ urladm ~ '/questionnaire/new' }}">CRIAR</a>
-	<a href="javascript:history.back();">voltar</a>
+	<a href="javascript:history.back();" id="link-voltar">voltar</a>
 {% endblock %}
 
 {% block group %}
@@ -28,7 +28,7 @@
 			</thead>
 			<tbody>
 				{% set year = 0 %}
-				{% for questionnaire in questionnaires %}
+				{% for key, questionnaire in questionnaires %}
 				
 					{% set questionnaire_year = questionnaire.created_at|date('Y') %}
 
@@ -49,11 +49,14 @@
 					<td width="120" title="{{ questionnaire.created_at|date('l, d M Y à\\s H:i') }}">{{ questionnaire.created_at|date('d M, H:i') }}</td>
 
 					<td width="90">
-						<a title="Visualizar" class="glyphicon glyphicon-expand questionnaire_view" href="{{ urladm ~ '/questionnaire/' ~ questionnaire.id ~ '/show' }}"></a>
-						<a title="Duplicar" class="glyphicon glyphicon-new-window questionnaire_transfer" href="{{ urladm ~ '/questionnaire/new/copy/' ~ questionnaire.id }}"></a>
+						<a id="visualizar-{{ key }}" title="Visualizar" class="glyphicon glyphicon-expand questionnaire_view" href="{{ urladm ~ '/questionnaire/' ~ questionnaire.id ~ '/show' }}"></a>
+						
+						<a id="duplicar-{{ key }}" title="Duplicar" class="glyphicon glyphicon-new-window questionnaire_transfer" href="{{ urladm ~ '/questionnaire/new/copy/' ~ questionnaire.id }}"></a>
 						{% if questionnaire.can_edit %}
-						<a title="Editar" class="glyphicon glyphicon-edit questionnaire_transfer" href="{{ urladm ~ '/questionnaire/' ~ questionnaire.id ~ '/edit' }}"></a>
-						<a title="Apagar" data-confirm="1" class="glyphicon glyphicon-remove questionnaire_delete" href="{{ urladm ~ '/questionnaire/' ~ questionnaire.id ~ '/delete' }}"></a>
+						
+						<a id="editar-{{ key }}" title="Editar" class="glyphicon glyphicon-edit questionnaire_transfer" href="{{ urladm ~ '/questionnaire/' ~ questionnaire.id ~ '/edit' }}"></a>
+						
+						<a id="apagar-{{ key }}" title="Apagar" data-confirm="1" class="glyphicon glyphicon-remove questionnaire_delete" href="{{ urladm ~ '/questionnaire/' ~ questionnaire.id ~ '/delete' }}"></a>
 						{% else %}
 							<span title="Este questionário esta sendo usado por uma avaliação, que ja foi enviada e alguém já a o respondeu. Portanto não pode ser removido." class="glyphicon glyphicon-edit evaluation_delete" style="color:#ccc"></span>
 						    <span title="Este questionário esta sendo usado por uma avaliação, que ja foi enviada e alguém já a o respondeu. Portanto não pode ser alterado." class="glyphicon glyphicon-remove evaluation_delete" style="color:#ccc"></span>

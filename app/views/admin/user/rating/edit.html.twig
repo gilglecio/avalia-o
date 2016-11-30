@@ -4,7 +4,7 @@
 {% block breadcrumbs %}
 	{{ parent() }}
 	<a class="current" href="#">{{ title }}</a>
-	<a href="javascript:history.back();">voltar</a>
+	<a href="javascript:history.back();" id="link-voltar">voltar</a>
 {% endblock %}
 
 {% block content %}

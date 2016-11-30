@@ -5,7 +5,7 @@
 	<a class="current" href="#">{{ sending.evaluation_sending.evaluation.name }}</a>
 	<a href="{{ urladm ~ '/evaluation/' ~ sending.evaluation_sending.evaluation.id ~ '/sending' }}">envios</a>
 	<a class="current" href="#">{{ title }}</a>
-	<a href="javascript:history.back();">voltar</a>
+	<a href="javascript:history.back();" id="link-voltar">voltar</a>
 {% endblock %}
 
 {% block group %}

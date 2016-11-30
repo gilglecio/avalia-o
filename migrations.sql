@@ -1,4 +1,4 @@
--- Doctrine Migration File Generated on 2016-09-22 00:37:17
+-- Doctrine Migration File Generated on 2016-11-19 13:45:21
 
 -- Version 20160921232712
 

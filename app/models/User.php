@@ -55,6 +55,11 @@ class User extends Model
         return number_format($this->salary, 2, ',', '.');
     }
 
+    public function getProfileType()
+    {
+        return self::$profile_types[$this->profile_type];
+    }
+
     public function can_delete()
     {
         // if ($this->evaluation_evaluators)

@@ -22,18 +22,20 @@
 {% block nav_left %}
 <li class="divider"></li>
 
-<li class="has-dropdown"><a id="menu-cadastros" href="{{ urladm ~ '/user' }}">Cadastros</a>
+<li class="has-dropdown">
+	<a id="menu-cadastros" href="{{ urladm ~ '/user' }}">Cadastros</a>
 	<ul class="dropdown">
 		<li><a id="menu-cadastros-usuarios" href="{{ urladm ~ '/user/new/valued' }}">Cadastrar Usuário</a></li>
 		<li class="divider"></li>
-		<li><a href="{{ urladm ~ '/user/valued/charge' }}">Gerenciar Cargos</a></li>
-		<li><a href="{{ urladm ~ '/user/valued/rating' }}">Gerenciar Classificações</a></li>
+		<li><a id="menu-cadastros-cargos" href="{{ urladm ~ '/user/valued/charge' }}">Gerenciar Cargos</a></li>
+		<li><a id="menu-cadastros-classificacoes" href="{{ urladm ~ '/user/valued/rating' }}">Gerenciar Classificações</a></li>
 	</ul>
 </li>
 <li class="divider"></li>
-<li><a href="{{ urladm ~ '/group' }}">Grupos</a></li>
+<li><a id="menu-cadastros-grupos" href="{{ urladm ~ '/group' }}">Grupos</a></li>
 <li class="divider"></li>
-<li class="has-dropdown"><a href="{{ urladm ~ '/questionnaire' }}">Questionários</a>
+<li class="has-dropdown">
+	<a id="menu-cadastros-questionarios" href="{{ urladm ~ '/questionnaire' }}">Questionários</a>
 	<ul class="dropdown">
 		<li><a href="{{ urladm ~ '/questionnaire/new' }}">Criar Questionário</a></li>
 		{# <li class="divider"></li>
@@ -42,7 +44,8 @@
 </li>
 
 <li class="divider"></li>
-<li class="has-dropdown"><a href="{{ urladm ~ '/evaluation' }}">Avaliações</a>
+<li class="has-dropdown">
+	<a href="{{ urladm ~ '/evaluation' }}">Avaliações</a>
 	<ul class="dropdown">
 		<li><a href="{{ urladm ~ '/evaluation/new' }}">Criar Avaliação</a></li>
 		{# <li class="divider"></li>
@@ -56,7 +59,8 @@
 </li>
 
 <li class="divider"></li>
-<li class="has-dropdown"><a href="{{ urladm ~ '/settings' }}">Configurações</a>
+<li class="has-dropdown">
+	<a href="{{ urladm ~ '/settings' }}">Configurações</a>
 	<ul class="dropdown">
 		<li><a href="{{ urladm ~ '/settings/change_password' }}">Alterar Senha</a></li>
 	</ul>
@@ -84,7 +88,6 @@
 				<nav style="margin-top:20px" class="breadcrumbs">
 					<a href="{{ urladm }}">Início</a>
 			  		{% block breadcrumbs %}{% endblock %}
-					{# <a href="{{ referer }}">Voltar</a> #}
 				</nav>
 				<div id="content">
 					{% block content %}{% endblock %}

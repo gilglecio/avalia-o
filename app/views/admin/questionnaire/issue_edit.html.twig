@@ -5,7 +5,7 @@
 	<a class="current" href="#">{{ questionnaire.name }}</a>
 	<a class="current" href="#">Perguntas</a>
 	<a href="{{ urladm ~ '/questionnaire/' ~ questionnaire.id }}">Lista</a>
-	<a href="javascript:history.back();">voltar</a>
+	<a href="javascript:history.back();" id="link-voltar">voltar</a>
 {% endblock %}
 
 {% block group %}

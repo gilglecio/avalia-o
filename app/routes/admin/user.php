@@ -173,7 +173,7 @@ $app->group('/user', function () use ($app) {
 					return $app->notfound();
 
 				$view = array(
-					'title' => 'Editando '.$user->name,
+					'title' => 'Editando '.$user->name.' ('.$user->getProfileType().')',
 					'user' => $user,
 
 					'profile_current' => $user->profile_type
