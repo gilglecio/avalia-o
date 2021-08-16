@@ -34,7 +34,7 @@ function config($param)
                 'pass' => '1gil2glecio3dev',
             ),
 
-            'domain' => 'http://localhost:3000/',
+            'domain' => 'http://localhost:3008/',
 
             'db' => array(
                 'driver' => 'mysql',
