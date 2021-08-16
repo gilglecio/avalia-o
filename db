@@ -1,0 +1,5 @@
+#!/bin/bash
+
+PARAMNS=$1
+
+./vendor/doctrine/migrations/bin/doctrine-migrations migrations:$PARAMNS
