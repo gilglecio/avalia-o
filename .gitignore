@@ -4,3 +4,4 @@ app/cache
 *.local.json
 scripts
 public/behat.html
+.env

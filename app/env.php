@@ -3,9 +3,9 @@ return [
     "env" => "dev",
 	"db" => [
 		"driver" => "mysql",
-		"host" => "avaliacao_db",
-		"username" => "avaliacao",
-		"password" => "avaliacao",
+		"host" => "avaliacao-db",
+		"username" => "root",
+		"password" => "avalicao",
 		"dbname" => "avaliacao",
 		"charset" => "utf8"
     ],
@@ -16,5 +16,5 @@ return [
         "name" => "Gilglécio Santos",
         "pass" => ""
     ],
-	"domain" => "http://localhost:3008/"
+	"domain" => "http://localhost:4087/"
 ];

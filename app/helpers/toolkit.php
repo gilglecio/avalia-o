@@ -34,7 +34,7 @@ function config($param)
                 'pass' => '1gil2glecio3dev',
             ),
 
-            'domain' => 'http://localhost:3008/',
+            'domain' => 'http://localhost:4087/',
 
             'db' => array(
                 'driver' => 'mysql',
@@ -146,7 +146,7 @@ function date_db($date)
 }
 function money($money)
 {
-    return str_replace(',', '.', str_replace('.', '', $money));
+    return str_replace(',', '.', str_replace('.', '', (string) $money));
 }
 function set_user_charge($charges_id, $user)
 {

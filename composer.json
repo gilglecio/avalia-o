@@ -12,7 +12,6 @@
     "require-dev": {
         "doctrine/orm": "^2.5",
         "doctrine/migrations": "^1.4",
-        "behat/behat": "2.4.*@stable",
         "behat/mink": "1.5.*@stable",
         "behat/mink-goutte-driver": "*",
         "behat/mink-extension": "*",
@@ -24,6 +23,5 @@
             "name": "Gilglécio Santos",
             "email": "gilglecio_765@hotmail.com"
         }
-    ],
-    "minimum-stability": "dev"
+    ]
 }

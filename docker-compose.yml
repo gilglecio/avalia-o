@@ -1,36 +1,49 @@
-version: '3'
-
+# For more information: https://laravel.com/docs/sail
+version: "3"
 services:
   api:
-    build: .
-    container_name: avaliacao_api
-    working_dir: /var/www
-    depends_on:
-      - mysql
-    volumes:
-      - .:/var/www
+    container_name: ${DOCKER_CONTAINER}-api
+    build:
+      context: ./docker/7.4
+      dockerfile: Dockerfile
+      args:
+        WWWGROUP: "${WWWGROUP}"
+    image: sail-7.4/app
     ports:
-      - "3008:80"
-    network_mode: avaliacao
-
-  mysql:
-    image: mysql:5.6
-    container_name: avaliacao_db
-    volumes:
-      - mysqldbvolume:/var/lib/mysql
-    ports:
-      - "3316:3306"
+      - "${DOCKER_PORT:-80}:80"
     environment:
-      - MYSQL_ROOT_PASSWORD=avaliacao
-      - MYSQL_DATABASE=avaliacao
-      - MYSQL_USER=avaliacao
-      - MYSQL_PASSWORD=avaliacao
-    network_mode: avaliacao
+      WWWUSER: "${WWWUSER}"
+      LARAVEL_SAIL: 1
+      XDEBUG_MODE: "${SAIL_XDEBUG_MODE:-off}"
+      XDEBUG_CONFIG: "${SAIL_XDEBUG_CONFIG:-client_host=host.docker.internal}"
+    volumes:
+      - ".:/var/www/html"
+    network_mode: ${DOCKER_NETWORK}
+
+  db:
+    env_file:
+      - ./.env
+    image: mysql:5.7
+    container_name: ${DOCKER_CONTAINER}-db
+    volumes:
+      - dbdata:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: avaliacao
+      TZ: America/Sao_Paulo
+    network_mode: ${DOCKER_NETWORK}
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: ${DOCKER_CONTAINER}-pma
+    environment:
+      - PMA_ARBITRARY=1
+      - UPLOAD_LIMIT=1000M
+    ports:
+      - ${DOCKER_PMA_PORT}:80
+    network_mode: ${DOCKER_NETWORK}
 
 networks:
   avaliacao:
     external: true
-
 volumes:
-  mysqldbvolume:
-    driver: local
+  dbdata: {}
